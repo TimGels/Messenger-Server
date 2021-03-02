@@ -8,16 +8,14 @@ namespace TCPMessengerServerTest
 {
     class Server
     {
+        static int Port = 5000;
+
         static void Main(string[] args)
         {
             TcpListener server = null;
             try
             {
-                // Set the TcpListener on port 5000.
-                Int32 port = 5000;
-                IPAddress localAddr = IPAddress.Parse("127.0.0.1");
-
-                server = new TcpListener(localAddr, port);
+                server = new TcpListener(IPAddress.Any, Port);
                 server.Start();
                 Console.WriteLine("Waiting for incoming connections... ");
 
