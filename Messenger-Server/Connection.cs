@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace UWP_Messenger_Server
+namespace Messenger_Server
 {
     class Connection
     {
