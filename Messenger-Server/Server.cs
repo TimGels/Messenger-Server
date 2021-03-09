@@ -1,21 +1,47 @@
-﻿using System;
+﻿using MessengerServer;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using UWP_Messenger_Server;
 
 namespace Messenger_Server
 {
-    class Server
+    public sealed class Server
     {
-        static int Port = 5000;
+        private int port = 5000;
+        private TcpListener server;
+        private List<Client> clients;
+        private List<Group> groups;
+        private object clientsLocker = new object();
+        private object groupsLocker = new object();
+        private static readonly Lazy<Server> lazy = new Lazy<Server>(() => new Server());
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            TcpListener server = null;
+            Server server = Server.Instance;
+            server.StartListening();
+
+        }
+
+        public static Server Instance
+        {
+            get { return lazy.Value; }
+        }
+
+        private Server()
+        {
+            this.clients = new List<Client>();
+            this.groups = new List<Group>();
+        }
+
+        public void StartListening()
+        {
             try
             {
-                server = new TcpListener(IPAddress.Any, Port);
+                server = new TcpListener(IPAddress.Any, port);
                 server.Start();
                 Console.WriteLine("Waiting for incoming connections... ");
 
@@ -24,7 +50,7 @@ namespace Messenger_Server
                 {
                     TcpClient client = server.AcceptTcpClient();
                     Console.WriteLine("New connection!");
-                    ThreadPool.QueueUserWorkItem(Server.DoClientWork, client);
+                    ThreadPool.QueueUserWorkItem(DoClientWork, client);
                 }
             }
             catch (SocketException e)
@@ -41,33 +67,16 @@ namespace Messenger_Server
             Console.Read();
         }
 
-        public static void DoClientWork(object obj)
+        public void DoClientWork(object obj)
         {
-            TcpClient client = obj as TcpClient;
-            StreamReader reader = new StreamReader(client.GetStream());
-            StreamWriter writer = new StreamWriter(client.GetStream());
-
-            while (true)
+            //construct new client
+            Client client = new Client(obj as TcpClient);
+            lock (clientsLocker)
             {
-                try
-                {
-                    string msg;
-                    while ((msg = reader.ReadLine()) != null)
-                    {
-                        Console.WriteLine("Received: " + msg);
-
-                        string response = "Hello back!";
-                        Console.WriteLine("Sending response: " + response);
-                        writer.WriteLine(response);
-                        writer.Flush();
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    break;
-                }
+                this.clients.Add(client);
             }
+            //call the read data loop.
+            client.ReadData();
         }
     }
 }
