@@ -10,13 +10,13 @@ namespace Messenger_Server
 {
     public class Client
     {
-        private TcpClient client;
-        private StreamReader reader;
-        private StreamWriter writer;
+        //private TcpClient client;
+        private readonly StreamReader reader;
+        private readonly StreamWriter writer;
 
         public Client(TcpClient client)
         {
-            this.client = client;
+            //this.client = client;
             this.reader = new StreamReader(client.GetStream());
             this.writer = new StreamWriter(client.GetStream());
         }
@@ -43,9 +43,9 @@ namespace Messenger_Server
             }
         }
 
-        public void SendData(String data)
+        public void SendData(Message message)
         {
-            writer.WriteLine(data);
+            writer.WriteLine(message.Payload);
             writer.Flush();
         }
     }

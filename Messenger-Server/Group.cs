@@ -6,7 +6,47 @@ using System.Threading.Tasks;
 
 namespace Messenger_Server
 {
-    class Group
+    public class Group
     {
+        private List<Client> clients;
+        private Object clientsLock = new Object();
+        public String Name
+        {
+            get; set;
+        }
+        public int GroupID { get; set; }
+
+        public Group(String name)
+        {
+            this.Name = name;
+        }
+
+        public void AddClient(Client client)
+        {
+            lock (clientsLock)
+            {
+                this.clients.Add(client);
+            }
+        }
+
+        public void RemoveClient(Client client)
+        {
+            lock (clientsLock)
+            {
+                this.clients.Remove(client);
+            }
+        }
+
+        public void SendMessageToClients(Message message)
+        {
+            foreach (Client client in this.clients)
+            {
+                if (client != message.Sender)
+                {
+                    Task.Run(() => client.SendData(message));
+                }
+                
+            }
+        }
     }
 }

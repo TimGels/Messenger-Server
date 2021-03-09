@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -13,13 +14,13 @@ namespace Messenger_Server
         private List<Client> clients;
         private List<Group> groups;
         private object clientsLocker = new object();
-        private object groupsLocker = new object();
         private static readonly Lazy<Server> lazy = new Lazy<Server>(() => new Server());
+        ReaderWriterLockSlim groupLocker = new ReaderWriterLockSlim();
+
 
         public static void Main(string[] args)
         {
-            Server server = Server.Instance;
-            server.StartListening();
+            Server.Instance.StartListening();
         }
 
         public static Server Instance
@@ -61,6 +62,20 @@ namespace Messenger_Server
 
             Console.WriteLine("\nHit enter to continue...");
             Console.Read();
+        }
+
+        public Group GetGroup(int Id)
+        {
+            groupLocker.EnterReadLock();
+
+            try
+            {
+                return groups.Where(group => group.GroupID == Id).FirstOrDefault();
+            }
+            finally
+            {
+                groupLocker.ExitReadLock();
+            }
         }
 
         public void DoClientWork(object obj)
