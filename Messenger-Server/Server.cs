@@ -1,11 +1,8 @@
-﻿using MessengerServer;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using UWP_Messenger_Server;
 
 namespace Messenger_Server
 {
@@ -23,7 +20,6 @@ namespace Messenger_Server
         {
             Server server = Server.Instance;
             server.StartListening();
-
         }
 
         public static Server Instance
