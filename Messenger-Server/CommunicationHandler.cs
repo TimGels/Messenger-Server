@@ -18,13 +18,35 @@ namespace Messenger_Server
             return JsonSerializer.Deserialize<JsonMessage>(jsonString, deserializerOptions);
         }
 
-        public static void HandleMessage(Client client, String jsonString)
+        /// <summary>
+        /// This method is called by the ReadData method in Client.
+        /// It handles all incoming messages from clients.
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="jsonString"></param>
+        public static void HandleMessage(Message message)
         {
-            JsonMessage jsonMessageObject = Parse(jsonString);
-            if (jsonMessageObject.MessageType.Equals("groupMessage"))
+            
+            if (message.MessageType.Equals("chatMessage"))
             {
-                //Server.Instance.
+                
+                Server.Instance.GetGroup(message.GroupID).SendMessageToClients(message);
             }
+            else if (message.MessageType.Equals("registerGroup"))
+            {
+                int groupId = Server.Instance.CreateGroup(message.PayloadData);
+                Message m = new Message()
+                {
+                    GroupID = groupId,
+                    MessageType = "registerGroupResponse"
+                };
+                message.Sender.SendData(m);
+            }
+        }
+
+        public static string SerializeMessage(Message message)
+        {
+            return JsonSerializer.Serialize(message.jsonMessage);
         }
     }
 }

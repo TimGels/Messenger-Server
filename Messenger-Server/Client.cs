@@ -27,12 +27,11 @@ namespace Messenger_Server
             {
                 try
                 {
-                    string msg;
-                    while ((msg = reader.ReadLine()) != null)
+                    string data;
+                    while ((data = reader.ReadLine()) != null)
                     {
-                        Console.WriteLine("Received: " + msg);
-                        //here comes a call to the communication handler
-
+                        Console.WriteLine("Received: " + data);
+                        Task.Run(() => CommunicationHandler.HandleMessage(new Message(this, data)));
                     }
                 }
                 catch (Exception e)
@@ -45,7 +44,7 @@ namespace Messenger_Server
 
         public void SendData(Message message)
         {
-            writer.WriteLine(message.Payload);
+            writer.WriteLine(Message.SerializeMessage(message));
             writer.Flush();
         }
     }

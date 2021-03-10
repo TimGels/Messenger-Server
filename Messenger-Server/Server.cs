@@ -78,6 +78,21 @@ namespace Messenger_Server
             }
         }
 
+        public int CreateGroup(String groupName)
+        {
+            groupLocker.EnterWriteLock();
+            try
+            {
+                Group g = new Group(groupName, this.groups.Count);
+                this.groups.Add(g);
+                return g.GroupID;
+            }
+            finally
+            {
+                groupLocker.ExitWriteLock();
+            }
+        }
+
         public void DoClientWork(object obj)
         {
             //construct new client

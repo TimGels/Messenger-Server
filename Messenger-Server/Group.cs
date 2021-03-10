@@ -10,15 +10,13 @@ namespace Messenger_Server
     {
         private List<Client> clients;
         private Object clientsLock = new Object();
-        public String Name
-        {
-            get; set;
-        }
+        public String Name { get; set; }
         public int GroupID { get; set; }
 
-        public Group(String name)
+        public Group(String name, int id)
         {
             this.Name = name;
+            this.GroupID = id;
         }
 
         public void AddClient(Client client)
