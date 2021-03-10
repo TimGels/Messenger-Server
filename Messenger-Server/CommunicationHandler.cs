@@ -26,10 +26,9 @@ namespace Messenger_Server
         /// <param name="jsonString"></param>
         public static void HandleMessage(Message message)
         {
-            
+
             if (message.MessageType.Equals("chatMessage"))
             {
-                
                 Server.Instance.GetGroup(message.GroupID).SendMessageToClients(message);
             }
             else if (message.MessageType.Equals("registerGroup"))
@@ -42,11 +41,6 @@ namespace Messenger_Server
                 };
                 message.Sender.SendData(m);
             }
-        }
-
-        public static string SerializeMessage(Message message)
-        {
-            return JsonSerializer.Serialize(message.jsonMessage);
         }
     }
 }
