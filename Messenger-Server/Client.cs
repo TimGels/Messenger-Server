@@ -10,15 +10,11 @@ namespace Messenger_Server
 {
     public class Client
     {
-        //private TcpClient client;
-        private readonly StreamReader reader;
-        private readonly StreamWriter writer;
+        private readonly TcpClient client;
 
         public Client(TcpClient client)
         {
-            //this.client = client;
-            this.reader = new StreamReader(client.GetStream());
-            this.writer = new StreamWriter(client.GetStream());
+            this.client = client;
         }
 
         public void ReadData()
@@ -27,10 +23,11 @@ namespace Messenger_Server
             {
                 try
                 {
-                    string data;
-                    while ((data = reader.ReadLine()) != null)
+                    if (client.GetStream().DataAvailable)
                     {
-                        Console.WriteLine("Received: " + data);
+                        Byte[] buffer = new Byte[client.Available];
+                        client.GetStream().Read(buffer, 0, buffer.Length);
+                        string data = Encoding.ASCII.GetString(buffer);
                         Task.Run(() => CommunicationHandler.HandleMessage(new Message(this, data)));
                     }
                 }
@@ -44,8 +41,9 @@ namespace Messenger_Server
 
         public void SendData(Message message)
         {
-            writer.WriteLine(Message.SerializeMessage(message));
-            writer.Flush();
+            string data = Message.SerializeMessage(message);
+            Byte[] buffer = Encoding.ASCII.GetBytes(data);
+            client.GetStream().Write(buffer, 0, buffer.Length);
         }
     }
 }
