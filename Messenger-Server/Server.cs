@@ -9,20 +9,39 @@ namespace Messenger_Server
 {
     public sealed class Server
     {
-        private int port = 5000;
-        private TcpListener server;
-        private List<Client> clients;
-        private List<Group> groups;
-        private object clientsLocker = new object();
-        private static readonly Lazy<Server> lazy = new Lazy<Server>(() => new Server());
-        ReaderWriterLockSlim groupLocker = new ReaderWriterLockSlim();
+        /// <summary>
+        /// Port number to listen on.
+        /// </summary>
+        private readonly int port = 5000; //TODO: make configurable?
 
+        /// <summary>
+        /// The listener which listens for new connections
+        /// </summary>
+        private TcpListener server;
+
+        /// <summary>
+        /// All registered groups.
+        /// </summary>
+        private readonly List<Group> groups;
+
+        /// <summary>
+        /// The read-write lock for the grouplist.
+        /// </summary>
+        private readonly ReaderWriterLockSlim groupLocker = new ReaderWriterLockSlim();
+
+        /// <summary>
+        /// Hold the lazy-initialized server instance.
+        /// </summary>
+        private static readonly Lazy<Server> lazy = new Lazy<Server>(() => new Server());
 
         public static void Main(string[] args)
         {
             Server.Instance.StartListening();
         }
 
+        /// <summary>
+        /// Server singleton instance.
+        /// </summary>
         public static Server Instance
         {
             get { return lazy.Value; }
@@ -30,14 +49,19 @@ namespace Messenger_Server
 
         private Server()
         {
-            this.clients = new List<Client>();
             this.groups = new List<Group>();
         }
 
+        /// <summary>
+        /// Continuously listen for incoming client connections. Upon a new
+        /// connection, hand the associated client to a dedicated listener
+        /// thread on the threadpool.
+        /// </summary>
         public void StartListening()
         {
             try
             {
+                // Listen on both loopback and normal network adapters.
                 server = new TcpListener(IPAddress.Any, port);
                 server.Start();
                 Console.WriteLine("Waiting for incoming connections... ");
@@ -64,6 +88,11 @@ namespace Messenger_Server
             Console.Read();
         }
 
+        /// <summary>
+        /// Retrieve a group by its GroupID.
+        /// </summary>
+        /// <param name="Id">The GroupID</param>
+        /// <returns>The group with the associated ID.</returns>
         public Group GetGroup(int Id)
         {
             groupLocker.EnterReadLock();
@@ -78,14 +107,21 @@ namespace Messenger_Server
             }
         }
 
-        public int CreateGroup(String groupName)
+        /// <summary>
+        /// Create a new group with the specified name.
+        /// TODO: Make GroupID unique.
+        /// </summary>
+        /// <param name="groupName">The requested name of the group.</param>
+        /// <returns>The group that was added.</returns>
+        public Group CreateGroup(string groupName)
         {
+            // Lock here since we need the group count for the GroupID.
             groupLocker.EnterWriteLock();
             try
             {
                 Group g = new Group(groupName, this.groups.Count);
                 this.groups.Add(g);
-                return g.GroupID;
+                return g;
             }
             finally
             {
@@ -93,15 +129,14 @@ namespace Messenger_Server
             }
         }
 
+        /// <summary>
+        /// This method is executed on the threadpool and calls the clients' ReadData()
+        /// method which keeps listening for new messages from the client.
+        /// </summary>
+        /// <param name="obj">TcpClient object which is passed as a generic object.</param>
         public void DoClientWork(object obj)
         {
-            //construct new client
             Client client = new Client(obj as TcpClient);
-            lock (clientsLocker)
-            {
-                this.clients.Add(client);
-            }
-            //call the read data loop.
             client.ReadData();
         }
     }

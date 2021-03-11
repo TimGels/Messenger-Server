@@ -1,42 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-
-namespace Messenger_Server
+﻿namespace Messenger_Server
 {
     public class CommunicationHandler
     {
-        private static JsonMessage Parse(String jsonString)
-        {
-            JsonSerializerOptions deserializerOptions = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-            return JsonSerializer.Deserialize<JsonMessage>(jsonString, deserializerOptions);
-        }
-
         /// <summary>
         /// This method is called by the ReadData method in Client.
         /// It handles all incoming messages from clients.
         /// </summary>
-        /// <param name="client"></param>
-        /// <param name="jsonString"></param>
+        /// <param name="message">The incoming message.</param>
         public static void HandleMessage(Message message)
         {
-
             if (message.MessageType.Equals("chatMessage"))
             {
+                // Relay the chatMessage to all other clients in the group.
                 Server.Instance.GetGroup(message.GroupID).SendMessageToClients(message);
             }
             else if (message.MessageType.Equals("registerGroup"))
             {
-                int groupId = Server.Instance.CreateGroup(message.PayloadData);
+                // Create a new group, add the sender as initial group member
+                // and return the ID of the new group.
+                Group newGroup = Server.Instance.CreateGroup(message.PayloadData);
+                newGroup.AddClient(message.Sender);
                 Message m = new Message()
                 {
-                    GroupID = groupId,
+                    GroupID = newGroup.GroupID,
                     MessageType = "registerGroupResponse"
                 };
                 message.Sender.SendData(m);
