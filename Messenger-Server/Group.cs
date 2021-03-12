@@ -1,50 +1,81 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Messenger_Server
 {
     public class Group
     {
-        private List<Client> clients;
-        private Object clientsLock = new Object();
-        public String Name { get; set; }
+        /// <summary>
+        /// List with all clients currently registered in the group.
+        /// </summary>
+        private readonly List<Client> clients;
+
+        /// <summary>
+        /// Lock for reading from and writing to the clients list.
+        /// </summary>
+        private readonly ReaderWriterLockSlim clientsLock = new ReaderWriterLockSlim();
+
+        /// <summary>
+        /// The name of the group.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// The ID of the group.
+        /// </summary>
         public int GroupID { get; set; }
 
-        public Group(String name, int id)
+        public Group(string name, int id)
         {
             this.Name = name;
             this.GroupID = id;
+            this.clients = new List<Client>();
         }
 
+        /// <summary>
+        /// Add a new client to the group. This method is thread-safe.
+        /// </summary>
+        /// <param name="client">The client to add.</param>
         public void AddClient(Client client)
         {
-            lock (clientsLock)
-            {
-                this.clients.Add(client);
-            }
+            clientsLock.EnterWriteLock();
+            this.clients.Add(client);
+            clientsLock.ExitWriteLock();
         }
 
+        /// <summary>
+        /// Remove a client from the group. This method is thread-safe.
+        /// </summary>
+        /// <param name="client">The client to remove.</param>
         public void RemoveClient(Client client)
         {
-            lock (clientsLock)
-            {
-                this.clients.Remove(client);
-            }
+            clientsLock.EnterWriteLock();
+            this.clients.Remove(client);
+            clientsLock.ExitWriteLock();
         }
 
+        /// <summary>
+        /// Send the specified message to all clients in this group.
+        /// </summary>
+        /// <param name="message"></param>
         public void SendMessageToClients(Message message)
         {
+            // Lock the client list for reading, start sending messages and wait
+            // for all tasks to complete before exiting the read lock.
+            List<Task> sendDataTasks = new List<Task>();
+            clientsLock.EnterReadLock();
             foreach (Client client in this.clients)
             {
+                // Don't return the message to the original sender.
                 if (client != message.Sender)
                 {
-                    Task.Run(() => client.SendData(message));
+                    sendDataTasks.Add(Task.Run(() => client.SendData(message)));
                 }
-                
             }
+            Task.WaitAll(sendDataTasks.ToArray());
+            clientsLock.ExitReadLock();
         }
     }
 }

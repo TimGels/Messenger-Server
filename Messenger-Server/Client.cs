@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Messenger_Server
@@ -17,6 +14,10 @@ namespace Messenger_Server
             this.client = client;
         }
 
+        /// <summary>
+        /// Continuously try to read data from the stream. Any incoming message is
+        /// handed to a seperate Task, which is responsible for handling the message.
+        /// </summary>
         public void ReadData()
         {
             while (true)
@@ -39,6 +40,10 @@ namespace Messenger_Server
             }
         }
 
+        /// <summary>
+        /// Send a message to this client.
+        /// </summary>
+        /// <param name="message">The message to send.</param>
         public void SendData(Message message)
         {
             string data = Message.SerializeMessage(message);

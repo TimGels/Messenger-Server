@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 
 namespace Messenger_Server
 {
@@ -11,7 +6,7 @@ namespace Messenger_Server
     {
         //TODO dateTime.
         public Client Sender { get; set; }
-        public String MessageType
+        public string MessageType
         {
             get
             {
@@ -52,9 +47,9 @@ namespace Messenger_Server
             }
         }
 
-        private JsonMessage jsonMessage;
+        private readonly JsonMessage jsonMessage;
 
-        public Message(Client s, String json)
+        public Message(Client s, string json)
         {
             this.Sender = s;
             this.jsonMessage = Parse(json);
@@ -65,7 +60,12 @@ namespace Messenger_Server
             this.jsonMessage = new JsonMessage();
         }
 
-        private static JsonMessage Parse(String jsonString)
+        /// <summary>
+        /// Convert a string with JSON data to a JsonMessage object.
+        /// </summary>
+        /// <param name="jsonString">The string to convert.</param>
+        /// <returns>The JsonMessage object.</returns>
+        private static JsonMessage Parse(string jsonString)
         {
             JsonSerializerOptions deserializerOptions = new JsonSerializerOptions
             {
@@ -73,6 +73,12 @@ namespace Messenger_Server
             };
             return JsonSerializer.Deserialize<JsonMessage>(jsonString, deserializerOptions);
         }
+
+        /// <summary>
+        /// Serialize a message to a JSON string representation.
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns>The JSON string.</returns>
         public static string SerializeMessage(Message m)
         {
             return JsonSerializer.Serialize(m.jsonMessage);
@@ -83,11 +89,6 @@ namespace Messenger_Server
         public Message(Group g)
         {
 
-        }
-
-        public void addPayload(String data)
-        {
-            this.jsonMessage.Payload.Data = data;
         }
     }
 }
