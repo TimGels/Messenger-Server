@@ -18,19 +18,19 @@ namespace Messenger_Server
         private readonly ReaderWriterLockSlim clientsLock = new ReaderWriterLockSlim();
 
         /// <summary>
+        /// The unique ID of the group.
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
         /// The name of the group.
         /// </summary>
         public string Name { get; set; }
 
-        /// <summary>
-        /// The ID of the group.
-        /// </summary>
-        public int GroupID { get; set; }
-
         public Group(string name, int id)
         {
             this.Name = name;
-            this.GroupID = id;
+            this.Id = id;
             this.clients = new List<Client>();
         }
 
@@ -69,7 +69,7 @@ namespace Messenger_Server
             foreach (Client client in this.clients)
             {
                 // Don't return the message to the original sender.
-                if (client != message.Sender)
+                if (client.Id != message.ClientId)
                 {
                     sendDataTasks.Add(Task.Run(() => client.SendData(message)));
                 }

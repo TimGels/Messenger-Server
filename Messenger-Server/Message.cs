@@ -1,11 +1,19 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 
 namespace Messenger_Server
 {
+    /// <summary>
+    /// Abstraction layer on top of the JSON message representation. Responsible for
+    /// converting from and to JSON.
+    /// </summary>
     public class Message
     {
-        //TODO dateTime.
-        public Client Sender { get; set; }
+        /// <summary>
+        /// Internal JSON message representation of this message.
+        /// </summary>
+        internal readonly JsonMessage jsonMessage;
+
         public string MessageType
         {
             get
@@ -19,42 +27,87 @@ namespace Messenger_Server
         }
         public int GroupID
         {
-            get {
+            get
+            {
                 return jsonMessage.GroupID;
             }
-            set {
+            set
+            {
                 jsonMessage.GroupID = value;
             }
         }
 
         public string PayloadData
         {
-            get {
+            get
+            {
                 return jsonMessage.Payload.Data;
             }
-            set {
+            set
+            {
                 jsonMessage.Payload.Data = value;
             }
         }
 
         public string PayloadType
         {
-            get {
+            get
+            {
                 return jsonMessage.Payload.Type;
             }
-            set {
+            set
+            {
                 jsonMessage.Payload.Type = value;
             }
         }
-
-        private readonly JsonMessage jsonMessage;
-
-        public Message(Client s, string json)
+        public int ClientId
         {
-            this.Sender = s;
+            get
+            {
+                return this.jsonMessage.Client.Id;
+            }
+            set
+            {
+                this.jsonMessage.Client.Id = value;
+            }
+        }
+
+        public string ClientName
+        {
+            get
+            {
+                return this.jsonMessage.Client.Name;
+            }
+            set
+            {
+                this.jsonMessage.Client.Name = value;
+            }
+        }
+
+        public DateTime DateTime
+        {
+            get
+            {
+                return this.jsonMessage.DateTime;
+            }
+            set
+            {
+                this.jsonMessage.DateTime = value;
+            }
+        }
+
+        /// <summary>
+        /// Construct a message based on a JSON string representation.
+        /// </summary>
+        /// <param name="json">The JSON string.</param>
+        public Message(string json)
+        {
             this.jsonMessage = Parse(json);
         }
 
+        /// <summary>
+        /// Construct a blank message.
+        /// </summary>
         public Message()
         {
             this.jsonMessage = new JsonMessage();
@@ -77,18 +130,11 @@ namespace Messenger_Server
         /// <summary>
         /// Serialize a message to a JSON string representation.
         /// </summary>
-        /// <param name="m"></param>
+        /// <param name="m">The message to serialize.</param>
         /// <returns>The JSON string.</returns>
         public static string SerializeMessage(Message m)
         {
             return JsonSerializer.Serialize(m.jsonMessage);
-        }
-
-        //TODO: on the client, a new message has to be constructed. The idea is, that this message class, is the abstractionlayer of JsonMessage.
-        // in this way, al other client doesnt have to know about the usage of jsonMessage.
-        public Message(Group g)
-        {
-
         }
     }
 }
