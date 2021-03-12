@@ -9,10 +9,14 @@ namespace Messenger_Server
     public class Client
     {
         private readonly TcpClient client;
+        public int Id { get; set; }
+        public string Name { get; set; }
 
-        public Client(TcpClient client)
+        public Client(TcpClient client, string name, int id)
         {
             this.client = client;
+            this.Id = id;
+            this.Name = name;
         }
 
         /// <summary>
@@ -30,7 +34,12 @@ namespace Messenger_Server
                         Byte[] buffer = new Byte[client.Available];
                         client.GetStream().Read(buffer, 0, buffer.Length);
                         string data = Encoding.ASCII.GetString(buffer);
-                        Task.Run(() => CommunicationHandler.HandleMessage(new Message(this, data)));
+                        Message message = new Message(data)
+                        {
+                            ClientId = this.Id,
+                            ClientName = this.Name
+                        };
+                        Task.Run(() => CommunicationHandler.HandleMessage(this, message));
                     }
                 }
                 catch (Exception e)

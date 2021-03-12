@@ -1,11 +1,13 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 
 namespace Messenger_Server
 {
     public class Message
     {
+
+        private readonly JsonMessage jsonMessage;
         //TODO dateTime.
-        public Client Sender { get; set; }
         public string MessageType
         {
             get
@@ -19,39 +21,77 @@ namespace Messenger_Server
         }
         public int GroupID
         {
-            get {
+            get
+            {
                 return jsonMessage.GroupID;
             }
-            set {
+            set
+            {
                 jsonMessage.GroupID = value;
             }
         }
 
         public string PayloadData
         {
-            get {
+            get
+            {
                 return jsonMessage.Payload.Data;
             }
-            set {
+            set
+            {
                 jsonMessage.Payload.Data = value;
             }
         }
 
         public string PayloadType
         {
-            get {
+            get
+            {
                 return jsonMessage.Payload.Type;
             }
-            set {
+            set
+            {
                 jsonMessage.Payload.Type = value;
             }
         }
-
-        private readonly JsonMessage jsonMessage;
-
-        public Message(Client s, string json)
+        public int ClientId
         {
-            this.Sender = s;
+            get
+            {
+                return this.jsonMessage.Client.Id;
+            }
+            set
+            {
+                this.jsonMessage.Client.Id = value;
+            }
+        }
+
+        public string ClientName
+        {
+            get
+            {
+                return this.jsonMessage.Client.Name;
+            }
+            set
+            {
+                this.jsonMessage.Client.Name = value;
+            }
+        }
+
+        public DateTime DateTime
+        {
+            get
+            {
+                return this.jsonMessage.DateTime;
+            }
+            set
+            {
+                this.jsonMessage.DateTime = value;
+            }
+        }
+
+        public Message(string json)
+        {
             this.jsonMessage = Parse(json);
         }
 
@@ -86,9 +126,9 @@ namespace Messenger_Server
 
         //TODO: on the client, a new message has to be constructed. The idea is, that this message class, is the abstractionlayer of JsonMessage.
         // in this way, al other client doesnt have to know about the usage of jsonMessage.
-        public Message(Group g)
-        {
+        //public Message(Group g)
+        //{
 
-        }
+        //}
     }
 }

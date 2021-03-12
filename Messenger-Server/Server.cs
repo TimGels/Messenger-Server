@@ -136,7 +136,7 @@ namespace Messenger_Server
         /// <param name="obj">TcpClient object which is passed as a generic object.</param>
         public void DoClientWork(object obj)
         {
-            Client client = new Client(obj as TcpClient);
+            Client client = new Client(obj as TcpClient, null, -1);
             client.ReadData();
         }
     }

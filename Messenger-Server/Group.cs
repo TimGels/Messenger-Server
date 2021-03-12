@@ -69,7 +69,7 @@ namespace Messenger_Server
             foreach (Client client in this.clients)
             {
                 // Don't return the message to the original sender.
-                if (client != message.Sender)
+                if (client.Id != message.ClientId)
                 {
                     sendDataTasks.Add(Task.Run(() => client.SendData(message)));
                 }

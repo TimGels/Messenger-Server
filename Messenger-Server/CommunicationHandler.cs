@@ -7,7 +7,8 @@
         /// It handles all incoming messages from clients.
         /// </summary>
         /// <param name="message">The incoming message.</param>
-        public static void HandleMessage(Message message)
+        /// <param name="client">The client where the message came from.</param>
+        public static void HandleMessage(Client client, Message message)
         {
             if (message.MessageType.Equals("chatMessage"))
             {
@@ -19,13 +20,13 @@
                 // Create a new group, add the sender as initial group member
                 // and return the ID of the new group.
                 Group newGroup = Server.Instance.CreateGroup(message.PayloadData);
-                newGroup.AddClient(message.Sender);
-                Message m = new Message()
+                newGroup.AddClient(client);
+                Message response = new Message()
                 {
                     GroupID = newGroup.GroupID,
                     MessageType = "registerGroupResponse"
                 };
-                message.Sender.SendData(m);
+                client.SendData(response);
             }
         }
     }
