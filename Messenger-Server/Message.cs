@@ -3,10 +3,17 @@ using System.Text.Json;
 
 namespace Messenger_Server
 {
+    /// <summary>
+    /// Abstraction layer on top of the JSON message representation. Responsible for
+    /// converting from and to JSON.
+    /// </summary>
     public class Message
     {
+        /// <summary>
+        /// Internal JSON message representation of this message.
+        /// </summary>
+        internal readonly JsonMessage jsonMessage;
 
-        private readonly JsonMessage jsonMessage;
         public string MessageType
         {
             get
@@ -89,11 +96,18 @@ namespace Messenger_Server
             }
         }
 
+        /// <summary>
+        /// Construct a message based on a JSON string representation.
+        /// </summary>
+        /// <param name="json">The JSON string.</param>
         public Message(string json)
         {
             this.jsonMessage = Parse(json);
         }
 
+        /// <summary>
+        /// Construct a blank message.
+        /// </summary>
         public Message()
         {
             this.jsonMessage = new JsonMessage();
@@ -116,7 +130,7 @@ namespace Messenger_Server
         /// <summary>
         /// Serialize a message to a JSON string representation.
         /// </summary>
-        /// <param name="m"></param>
+        /// <param name="m">The message to serialize.</param>
         /// <returns>The JSON string.</returns>
         public static string SerializeMessage(Message m)
         {

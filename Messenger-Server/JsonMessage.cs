@@ -2,7 +2,7 @@
 
 namespace Messenger_Server
 {
-    public class JsonMessage
+    internal class JsonMessage
     {
         public int GroupID { get; set; }
         public string MessageType { get; set; }

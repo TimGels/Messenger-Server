@@ -2,7 +2,7 @@
 
 namespace Messenger_Server
 {
-    public class JsonMessagePayload
+    internal class JsonMessagePayload
     {
         /// <summary>
         /// mime-type

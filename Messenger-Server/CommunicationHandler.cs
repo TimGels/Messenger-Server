@@ -23,7 +23,7 @@
                 newGroup.AddClient(client);
                 Message response = new Message()
                 {
-                    GroupID = newGroup.GroupID,
+                    GroupID = newGroup.Id,
                     MessageType = "registerGroupResponse"
                 };
                 client.SendData(response);
