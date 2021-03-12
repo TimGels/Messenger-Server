@@ -7,7 +7,6 @@ namespace Messenger_Server
     {
 
         private readonly JsonMessage jsonMessage;
-        //TODO dateTime.
         public string MessageType
         {
             get
@@ -123,12 +122,5 @@ namespace Messenger_Server
         {
             return JsonSerializer.Serialize(m.jsonMessage);
         }
-
-        //TODO: on the client, a new message has to be constructed. The idea is, that this message class, is the abstractionlayer of JsonMessage.
-        // in this way, al other client doesnt have to know about the usage of jsonMessage.
-        //public Message(Group g)
-        //{
-
-        //}
     }
 }
