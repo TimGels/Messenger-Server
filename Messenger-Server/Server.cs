@@ -99,7 +99,7 @@ namespace Messenger_Server
 
             try
             {
-                return groups.Where(group => group.GroupID == Id).FirstOrDefault();
+                return groups.Where(group => group.Id == Id).FirstOrDefault();
             }
             finally
             {
@@ -119,9 +119,9 @@ namespace Messenger_Server
             groupLocker.EnterWriteLock();
             try
             {
-                Group g = new Group(groupName, this.groups.Count);
-                this.groups.Add(g);
-                return g;
+                Group group = new Group(groupName, this.groups.Count);
+                this.groups.Add(group);
+                return group;
             }
             finally
             {
@@ -136,7 +136,7 @@ namespace Messenger_Server
         /// <param name="obj">TcpClient object which is passed as a generic object.</param>
         public void DoClientWork(object obj)
         {
-            Client client = new Client(obj as TcpClient, null, -1);
+            Client client = new Client(obj as TcpClient, -1, null);
             client.ReadData();
         }
     }

@@ -57,6 +57,7 @@ namespace Messenger_Server
 
         /// <summary>
         /// Send a message to this client.
+        /// TODO: check if stream/tcpConnection is writable before writing.
         /// </summary>
         /// <param name="message">The message to send.</param>
         public void SendData(Message message)
