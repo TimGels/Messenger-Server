@@ -132,7 +132,7 @@ namespace Messenger_Server
         /// </summary>
         /// <param name="m">The message to serialize.</param>
         /// <returns>The JSON string.</returns>
-        public static string SerializeMessage(Message m)
+        public static string SerializeMessage(Message message)
         {
             return JsonSerializer.Serialize(m.jsonMessage);
         }
