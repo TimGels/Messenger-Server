@@ -130,7 +130,7 @@ namespace Messenger_Server
         /// <summary>
         /// Serialize a message to a JSON string representation.
         /// </summary>
-        /// <param name="m">The message to serialize.</param>
+        /// <param name="message">The message to serialize.</param>
         /// <returns>The JSON string.</returns>
         public static string SerializeMessage(Message message)
         {
