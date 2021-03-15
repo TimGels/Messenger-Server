@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Messenger_Server
+namespace UWP_Messenger_Client.ViewModels
 {
-    class Group
+    public class MainPageViewModel
     {
     }
 }
