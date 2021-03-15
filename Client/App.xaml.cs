@@ -1,12 +1,12 @@
 ﻿using System;
-using UWP_Messenger_Client.Views;
+using Messenger_Client.Views;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-namespace UWP_Messenger_Client
+namespace Messenger_Client
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.

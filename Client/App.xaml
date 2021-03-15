@@ -1,7 +1,7 @@
 ﻿<Application
-    x:Class="UWP_Messenger_Client.App"
+    x:Class="Messenger_Client.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UWP_Messenger_Client">
+    xmlns:local="using:Messenger_Client">
 
 </Application>
