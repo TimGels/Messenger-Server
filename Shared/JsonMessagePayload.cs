@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Messenger_Server
+namespace Shared
 {
     internal class JsonMessagePayload
     {

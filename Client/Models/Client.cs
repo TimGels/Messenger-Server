@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using UWP_Messenger_Client.Models;
+using Messenger_Client.Models;
 
-namespace UWP_Messenger_Client
+namespace Messenger_Client
 {
     public sealed class Client
     {

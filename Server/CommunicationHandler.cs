@@ -1,4 +1,6 @@
-﻿namespace Messenger_Server
+﻿using Shared;
+
+namespace Messenger_Server
 {
     public class CommunicationHandler
     {

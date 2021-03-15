@@ -2,10 +2,10 @@
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
-using UWP_Messenger_Client.Models;
+using Messenger_Client.Models;
 using Windows.UI.Xaml.Controls;
 
-namespace UWP_Messenger_Client.Views
+namespace Messenger_Client.Views
 {
     public sealed partial class MainPage : Page
     {

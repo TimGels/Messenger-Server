@@ -1,4 +1,4 @@
-﻿using Messenger_Server;
+﻿using Shared;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace UWP_Messenger_Client.Models
+namespace Messenger_Client.Models
 {
     public class Connection
     {
