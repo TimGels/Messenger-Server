@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Drawing;
+using System.IO;
 using System.Text.Json;
-
 namespace Shared
 {
     /// <summary>
@@ -34,6 +35,20 @@ namespace Shared
             set
             {
                 jsonMessage.GroupID = value;
+            }
+        }
+
+        public Image Image
+        {
+            get
+            {
+                //TODO: check if data is from the type image?
+                return Base64StringToImage(this.jsonMessage.Payload.Data);
+            }
+            set
+            {
+                //TODO: also set the Payload.Type property?
+                this.jsonMessage.Payload.Data = ImageTobase64String(value);
             }
         }
 
@@ -135,6 +150,37 @@ namespace Shared
         public static string SerializeMessage(Message message)
         {
             return JsonSerializer.Serialize(message.jsonMessage);
+        }
+
+        /// <summary>
+        /// Function for converting an image to a base64 string.
+        /// </summary>
+        /// <param name="image"></param>
+        /// <returns></returns>
+        private static string ImageTobase64String(Image image)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                image.Save(stream, image.RawFormat);
+                byte[] imageBytes = stream.ToArray();
+                string base64String = Convert.ToBase64String(imageBytes);
+
+                return base64String;
+            }
+        }
+
+        /// <summary>
+        /// function for converting a base64 string to an image object
+        /// </summary>
+        /// <param name="base64"></param>
+        /// <returns></returns>
+        private static Image Base64StringToImage(string base64)
+        {
+            using (MemoryStream stream = new MemoryStream(Convert.FromBase64String(base64)))
+            {
+                Image i = System.Drawing.Image.FromStream(stream);
+                return i;
+            }
         }
     }
 }
