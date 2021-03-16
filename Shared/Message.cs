@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Text.Json;
+
 namespace Shared
 {
     /// <summary>
@@ -170,7 +171,7 @@ namespace Shared
         }
 
         /// <summary>
-        /// function for converting a base64 string to an image object
+        /// Function for converting a base64 string to an image object.
         /// </summary>
         /// <param name="base64"></param>
         /// <returns></returns>
