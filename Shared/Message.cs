@@ -16,7 +16,7 @@ namespace Shared
         /// </summary>
         internal readonly JsonMessage jsonMessage;
 
-        public string MessageType
+        public MessageType MessageType
         {
             get
             {
@@ -183,5 +183,26 @@ namespace Shared
                 return i;
             }
         }
+    }
+
+    /// <summary>
+    /// The type of message indicates the intent of the sender.
+    /// </summary>
+    public enum MessageType
+    {
+        RegisterClient,
+        RegisterClientResponse,
+        SignInClient,
+        SignInClientResponse,
+        SignOutClient,
+        SignOutClientResponse,
+        RegisterGroup,
+        RegisterGroupResponse,
+        RequestGroups,
+        RequestGroupsResponse,
+        JoinGroup,
+        JoinGroupResponse,
+        LeaveGroup,
+        ChatMessage
     }
 }
