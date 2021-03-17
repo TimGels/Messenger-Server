@@ -12,6 +12,55 @@
         <viewModels:MainPageViewModel x:Name="ViewModel"/>
     </Page.DataContext>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
+        <Grid Background="Red"
+              Grid.Row="0">
+        </Grid>
+
+        <Grid Grid.Row="1"
+              Background="Beige">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0"
+                  Background="White">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="70"/>
+                </Grid.RowDefinitions>
+
+                <ListView x:Name="itemListView"
+                            Grid.Row="0"
+                            Margin="0,0,0,0"
+                            ItemsSource="{Binding MessageList}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Height="80" Margin="6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Width="110" Height="110">
+                                    <!--<Image Source="{Binding Image}" Stretch="UniformToFill"/>-->
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="10,0,0,0">
+                                    <TextBlock Text="{Binding UserName}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap"/>
+                                    <!--<TextBlock Text="{Binding Subtitle}" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap"/>
+                                    <TextBlock Text="{Binding Description}" Style="{StaticResource BodyTextStyle}" MaxHeight="60"/>-->
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+
+            <Grid Grid.Column="1">
+            </Grid>
+        </Grid>
     </Grid>
 </Page>

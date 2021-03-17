@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Threading;
 using Messenger_Client.Models;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 
 namespace Messenger_Client.Views
 {
@@ -19,13 +20,14 @@ namespace Messenger_Client.Views
         public MainPage()
         {
             this.InitializeComponent();
-            this.Client = Client.Instance;
+            //this.Client = Client.Instance;
 
-            //for testing -> create group and send every 3 seconds a message.
-            this.group = new Group("eerste Groep", 1);
+            ////for testing -> create group and send every 3 seconds a message.
+            //this.group = new Group("eerste Groep", 1);
 
-            Thread writerThread = new Thread(writerDoWork);
-            writerThread.Start();
+            //Thread writerThread = new Thread(writerDoWork);
+            //writerThread.Start();
+        
         }
 
         private void writerDoWork()
