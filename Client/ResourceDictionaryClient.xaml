@@ -5,7 +5,6 @@
     <Style TargetType="TextBlock" x:Key="LoginHeading">
         <Setter Property="Foreground" Value="Black"/>
         <Setter Property="TextAlignment" Value="Center"/>
-        <Setter Property="FontFamily" Value="Trebuchet MS"/>
         <Setter Property="FontSize" Value="40"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
@@ -16,6 +15,8 @@
         <Setter Property="Margin" Value="15"/>
         <Setter Property="Foreground" Value="#EEEEEE"/>
         <Setter Property="PlaceholderText" Value="Username"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="Padding" Value="10,12,6,6"/>
     </Style>
     
     <Style TargetType="PasswordBox" x:Key="LoginPassword">
@@ -24,6 +25,8 @@
         <Setter Property="Margin" Value="15"/>
         <Setter Property="Foreground" Value="#EEEEEE"/>
         <Setter Property="PlaceholderText" Value="Password"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="Padding" Value="10,12,6,6"/>
     </Style>
 
     <Style TargetType="Button" x:Key="LoginButton">
