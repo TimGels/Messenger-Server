@@ -5,7 +5,7 @@ namespace Shared
     internal class JsonMessage
     {
         public int GroupID { get; set; }
-        public string MessageType { get; set; }
+        public MessageType MessageType { get; set; }
         public JsonMessagePayload Payload { get; set; }
         public JsonMessageClient Client { get; set; }
         public DateTime DateTime { get; set; }

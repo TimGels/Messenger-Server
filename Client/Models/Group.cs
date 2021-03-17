@@ -54,7 +54,8 @@ namespace Messenger_Client.Models
                 ClientId = Client.Instance.Id,
                 ClientName = Client.Instance.ClientName,
                 PayloadData = payload,
-                PayloadType = "text"
+                PayloadType = "text",
+                MessageType = MessageType.ChatMessage
             };
             //call send method which actually sends this message to the server.
             Task.Run(()=> Client.Instance.Connection.SendMessage(message));

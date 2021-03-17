@@ -12,23 +12,24 @@ namespace Messenger_Server
         /// <param name="client">The client where the message came from.</param>
         public static void HandleMessage(Client client, Message message)
         {
-            if (message.MessageType.Equals("chatMessage"))
+            switch (message.MessageType)
             {
-                // Relay the chatMessage to all other clients in the group.
-                Server.Instance.GetGroup(message.GroupID).SendMessageToClients(message);
-            }
-            else if (message.MessageType.Equals("registerGroup"))
-            {
-                // Create a new group, add the sender as initial group member
-                // and return the ID of the new group.
-                Group newGroup = Server.Instance.CreateGroup(message.PayloadData);
-                newGroup.AddClient(client);
-                Message response = new Message()
-                {
-                    GroupID = newGroup.Id,
-                    MessageType = "registerGroupResponse"
-                };
-                client.SendData(response);
+                case MessageType.ChatMessage:
+                    // Relay the chatMessage to all other clients in the group.
+                    Server.Instance.GetGroup(message.GroupID).SendMessageToClients(message);
+                    break;
+                case MessageType.RegisterGroup:
+                    // Create a new group, add the sender as initial group member
+                    // and return the ID of the new group.
+                    Group newGroup = Server.Instance.CreateGroup(message.PayloadData);
+                    newGroup.AddClient(client);
+                    Message response = new Message()
+                    {
+                        GroupID = newGroup.Id,
+                        MessageType = MessageType.RegisterGroupResponse
+                    };
+                    client.SendData(response);
+                    break;
             }
         }
     }
