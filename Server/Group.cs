@@ -71,7 +71,10 @@ namespace Messenger_Server
                 // Don't return the message to the original sender.
                 if (client.Id != message.ClientId)
                 {
-                    sendDataTasks.Add(Task.Run(() => client.SendData(message)));
+                    sendDataTasks.Add(Task.Run(() =>
+                    {
+                        Server.Instance.GetConnection(client.Id).SendData(message);
+                    }));
                 }
             }
             Task.WaitAll(sendDataTasks.ToArray());
