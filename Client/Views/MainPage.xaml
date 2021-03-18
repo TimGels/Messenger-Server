@@ -35,10 +35,10 @@
                     <RowDefinition Height="70"/>
                 </Grid.RowDefinitions>
 
-                <ListView x:Name="itemListView"
+                <!--<ListView x:Name="itemListView"
                             Grid.Row="0"
                             Margin="0,0,0,0"
-                            ItemsSource="{Binding MessageList}">
+                            ItemsSource="{Binding GroupList}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid Height="80" Margin="6">
@@ -46,17 +46,17 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Width="110" Height="110">
-                                    <!--<Image Source="{Binding Image}" Stretch="UniformToFill"/>-->
+                                    --><!--<Image Source="{Binding Image}" Stretch="UniformToFill"/>--><!--
                                 </Border>
                                 <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="10,0,0,0">
-                                    <TextBlock Text="{Binding UserName}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap"/>
+                                    --><!--<TextBlock Text="{Binding Id}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap"/>-->
                                     <!--<TextBlock Text="{Binding Subtitle}" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap"/>
-                                    <TextBlock Text="{Binding Description}" Style="{StaticResource BodyTextStyle}" MaxHeight="60"/>-->
+                                    <TextBlock Text="{Binding Description}" Style="{StaticResource BodyTextStyle}" MaxHeight="60"/>--><!--
                                 </StackPanel>
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
-                </ListView>
+                </ListView>-->
             </Grid>
 
             <Grid Grid.Column="1">

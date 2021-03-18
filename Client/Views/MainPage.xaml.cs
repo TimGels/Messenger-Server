@@ -10,12 +10,12 @@ namespace Messenger_Client.Views
 {
     public sealed partial class MainPage : Page
     {
-        Client Client;
+        //Client Client;
 
         /// <summary>
         /// for testing purposes
         /// </summary>
-        Group group;
+        //Group group;
 
         public MainPage()
         {
@@ -30,14 +30,14 @@ namespace Messenger_Client.Views
         
         }
 
-        private void writerDoWork()
-        {
-            while (true)
-            {
-                group.SendMessage("Hello from UWP!");
-                Thread.Sleep(3000);
-            }
-        }
+        //private void writerDoWork()
+        //{
+        //    while (true)
+        //    {
+        //        group.SendMessage("Hello from UWP!");
+        //        Thread.Sleep(3000);
+        //    }
+        //}
 
     }
 }

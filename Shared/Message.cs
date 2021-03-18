@@ -175,7 +175,7 @@ namespace Shared
         /// </summary>
         /// <param name="base64"></param>
         /// <returns></returns>
-        private static Image Base64StringToImage(string base64)
+        public static Image Base64StringToImage(string base64)
         {
             using (MemoryStream stream = new MemoryStream(Convert.FromBase64String(base64)))
             {
