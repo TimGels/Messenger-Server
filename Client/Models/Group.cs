@@ -58,7 +58,7 @@ namespace Messenger_Client.Models
                 MessageType = MessageType.ChatMessage
             };
             //call send method which actually sends this message to the server.
-            Task.Run(()=> Client.Instance.Connection.SendMessage(message));
+            Task.Run(()=> Client.Instance.Connection.SendData(message));
 
         }
     }

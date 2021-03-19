@@ -1,22 +1,17 @@
 ﻿using Shared;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace Messenger_Client.Models
+namespace Messenger_Server
 {
     public class Connection : Shared.Connection
     {
-        public Connection(string serverAddress, int port)
-            : base(new TcpClient(serverAddress, port))
+        public Connection(TcpClient client)
+            : base(client)
         {
-            //start readerThread
-            new Thread(ReadData).Start();
+            
         }
 
         public override void ReadData()
@@ -30,7 +25,7 @@ namespace Messenger_Client.Models
                         Byte[] buffer = new Byte[client.Available];
                         client.GetStream().Read(buffer, 0, buffer.Length);
                         string data = Encoding.ASCII.GetString(buffer);
-                        Task.Run(() => CommunicationHandler.HandleMessage(new Message(data)));
+                        Task.Run(() => CommunicationHandler.HandleMessage(this, new Message(data)));
                     }
                 }
                 catch (Exception e)
