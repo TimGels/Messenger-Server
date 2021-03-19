@@ -30,7 +30,10 @@ namespace Messenger_Server
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    // Upon exception, most likely disconnect has occured,
+                    // so delete connection from dictionary.
+                    Console.WriteLine(e.GetType().FullName);
+                    Server.Instance.DeleteConnection(this);
                     break;
                 }
             }

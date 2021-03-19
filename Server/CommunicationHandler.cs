@@ -2,50 +2,122 @@
 
 namespace Messenger_Server
 {
-    public class CommunicationHandler
+    public static class CommunicationHandler
     {
         /// <summary>
         /// This method is called by the ReadData method in Client.
         /// It handles all incoming messages from clients.
         /// </summary>
+        /// <param name="connection">The connection from which the message was send.</param>
         /// <param name="message">The incoming message.</param>
-        /// <param name="client">The client where the message came from.</param>
         public static void HandleMessage(Connection connection, Message message)
         {
             switch (message.MessageType)
             {
                 case MessageType.RegisterClient:
-                    {
-                        // create client from message
-                        int retreivedid = 0;
-                        Client client = new Client(retreivedid, null);
-                        // add client in database / internal dictionary
-                        Server.Instance.AddConnection(retreivedid, connection);
-                    }
+                    HandleRegisterClient(connection, message);
                     break;
                 case MessageType.SignInClient:
-                    {
-                        // get client from message
-                        Server.Instance.AddConnection(message.ClientId, connection);
-                    }
+                    HandleSignInClient(connection, message);
+                    break;
+                case MessageType.SignOutClient:
+                    HandleSignOutClient(connection, message);
+                    break;
+                case MessageType.RegisterGroup:
+                    HandleRegisterGroup(connection, message);
+                    break;
+                case MessageType.RequestGroups:
+                    HandleRequestGroups(connection, message);
+                    break;
+                case MessageType.JoinGroup:
+                    HandleJoinGroup(connection, message);
+                    break;
+                case MessageType.LeaveGroup:
+                    HandleLeaveGroup(connection, message);
                     break;
                 case MessageType.ChatMessage:
                     // Relay the chatMessage to all other clients in the group.
                     Server.Instance.GetGroup(message.GroupID).SendMessageToClients(message);
                     break;
-                case MessageType.RegisterGroup:
-                    // Create a new group, add the sender as initial group member
-                    // and return the ID of the new group.
-                    Group newGroup = Server.Instance.CreateGroup(message.PayloadData);
-                    //newGroup.AddClient(client);
-                    Message response = new Message()
-                    {
-                        GroupID = newGroup.Id,
-                        MessageType = MessageType.RegisterGroupResponse
-                    };
-                    connection.SendData(response);
-                    break;
             }
+        }
+
+        /// <summary>
+        /// Handle incoming registration requests. Query database to verify and add the incoming
+        /// data. When succesful, send the new client id. If registration is not possible,
+        /// client id is -1.
+        /// </summary>
+        /// <param name="connection">The connection from which the request was send.</param>
+        /// <param name="message">The incoming registration message.</param>
+        private static void HandleRegisterClient(Connection connection, Message message)
+        {
+            // TODO: Add database validation and unsuccesful response.
+            int retreivedid = 0;
+            Client newClient = new Client(retreivedid, null);
+            // add client in database / internal dictionary
+            Server.Instance.AddClient(newClient, connection);
+
+            connection.SendData(new Message()
+            {
+                MessageType = MessageType.RegisterClientResponse,
+                ClientId = newClient.Id
+            });
+        }
+
+        /// <summary>
+        /// Handles incoming signin requests. Validate the incoming data with the database
+        /// and send a response based upon the result.
+        /// </summary>
+        /// <param name="connection">The connection from which the request was send.</param>
+        /// <param name="message">The incoming signin message.</param>
+        private static void HandleSignInClient(Connection connection, Message message)
+        {
+            // TODO: Add database validation and unsuccesful response.
+            int databaseclientid = 99;
+            string databaseusername = "name";
+
+            Server.Instance.AddConnection(databaseclientid, connection);
+
+            connection.SendData(new Message()
+            {
+                MessageType = MessageType.SignInClientResponse,
+                ClientId = databaseclientid,
+                ClientName = databaseusername
+            });
+        }
+
+        private static void HandleSignOutClient(Connection connection, Message message)
+        {
+            // TODO: Handle threadpool exit
+        }
+
+        private static void HandleRegisterGroup(Connection connection, Message message)
+        {
+            // Create a new group, add the sender as initial group member
+            // and return the ID of the new group.
+            Group newGroup = Server.Instance.CreateGroup(message.PayloadData);
+            //newGroup.AddClient(client);
+            Message response = new Message()
+            {
+                GroupID = newGroup.Id,
+                MessageType = MessageType.RegisterGroupResponse
+            };
+            connection.SendData(response);
+        }
+
+        private static void HandleRequestGroups(Connection connection, Message message)
+        {
+
+        }
+
+        private static void HandleJoinGroup(Connection connection, Message message)
+        {
+
+        }
+
+        private static void HandleLeaveGroup(Connection connection, Message message)
+        {
+
         }
     }
 }

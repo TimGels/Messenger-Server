@@ -185,9 +185,35 @@ namespace Messenger_Server
 
             try
             {
-                // Don't call GetClient
+                // Don't call GetClient which enters read lock, since we already hold write lock.
                 Client client = clients.Keys.Where(client => client.Id == id).FirstOrDefault();
                 clients[client] = connection;
+            }
+            finally
+            {
+                clientLocker.ExitWriteLock();
+            }
+        }
+
+        /// <summary>
+        /// Delete the specified connection from the client/connection dictionary.
+        /// </summary>
+        /// <param name="connection">The connection to remove.</param>
+        public void DeleteConnection(Connection connection)
+        {
+            Console.WriteLine("Removing connection!");
+
+            clientLocker.EnterWriteLock();
+
+            try
+            {
+                // HACK: Only works when values (connections) in Server.clients are unique
+
+                // Find client with the specified connection which we need to delete.
+                Client client = clients.Where(pair => pair.Value.Equals(connection)).FirstOrDefault().Key;
+
+                // Remove connection for found client.
+                clients[client] = null;
             }
             finally
             {
