@@ -20,6 +20,7 @@ namespace Messenger_Client.Models
         {
             this.Id = id;
             this.Name = name;
+            this.Messages = new List<Message>();
         }
 
         /// <summary>
