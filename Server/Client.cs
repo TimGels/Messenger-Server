@@ -17,11 +17,16 @@ namespace Messenger_Server
         /// The name of the client.
         /// </summary>
         public string Name { get; set; }
+        public string Email { get; set; }
 
         public Client(int id, string name)
         {
             this.Id = id;
             this.Name = name;
+        }
+        public Client()
+        {
+
         }
     }
 }

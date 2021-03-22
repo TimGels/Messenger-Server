@@ -40,7 +40,18 @@ namespace Messenger_Server
 
         public static void Main(string[] args)
         {
-            Server.Instance.StartListening();
+            Client client = new Client()
+            {
+                Name = "Sietze",
+                Email = null
+            };
+
+            int id = DatabaseHandler.addClient(client);
+            Console.WriteLine(id);
+            client.Id = id;
+            Console.ReadLine();
+
+            //Server.Instance.StartListening();
         }
 
         /// <summary>
