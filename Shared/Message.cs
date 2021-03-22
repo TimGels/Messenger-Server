@@ -1,5 +1,6 @@
 ﻿using Shared.Json;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Text.Json;
 
@@ -133,6 +134,30 @@ namespace Shared
             {
                 LoginInfo = value.Login;
                 ClientName = value.Username;
+            }
+        }
+
+        public List<Group> GroupList
+        {
+            get
+            {
+                List<Group> groupList = new List<Group>();
+
+                string[] groupStrings = jsonMessage.Payload.Data.Split(';');
+                foreach (string groupString in groupStrings)
+                {
+                    groupList.Add(Group.FromFormatString(groupString));
+                }
+                return groupList;
+            }
+            set
+            {
+                List<string> list = new List<string>();
+                foreach (Group group in value)
+                {
+                    list.Add(Group.ToFormatString(group));
+                }
+                jsonMessage.Payload.Data = String.Join(";", list.ToArray());
             }
         }
 

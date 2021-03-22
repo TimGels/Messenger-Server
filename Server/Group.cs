@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Messenger_Server
 {
-    public class Group
+    public class Group : Shared.Group
     {
         /// <summary>
         /// List with all clients currently registered in the group.
@@ -17,20 +17,9 @@ namespace Messenger_Server
         /// </summary>
         private readonly ReaderWriterLockSlim clientsLock = new ReaderWriterLockSlim();
 
-        /// <summary>
-        /// The unique ID of the group.
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
-        /// The name of the group.
-        /// </summary>
-        public string Name { get; set; }
-
-        public Group(string name, int id)
+        public Group(int id, string name)
+            : base(id, name)
         {
-            this.Name = name;
-            this.Id = id;
             this.clients = new List<Client>();
         }
 
