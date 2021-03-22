@@ -61,5 +61,29 @@ namespace Messenger_Client.Models
             Task.Run(()=> Client.Instance.Connection.SendData(message));
 
         }
+
+        /// <summary>
+        /// returns a csv string wich respresents all the message in the group.
+        /// </summary>
+        /// <returns></returns>
+        public string GetMessageCsv()
+        {
+            //enter read lock of messages
+            this.messsageLocker.EnterReadLock();
+            string csvMessages = "";
+            try
+            {
+                foreach (Message message in this.Messages){
+                    //get the csv representation of each message and add it to the string.
+                    csvMessages += message.GetCsvString();
+                }
+
+                return csvMessages;
+            } finally
+            {
+                //exit readlock of all messages
+                this.messsageLocker.ExitReadLock();
+            }
+        }
     }
 }

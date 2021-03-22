@@ -144,6 +144,15 @@ namespace Shared
         }
 
         /// <summary>
+        /// returns a csv string representation of this message.
+        /// </summary>
+        /// <returns></returns>
+        public string GetCsvString()
+        {
+            return this.GroupID + "," + this.PayloadType + "," + this.PayloadData + "," + this.ClientId + "," + this.ClientName + "," + DateTime.ToString() + "\n";
+        }
+
+        /// <summary>
         /// Serialize a message to a JSON string representation.
         /// </summary>
         /// <param name="message">The message to serialize.</param>
