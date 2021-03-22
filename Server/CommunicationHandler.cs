@@ -21,7 +21,7 @@ namespace Messenger_Server
                     HandleSignInClient(connection, message);
                     break;
                 case MessageType.SignOutClient:
-                    HandleSignOutClient(connection, message);
+                    HandleSignOutClient(connection);
                     break;
                 case MessageType.RegisterGroup:
                     HandleRegisterGroup(connection, message);
@@ -37,7 +37,7 @@ namespace Messenger_Server
                     break;
                 case MessageType.ChatMessage:
                     // Relay the chatMessage to all other clients in the group.
-                    Server.Instance.GetGroup(message.GroupID).SendMessageToClients(message);
+                    //Server.Instance.GetGroup(message.GroupID).SendMessageToClients(message);
                     break;
             }
         }
@@ -68,7 +68,7 @@ namespace Messenger_Server
         /// Handles incoming signin requests. Validate the incoming data with the database
         /// and send a response based upon the result.
         /// </summary>
-        /// <param name="connection">The connection from which the request was send.</param>
+        /// <param name="connection">The connection from which the request was sent.</param>
         /// <param name="message">The incoming signin message.</param>
         private static void HandleSignInClient(Connection connection, Message message)
         {
@@ -86,9 +86,13 @@ namespace Messenger_Server
             });
         }
 
-        private static void HandleSignOutClient(Connection connection, Message message)
+        /// <summary>
+        /// Handle incoming signout requests. Upon a signout request, close the connection.
+        /// </summary>
+        /// <param name="connection">The connection from which the request was sent.</param>
+        private static void HandleSignOutClient(Connection connection)
         {
-            // TODO: Handle threadpool exit
+            connection.Close();
         }
 
         private static void HandleRegisterGroup(Connection connection, Message message)
