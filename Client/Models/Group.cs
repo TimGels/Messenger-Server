@@ -6,20 +6,34 @@ using System.Threading.Tasks;
 
 namespace Messenger_Client.Models
 {
-    public class Group
+    public class Group : Shared.Group
     {
         public List<Message> Messages { get; set; }
-        public String Name { get; set; }
-        public int Id { get; set; }
+
         /// <summary>
         /// The read-write lock for the messages list.
         /// </summary>
         private readonly ReaderWriterLockSlim messsageLocker = new ReaderWriterLockSlim();
 
-        public Group(String name, int id)
+        /// <summary>
+        /// Create a new group from a base group.
+        /// </summary>
+        /// <param name="group"></param>
+        public Group(Shared.Group group)
+            : this(group.Id, group.Name)
         {
-            this.Id = id;
-            this.Name = name;
+
+        }
+
+        /// <summary>
+        /// Create a new group from an Id and name.
+        /// </summary>
+        /// <param name="id">The Id of the group.</param>
+        /// <param name="name">The name of the group.</param>
+        public Group(int id, string name)
+            : base(id, name)
+        {
+
         }
 
         /// <summary>

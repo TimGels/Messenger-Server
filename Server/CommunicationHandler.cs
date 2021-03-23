@@ -1,4 +1,5 @@
 ﻿using Shared;
+using System.Linq;
 
 namespace Messenger_Server
 {
@@ -27,7 +28,7 @@ namespace Messenger_Server
                     HandleRegisterGroup(connection, message);
                     break;
                 case MessageType.RequestGroups:
-                    HandleRequestGroups(connection, message);
+                    HandleRequestGroups(connection);
                     break;
                 case MessageType.JoinGroup:
                     HandleJoinGroup(connection, message);
@@ -109,9 +110,18 @@ namespace Messenger_Server
             connection.SendData(response);
         }
 
-        private static void HandleRequestGroups(Connection connection, Message message)
+        /// <summary>
+        /// Handle incoming group list requests. The server returns a list of groups
+        /// encoded as a string with Id's and names together.
+        /// </summary>
+        /// <param name="connection"></param>
+        private static void HandleRequestGroups(Connection connection)
         {
-
+            connection.SendData(new Message()
+            {
+                MessageType = MessageType.RequestGroupsResponse,
+                GroupList = Server.Instance.Groups.Cast<Shared.Group>().ToList()
+            });
         }
 
         private static void HandleJoinGroup(Connection connection, Message message)

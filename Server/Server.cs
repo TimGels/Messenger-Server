@@ -24,6 +24,23 @@ namespace Messenger_Server
         /// </summary>
         private readonly List<Group> groups;
 
+        public List<Group> Groups
+        {
+            get
+            {
+                groupLocker.EnterReadLock();
+
+                try
+                {
+                    return groups;
+                }
+                finally
+                {
+                    groupLocker.ExitReadLock();
+                }
+            }
+        }
+
         /// <summary>
         /// The read-write lock for the grouplist.
         /// </summary>
@@ -126,7 +143,7 @@ namespace Messenger_Server
             groupLocker.EnterWriteLock();
             try
             {
-                Group group = new Group(groupName, this.groups.Count);
+                Group group = new Group(this.groups.Count, groupName);
                 this.groups.Add(group);
                 return group;
             }

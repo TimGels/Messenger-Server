@@ -22,7 +22,7 @@ namespace Messenger_Client.Views
             this.Client = Client.Instance;
 
             //for testing -> create group and send every 3 seconds a message.
-            this.group = new Group("eerste Groep", 1);
+            this.group = new Group(1, "eerste Groep");
 
             Thread writerThread = new Thread(writerDoWork);
             writerThread.Start();
