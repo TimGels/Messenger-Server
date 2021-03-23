@@ -1,123 +1,133 @@
 ﻿using Messenger_Client.Models;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Uwp;
 using Shared;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using Windows.ApplicationModel.Chat;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.System;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 namespace Messenger_Client.ViewModels
 {
-    public class MainPageViewModel
+    public class MainPageViewModel : ObservableRecipient, INotifyPropertyChanged
     {
         public List<TestMessage> MessageList { get; set; }
 
         //public Client Client { get; set; }
         public List<Group> GroupList { get; set; }
+        //public string Base64ImageData { get; set; }
+
+        private string base64ImageData;
+
+        public string Base64ImageData
+        {
+            get
+            {
+                return base64ImageData;
+            }
+            set
+            {
+                base64ImageData = value;
+                OnPropertyChanged();
+            }
+
+        }
+
+        private string img;
+
+        public string Img
+        {
+            get
+            {
+                return img;
+            }
+            set
+            {
+                img = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private BitmapImage bmi;
+
+        public BitmapImage Bmi
+        {
+            get { return bmi; }
+            set
+            {
+                bmi = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Group selectedGroupChat;
+
+        public Group SelectedGroupChat
+        {
+            get
+            {
+                return selectedGroupChat;
+            }
+            set
+            {
+                selectedGroupChat = value;
+                Debug.WriteLine("Selected group chat: " + value.Name);
+                OnPropertyChanged();
+            }
+        }
+
+
 
         public MainPageViewModel()
         {
+
             this.MessageList = new List<TestMessage>();
             this.GroupList = new List<Group>();
+            this.Base64ImageData = "nodata";
 
 
-            Message message = new Message()
+            Client client = Client.Instance;
+
+            Random rnd = new Random();
+
+            for (int i = 0; i < 20; i++)
             {
-                ClientName = "ClientName1",
-                ClientId = 1,
-                DateTime = DateTime.Now,
-                GroupID = 2,
-                MessageType = MessageType.ChatMessage,
-            };
-
-
-            //Image image = new Image();
-
-            Task.Run(async () =>
-            {
-                image.sou getfile();
-            });
-
-            //for (int i = 0; i < 30; i++)
-            //{
-
-            //    this.MessageList.Add(new TestMessage());
-            //}
-
-
-
-            //Client client = Client.Instance;
-
-            //Message message = new Message()
-            //{
-            //    ClientName = "ClientName1",
-            //    ClientId = 1,
-            //    DateTime = DateTime.Now,
-            //    GroupID = 2,
-            //    MessageType = MessageType.ChatMessage,
-            //};
-            //message.Image = new Bitmap(new Uri("ms-appx:///Assets/StoreLogo.png"));
-
-            ////Bitmap bitmapImage = new Bitmap(new Uri("ms-appx:///[project-name]/Assets/image.jpg"));
-            //StorageFile file = StorageFile.GetFileFromPathAsync("ms-appx:///Assets/StoreLogo.png").AsTask().Result;
-            //Image image = Image.FromFile("ms-appx:///Assets/StoreLogo.png");
-            //message.Image = image;
-
-            //Image image = Image.FromHbitmap(bitmapImage);
-
-
-            //for (int i = 0; i < 20; i++)
-            //{
-            //    Group group = new Group("GroupName", i);
-            //    client.AddGroup(group);
-            //    GroupList.Add(group);
-
-            //    for (int j = 0; j < 10; j++)
-            //    {
-            //        group.AddMessage(message);
-            //    }
-
-            //}
-        }
-
-        private async Task<BitmapImage> getfile()
-        {
-            StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/StoreLogo.png"));
-            //Image image = Image.FromStream(string.);
-
-
-            //BitmapImage bitmapImage = new BitmapImage(new Uri("ms-appx:///Assets/StoreLogo.png"));
-
-
-
-            //Windows.Storage.Streams.Buffer buf = (Windows.Storage.Streams.Buffer)await FileIO.ReadBufferAsync(file);
-
-            // Ensure the stream is disposed once the image is loaded
-            using (IRandomAccessStream fileStream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read))
-            {
-                // Set the image source to the selected bitmap
-                BitmapImage bitmapImage = new BitmapImage();
-                // Decode pixel sizes are optional
-                // It's generally a good optimisation to decode to match the size you'll display
-                //bitmapImage.DecodePixelHeight = decodePixelHeight;
-                //bitmapImage.DecodePixelWidth = decodePixelWidth;
-
-                await bitmapImage.SetSourceAsync(fileStream);
-
-                return bitmapImage;
-
-                //mypic.Source = bitmapImage;
-                
+                Group group = new Group(string.Format("GroupName {0}", i), i);
+                client.AddGroup(group);
+                GroupList.Add(group);
             }
 
-            //Debug.WriteLine(buf.ToString());
+
+            for (int i = 0; i < 1000; i++)
+            {
+                int clientId = rnd.Next(0, 2);
+                int groupId = rnd.Next(0, 20);
+                Message message = new Message()
+                {
+                    ClientName = "ClientName1",
+                    ClientId = clientId,
+                    DateTime = DateTime.Now,
+                    GroupID = groupId,
+                    MessageType = MessageType.ChatMessage,
+                    ImageString = "R0lGODlhAQABAIAAAAAAAAAAACH5BAAAAAAALAAAAAABAAEAAAICTAEAOw==",
+                    PayloadData = $"this is a message with client {clientId} and group {groupId}",
+                };
+
+                GroupList[groupId].AddMessage(message);
+            }
         }
     }
 }

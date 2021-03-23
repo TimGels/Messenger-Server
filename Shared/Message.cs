@@ -39,17 +39,19 @@ namespace Shared
             }
         }
 
-        public Image Image
+        public string ImageString
         {
             get
             {
                 //TODO: check if data is from the type image?
-                return Base64StringToImage(this.jsonMessage.Payload.Data);
+                //return Base64StringToImage(this.jsonMessage.Payload.Data);
+                return this.jsonMessage.Payload.Data;
             }
             set
             {
                 //TODO: also set the Payload.Type property?
-                this.jsonMessage.Payload.Data = ImageTobase64String(value);
+                //this.jsonMessage.Payload.Data = ImageTobase64String(value);
+                this.jsonMessage.Payload.Data = value;
             }
         }
 
