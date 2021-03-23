@@ -17,7 +17,10 @@ namespace Messenger_Server
         /// The name of the client.
         /// </summary>
         public string Name { get; set; }
-        public string Email { get; set; }
 
+        /// <summary>
+        /// Unique email address.
+        /// </summary>
+        public string Email { get; set; }
     }
 }

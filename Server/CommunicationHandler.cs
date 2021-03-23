@@ -43,9 +43,9 @@ namespace Messenger_Server
         }
 
         /// <summary>
-        /// Handle incoming registration requests. Query database to verify and add the incoming
-        /// data. When succesful, send the new client id. If registration is not possible,
-        /// client id is -1.
+        /// Handle incoming registration requests. Query database to verify and add the
+        /// incoming data. When succesful, send the new client id. If registration is not
+        /// possible, client id is -1.
         /// </summary>
         /// <param name="connection">The connection from which the request was send.</param>
         /// <param name="message">The incoming registration message.</param>
@@ -56,8 +56,9 @@ namespace Messenger_Server
             Client newClient = new Client()
             {
                 Id = retreivedid,
-                Name = null
+                Name = message.ClientName
             };
+
             // add client in database / internal dictionary
             Server.Instance.AddClient(newClient, connection);
 

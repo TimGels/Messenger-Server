@@ -56,13 +56,13 @@ namespace Messenger_Server
         {
             this.groups = DatabaseHandler.GetGroups();
             this.clients = DatabaseHandler.GetClients();
-            addClientsToGroups();
+            AddClientsToGroups();
         }
 
         /// <summary>
         /// This method adds all the clients to the groups based on the database.
         /// </summary>
-        private void addClientsToGroups()
+        private void AddClientsToGroups()
         {
             //DatabaseHandler.getGroupsParticipants() returns a dictionary with: groupId, userId;
             foreach(KeyValuePair<int, int> entry in DatabaseHandler.GetGroupParticipants())

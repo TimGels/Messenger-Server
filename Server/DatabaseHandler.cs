@@ -11,13 +11,13 @@ namespace Messenger_Server
         /// <summary>
         /// The database file is always stored in the same folder as the executable.
         /// </summary>
-        private static string databaseFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "messenger.db");
+        private static readonly string databaseFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "messenger.db");
 
-        private static string connectionString = createConnectionString();
-        
-        private static string createConnectionString()
+        private static readonly string connectionString = CreateConnectionString();
+
+        private static string CreateConnectionString()
         {
-            //create new connection string builder and set the dataSource to the databaseFilePath.
+            // Create new connection string builder and set the dataSource to the databaseFilePath.
             SqliteConnectionStringBuilder connectionStringBuilder = new SqliteConnectionStringBuilder()
             {
                 DataSource = databaseFilePath
@@ -32,13 +32,13 @@ namespace Messenger_Server
         /// </summary>
         public static void CreateDatabase()
         {
-            //if the database file already exists, we assume that the neccessary tables are already properly created.
+            // If the database file already exists, we assume that the neccessary tables are already properly created.
             if (File.Exists(databaseFilePath))
             {
                 return;
             }
-            //the database file is automatically created by calling the Open method on connection.
-            //Therefore the non-existing file will be created in the first create table method.
+            // The database file is automatically created by calling the Open method on connection.
+            // Therefore the non-existing file will be created in the first create table method.
             CreateUserTable();
             CreateGroupTable();
             CreateGroupParticipantsTable();
@@ -108,12 +108,13 @@ namespace Messenger_Server
         }
 
         /// <summary>
-        /// this method will add the given client to the database. Then it will set and return the id of the client.
+        /// Add the given client to the database. Then it will set and return the id of
+        /// the client.
         /// </summary>
         /// <param name="client"></param>
         /// <param name="password"></param>
-        /// <returns>int -1 = there already exists a client with this email or something else went wrong
-        /// or the id of the just added user.</returns>
+        /// <returns>int -1 = there already exists a client with this email or something
+        /// else went wrongor the id of the just added user.</returns>
         public static int AddClient(Client client, String password)
         {
             try
@@ -143,7 +144,8 @@ namespace Messenger_Server
         }
 
         /// <summary>
-        /// This method will add the given group to the database. Then it will set and return the id of the group.
+        /// This method will add the given group to the database. Then it will set and
+        /// return the id of the group.
         /// </summary>
         /// <param name="group"></param>
         /// <returns>-1 when somethin went wrong, else the id of added group.</returns>
@@ -166,7 +168,7 @@ namespace Messenger_Server
                     return id;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
                 return -1;
@@ -194,7 +196,7 @@ namespace Messenger_Server
                     return command.ExecuteNonQuery();
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
                 return -1;
@@ -202,7 +204,7 @@ namespace Messenger_Server
         }
 
         /// <summary>
-        /// gets a list with all the groups in the database.
+        /// Gets a list with all the groups in the database.
         /// </summary>
         /// <returns></returns>
         public static List<Group> GetGroups()
@@ -227,7 +229,7 @@ namespace Messenger_Server
         }
 
         /// <summary>
-        /// get all clients. purpose: load all client in database to running server.
+        /// Get all clients. purpose: load all client in database to running server.
         /// </summary>
         /// <returns>A dictionary with all the clients in the database. Connection is null</returns>
         public static Dictionary<Client, Connection> GetClients()
@@ -261,7 +263,7 @@ namespace Messenger_Server
         /// <summary>
         /// Gets all the groupParticipants
         /// </summary>
-        /// <returns> returns a dictionary with: GroupID, UserID</returns>
+        /// <returns> Dictionary with: GroupID, UserID</returns>
         public static Dictionary<int, int> GetGroupParticipants()
         {
             using (SqliteConnection connection = new SqliteConnection(connectionString))
