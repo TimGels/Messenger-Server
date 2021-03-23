@@ -19,14 +19,5 @@ namespace Messenger_Server
         public string Name { get; set; }
         public string Email { get; set; }
 
-        public Client(int id, string name)
-        {
-            this.Id = id;
-            this.Name = name;
-        }
-        public Client()
-        {
-
-        }
     }
 }

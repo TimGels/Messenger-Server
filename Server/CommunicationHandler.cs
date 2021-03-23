@@ -53,7 +53,11 @@ namespace Messenger_Server
         {
             // TODO: Add database validation and unsuccesful response.
             int retreivedid = 0;
-            Client newClient = new Client(retreivedid, null);
+            Client newClient = new Client()
+            {
+                Id = retreivedid,
+                Name = null
+            };
             // add client in database / internal dictionary
             Server.Instance.AddClient(newClient, connection);
 
