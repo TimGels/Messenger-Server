@@ -75,7 +75,16 @@
             </Grid>
 
             <Grid Grid.Column="1">
-                <ListView x:Name="messageListView"
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="100"/>
+                </Grid.RowDefinitions>
+
+
+
+
+                <ListView Grid.Column="0" x:Name="messageListView"
                             Grid.Row="0"
                             Margin="0,0,0,0"
                             ItemsSource="{Binding SelectedGroupChat.Messages}">
@@ -114,6 +123,26 @@
                         </util:CustomItemContainerSelector>
                     </ListView.ItemContainerStyleSelector>
                 </ListView>
+
+                <Grid Grid.Row="1" Grid.ColumnSpan="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="100"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Row="1" HorizontalAlignment="Center" Grid.ColumnSpan="1" Width="75" Height="75" Background="Beige">
+                        <FontIcon FontSize="50" FontFamily="Segoe MDL2 Assets" Glyph="&#xE723;" Foreground="White"/>
+                    </Button>
+                    <TextBox Grid.Column="1" Margin="10" BorderThickness="0.5" />
+                    <Button Grid.Row="1" HorizontalAlignment="Center" Grid.Column="2" Grid.ColumnSpan="1" Width="75" Height="75" Background="Beige">
+                        <FontIcon FontSize="50"  FontFamily="Segoe MDL2 Assets" Glyph="&#xE724;" Foreground="White"/>
+                    </Button>
+                </Grid> 
+
             </Grid>
         </Grid>
     </Grid>
