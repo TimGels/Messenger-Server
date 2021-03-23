@@ -1,29 +1,23 @@
 ﻿using Messenger_Client.Models;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Uwp;
+using Microsoft.Toolkit.Mvvm.Input;
 using Shared;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
-using Windows.ApplicationModel.Chat;
-using Windows.Storage;
-using Windows.Storage.Streams;
-using Windows.System;
+using System.Windows.Input;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
+
 
 namespace Messenger_Client.ViewModels
 {
     public class MainPageViewModel : ObservableRecipient, INotifyPropertyChanged
     {
+        public ICommand SendMessageCommand { get; set; }
+        public ICommand CheckEnterCommand { get; set; }
+
         public List<TestMessage> MessageList { get; set; }
 
         //public Client Client { get; set; }
@@ -31,6 +25,21 @@ namespace Messenger_Client.ViewModels
         //public string Base64ImageData { get; set; }
 
         private string base64ImageData;
+
+        //TypedTextValue wordt gebruikt om een StackOverflowException uit te sluiten
+        private string TypedTextValue;
+        public string TypedText
+        {
+            get
+            {
+                return TypedTextValue;
+            }
+            set
+            {
+                TypedTextValue = value;
+                OnPropertyChanged();
+            }
+        }
 
         public string Base64ImageData
         {
@@ -89,15 +98,29 @@ namespace Messenger_Client.ViewModels
             }
         }
 
+        public void sendMessage()
+        {
+            Debug.WriteLine("Tekst: " + this.TypedText);
+            this.TypedText = "";
+        } 
+        
+        public void checkEnterPressed()
+        {
+            Debug.WriteLine("Tekst: " + this.TypedText);
+            this.TypedText = "";
+        }
 
+       
 
         public MainPageViewModel()
         {
+            SendMessageCommand = new RelayCommand(() => sendMessage());
+            CheckEnterCommand = new RelayCommand(() => checkEnterPressed());
 
             this.MessageList = new List<TestMessage>();
             this.GroupList = new List<Group>();
             this.Base64ImageData = "nodata";
-
+            this.TypedText = "";
 
             Client client = Client.Instance;
 

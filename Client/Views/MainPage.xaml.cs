@@ -30,6 +30,7 @@ namespace Messenger_Client.Views
         
         }
 
+
         //private void writerDoWork()
         //{
         //    while (true)
