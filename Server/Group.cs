@@ -62,7 +62,11 @@ namespace Messenger_Server
                 {
                     sendDataTasks.Add(Task.Run(() =>
                     {
-                        Server.Instance.GetConnection(client.Id).SendData(message);
+                        Connection connection = Server.Instance.GetConnection(client.Id);
+                        if(connection != null)
+                        {
+                            connection.SendData(message);
+                        }
                     }));
                 }
             }

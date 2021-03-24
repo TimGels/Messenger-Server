@@ -57,6 +57,7 @@ namespace Messenger_Server
 
         public static void Main(string[] args)
         {
+            DatabaseHandler.CreateDatabase();
             Server.Instance.StartListening();
         }
 
@@ -70,10 +71,34 @@ namespace Messenger_Server
 
         private Server()
         {
-            this.groups = new List<Group>();
-            this.clients = new Dictionary<Client, Connection>();
+            this.groups = DatabaseHandler.GetGroups();
+            this.clients = DatabaseHandler.GetClients();
+            AddClientsToGroups();
+        }
 
-            // On startup, read clients from database
+        /// <summary>
+        /// This method adds all the clients to the groups based on the database.
+        /// </summary>
+        private void AddClientsToGroups()
+        {
+            //DatabaseHandler.getGroupsParticipants() returns a dictionary with: groupId, userId;
+            foreach(KeyValuePair<int, int> entry in DatabaseHandler.GetGroupParticipants())
+            {
+                int groupId = entry.Key;
+                int userId = entry.Value;
+
+                //get corresponding group object
+                Group group = this.GetGroup(groupId);
+
+                //get corresponding client object
+                Client client = this.GetClient(userId);
+
+                //check if client and group are not null
+                if(client != null && group != null)
+                {
+                    group.AddClient(client);
+                }
+            }
         }
 
         /// <summary>
