@@ -66,7 +66,7 @@ namespace Messenger_Client.Models
             {
                 GroupID = this.Id,
                 ClientId = Client.Instance.Id,
-                ClientName = "Ruben",
+                ClientName = Client.Instance.ClientName,
                 PayloadData = payload,
                 PayloadType = "text",
                 MessageType = MessageType.ChatMessage
