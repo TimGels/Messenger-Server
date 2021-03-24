@@ -88,9 +88,8 @@ namespace Messenger_Server
                 return;
             }
 
+            // Retrieve client by unique email.
             Client client = Server.Instance.GetClient(message.LoginInfo.Email);
-
-
 
             // If the connection already exists, the client is already signed in.
             if (Server.Instance.GetConnection(client.Id) != null)
@@ -130,16 +129,26 @@ namespace Messenger_Server
             //TODO: signoutclienResponse sturen.
         }
 
+        /// <summary>
+        /// Handle incoming register group messages. Creates a new group based upon the
+        /// requested group Id and name.
+        /// </summary>
+        /// <param name="connection">The connection from which the request was sent.</param>
+        /// <param name="message">The message containing the group Id and name.</param>
         private static void HandleRegisterGroup(Connection connection, Message message)
         {
-            // Create a new group, add the sender as initial group member
-            // and return the ID of the new group.
+            // Create a new group and add the sender as initial group member
             Group newGroup = Server.Instance.CreateGroup(message.PayloadData);
+
             newGroup.AddClient(Server.Instance.GetClient(message.ClientId));
+
+            // Return the Id and name of the new group.
+
             Message response = new Message()
             {
+                MessageType = MessageType.RegisterGroupResponse,
                 GroupID = newGroup.Id,
-                MessageType = MessageType.RegisterGroupResponse
+                PayloadData = newGroup.Name
             };
             connection.SendData(response);
         }
@@ -179,7 +188,8 @@ namespace Messenger_Server
 
             connection.SendData(new Message()
             {
-                MessageType = MessageType.JoinGroupResponse
+                MessageType = MessageType.JoinGroupResponse,
+                PayloadData = groupToJoin.Name
             });
         }
 
