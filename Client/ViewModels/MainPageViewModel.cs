@@ -1,15 +1,15 @@
-﻿using Messenger_Client.Models;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Shared;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Group = Messenger_Client.Models.Group;
 
 namespace Messenger_Client.ViewModels
 {
     public class MainPageViewModel : ObservableRecipient, INotifyPropertyChanged
     {
-        public List<TestMessage> MessageList { get; set; }
+        //public List<TestMessage> MessageList { get; set; }
 
         public List<Group> GroupList { get; set; }
 
@@ -31,7 +31,7 @@ namespace Messenger_Client.ViewModels
         public MainPageViewModel()
         {
 
-            this.MessageList = new List<TestMessage>();
+            //this.MessageList = new List<TestMessage>();
             this.GroupList = new List<Group>();
 
 
@@ -41,7 +41,7 @@ namespace Messenger_Client.ViewModels
 
             for (int i = 0; i < 20; i++)
             {
-                Group group = new Group(string.Format("GroupName {0}", i), i);
+                Group group = new Group(i, string.Format("GroupName {0}", i));
                 client.AddGroup(group);
                 GroupList.Add(group);
             }
@@ -58,7 +58,6 @@ namespace Messenger_Client.ViewModels
                     DateTime = DateTime.Now,
                     GroupID = groupId,
                     MessageType = MessageType.ChatMessage,
-                    ImageString = "R0lGODlhAQABAIAAAAAAAAAAACH5BAAAAAAALAAAAAABAAEAAAICTAEAOw==",
                     PayloadData = $"this is a message with client {clientId} and group {groupId}",
                 };
 

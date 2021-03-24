@@ -10,22 +10,16 @@ using System.Threading.Tasks;
 
 namespace Messenger_Client.Models
 {
-    public class Connection
+    public class Connection : Shared.Connection
     {
-        private readonly TcpClient client;
-
         public Connection(string serverAddress, int port)
+            : base(new TcpClient(serverAddress, port))
         {
-            this.client = new TcpClient(serverAddress, port);
             //start readerThread
             new Thread(ReadData).Start();
         }
 
-        /// <summary>
-        /// Continuously try to read data from the stream. Any incoming message is
-        /// handed to a seperate Task, which is responsible for handling the message.
-        /// </summary>
-        public void ReadData()
+        public override void ReadData()
         {
             while (true)
             {
@@ -45,13 +39,6 @@ namespace Messenger_Client.Models
                     break;
                 }
             }
-        }
-
-        public void SendMessage(Message message)
-        {
-            string data = Message.SerializeMessage(message);
-            Byte[] buffer = Encoding.ASCII.GetBytes(data);
-            client.GetStream().Write(buffer, 0, buffer.Length);
         }
     }
 }

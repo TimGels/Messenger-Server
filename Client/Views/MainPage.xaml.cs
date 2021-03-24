@@ -10,34 +10,33 @@ namespace Messenger_Client.Views
 {
     public sealed partial class MainPage : Page
     {
-        //Client Client;
+        Client Client;
 
         /// <summary>
         /// for testing purposes
         /// </summary>
-        //Group group;
+        Group group;
 
         public MainPage()
         {
             this.InitializeComponent();
-            //this.Client = Client.Instance;
+            this.Client = Client.Instance;
 
-            ////for testing -> create group and send every 3 seconds a message.
-            //this.group = new Group("eerste Groep", 1);
+            //for testing -> create group and send every 3 seconds a message.
+            this.group = new Group(1, "eerste Groep");
 
-            //Thread writerThread = new Thread(writerDoWork);
-            //writerThread.Start();
-        
+            Thread writerThread = new Thread(writerDoWork);
+            writerThread.Start();
         }
 
-        //private void writerDoWork()
-        //{
-        //    while (true)
-        //    {
-        //        group.SendMessage("Hello from UWP!");
-        //        Thread.Sleep(3000);
-        //    }
-        //}
+        private void writerDoWork()
+        {
+            while (true)
+            {
+                group.SendMessage("Hello from UWP!");
+                Thread.Sleep(3000);
+            }
+        }
 
     }
 }

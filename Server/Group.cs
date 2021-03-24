@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Messenger_Server
 {
-    public class Group
+    public class Group : Shared.Group
     {
         /// <summary>
         /// List with all clients currently registered in the group.
@@ -17,21 +17,29 @@ namespace Messenger_Server
         /// </summary>
         private readonly ReaderWriterLockSlim clientsLock = new ReaderWriterLockSlim();
 
-        /// <summary>
-        /// The unique ID of the group.
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
-        /// The name of the group.
-        /// </summary>
-        public string Name { get; set; }
-
-        public Group(string name, int id)
+        public Group(int id, string name)
+            : base(id, name)
         {
-            this.Name = name;
-            this.Id = id;
             this.clients = new List<Client>();
+        }
+
+        /// <summary>
+        /// Finds out if a client with the specified Id exists in this group.
+        /// </summary>
+        /// <param name="clientId">The Id to search for.</param>
+        /// <returns>True if client with specified Id exists in group, otherwise false.</returns>
+        public bool ContainsClient(int clientId)
+        {
+            clientsLock.EnterReadLock();
+
+            try
+            {
+                return clients.Find(client => client.Id == clientId) != null;
+            }
+            finally
+            {
+                clientsLock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -71,7 +79,14 @@ namespace Messenger_Server
                 // Don't return the message to the original sender.
                 if (client.Id != message.ClientId)
                 {
-                    sendDataTasks.Add(Task.Run(() => client.SendData(message)));
+                    sendDataTasks.Add(Task.Run(() =>
+                    {
+                        Connection connection = Server.Instance.GetConnection(client.Id);
+                        if(connection != null)
+                        {
+                            connection.SendData(message);
+                        }
+                    }));
                 }
             }
             Task.WaitAll(sendDataTasks.ToArray());

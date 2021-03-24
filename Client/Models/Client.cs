@@ -2,7 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using Shared;
 using Messenger_Client.Models;
+using Windows.Storage.Pickers;
+using Connection = Messenger_Client.Models.Connection;
+using Group = Messenger_Client.Models.Group;
 
 namespace Messenger_Client
 {
@@ -41,6 +46,7 @@ namespace Messenger_Client
         {
             this.Groups = new List<Group>();
             this.Connection = new Connection(serverAddress, port);
+            this.ClientName = "clientName";
         }
         /// <summary>
         /// TODO: Make GroupID unique.
@@ -75,11 +81,38 @@ namespace Messenger_Client
             }
         }
         /// <summary>
-        /// implement this method with async io oprations.
+        /// This method opens a file picker screen. In this way a client can choose where to store the csv
+        /// then it will loop throug all groups to get a csv string of all messages in that group.
         /// </summary>
-        public void ExportMessageToFile()
+        public async Task ExportMessageToFileAsync()
         {
-            throw new NotImplementedException();
+            FileSavePicker savePicker = new FileSavePicker();
+            savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+            // Dropdown of file types the user can save the file as
+            savePicker.FileTypeChoices.Add("CSV", new List<string>() { ".csv" });
+            // Default file name if the user does not type one in or select a file to replace
+            savePicker.SuggestedFileName = "New Document";
+            Windows.Storage.StorageFile file = await savePicker.PickSaveFileAsync();
+
+            //enter read lock of groups
+            this.groupLocker.EnterReadLock();
+
+            string csvString = "";
+            try
+            {
+                foreach (Group group in this.Groups)
+                {
+                    //get csv string of all messages in the group
+                    csvString += group.GetMessageCsv();
+                }
+            }
+            finally
+            {
+                //exit readlock of groups
+                this.groupLocker.ExitReadLock();
+            }
+
+            await Windows.Storage.FileIO.WriteTextAsync(file, csvString);
         }
 
     }

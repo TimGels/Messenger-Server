@@ -6,20 +6,31 @@ using System.Threading.Tasks;
 
 namespace Messenger_Client.Models
 {
-    public class Group
+    public class Group : Shared.Group
     {
         public List<Message> Messages { get; set; }
-        public String Name { get; set; }
-        public int Id { get; set; }
+
         /// <summary>
         /// The read-write lock for the messages list.
         /// </summary>
         private readonly ReaderWriterLockSlim messsageLocker = new ReaderWriterLockSlim();
 
-        public Group(String name, int id)
+        /// <summary>
+        /// Create a new group from a base group.
+        /// </summary>
+        /// <param name="group"></param>
+        public Group(Shared.Group group) : this(group.Id, group.Name)
         {
-            this.Id = id;
-            this.Name = name;
+
+        }
+
+        /// <summary>
+        /// Create a new group from an Id and name.
+        /// </summary>
+        /// <param name="id">The Id of the group.</param>
+        /// <param name="name">The name of the group.</param>
+        public Group(int id, string name) : base(id, name)
+        {
             this.Messages = new List<Message>();
         }
 
@@ -39,10 +50,10 @@ namespace Messenger_Client.Models
             {
                 this.messsageLocker.ExitWriteLock();
             }
-            
+
         }
 
-        public void SendMessage(String payload)
+        public void SendMessage(string payload)
         {
             //TODO: I think this method should be responsible for constructing a new message OR for adding the id and the name of the group to the message.
             // from here a call to the connection object is made which actually sends the message to the server.
@@ -59,8 +70,34 @@ namespace Messenger_Client.Models
                 MessageType = MessageType.ChatMessage
             };
             //call send method which actually sends this message to the server.
-            Task.Run(()=> Client.Instance.Connection.SendMessage(message));
+            Task.Run(() => Client.Instance.Connection.SendData(message));
 
+        }
+
+        /// <summary>
+        /// returns a csv string wich respresents all the message in the group.
+        /// </summary>
+        /// <returns></returns>
+        public string GetMessageCsv()
+        {
+            //enter read lock of messages
+            this.messsageLocker.EnterReadLock();
+            string csvMessages = "";
+            try
+            {
+                foreach (Message message in this.Messages)
+                {
+                    //get the csv representation of each message and add it to the string.
+                    csvMessages += message.GetCsvString();
+                }
+
+                return csvMessages;
+            }
+            finally
+            {
+                //exit readlock of all messages
+                this.messsageLocker.ExitReadLock();
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Shared.Json;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Text.Json;
 
 namespace Shared
@@ -39,19 +40,17 @@ namespace Shared
             }
         }
 
-        public string ImageString
+        public Image Image
         {
             get
             {
                 //TODO: check if data is from the type image?
-                //return Base64StringToImage(this.jsonMessage.Payload.Data);
-                return this.jsonMessage.Payload.Data;
+                return Helper.Base64StringToImage(jsonMessage.Payload.Data);
             }
             set
             {
                 //TODO: also set the Payload.Type property?
-                //this.jsonMessage.Payload.Data = ImageTobase64String(value);
-                this.jsonMessage.Payload.Data = value;
+                this.jsonMessage.Payload.Data = Helper.ImageTobase64String(value);
             }
         }
 
@@ -94,11 +93,71 @@ namespace Shared
         {
             get
             {
-                return this.jsonMessage.Client.Name;
+                return Helper.Base64ToString(jsonMessage.Client.Name);
             }
             set
             {
-                this.jsonMessage.Client.Name = value;
+                jsonMessage.Client.Name = Helper.StringToBase64(value);
+            }
+        }
+
+        public LoginStruct LoginInfo
+        {
+            get
+            {
+                string[] splitted = jsonMessage.Payload.Data.Split(';');
+                return new LoginStruct()
+                {
+                    Email = Helper.Base64ToString(splitted[0]),
+                    Password = Helper.Base64ToString(splitted[1])
+                };
+            }
+            set
+            {
+                jsonMessage.Payload.Data = String.Format("{0};{1}",
+                    Helper.StringToBase64(value.Email),
+                    Helper.StringToBase64(value.Password));
+            }
+        }
+
+        public RegisterStruct RegisterInfo
+        {
+            get
+            {
+                return new RegisterStruct()
+                {
+                    Login = LoginInfo,
+                    Username = ClientName
+                };
+            }
+            set
+            {
+                LoginInfo = value.Login;
+                ClientName = value.Username;
+            }
+        }
+
+        public List<Group> GroupList
+        {
+            get
+            {
+                List<Group> groupList = new List<Group>();
+
+                string[] groupStrings = jsonMessage.Payload.Data.Split(';');
+                foreach (string groupString in groupStrings)
+                {
+                    groupList.Add(Group.FromFormatString(groupString));
+                }
+                return groupList;
+            }
+            set
+            {
+                List<string> list = new List<string>();
+                foreach (Group group in value)
+                {
+                    list.Add(Group.ToFormatString(group));
+                }
+                jsonMessage.Payload.Data = String.Join(";", list.ToArray());
             }
         }
 
@@ -146,6 +205,15 @@ namespace Shared
         }
 
         /// <summary>
+        /// returns a csv string representation of this message.
+        /// </summary>
+        /// <returns></returns>
+        public string GetCsvString()
+        {
+            return this.GroupID + "," + this.PayloadType + "," + this.PayloadData + "," + this.ClientId + "," + this.ClientName + "," + DateTime.ToString() + "\n";
+        }
+
+        /// <summary>
         /// Serialize a message to a JSON string representation.
         /// </summary>
         /// <param name="message">The message to serialize.</param>
@@ -153,37 +221,6 @@ namespace Shared
         public static string SerializeMessage(Message message)
         {
             return JsonSerializer.Serialize(message.jsonMessage);
-        }
-
-        /// <summary>
-        /// Function for converting an image to a base64 string.
-        /// </summary>
-        /// <param name="image"></param>
-        /// <returns></returns>
-        private static string ImageTobase64String(Image image)
-        {
-            using (MemoryStream stream = new MemoryStream())
-            {
-                image.Save(stream, image.RawFormat);
-                byte[] imageBytes = stream.ToArray();
-                string base64String = Convert.ToBase64String(imageBytes);
-
-                return base64String;
-            }
-        }
-
-        /// <summary>
-        /// Function for converting a base64 string to an image object.
-        /// </summary>
-        /// <param name="base64"></param>
-        /// <returns></returns>
-        public static Image Base64StringToImage(string base64)
-        {
-            using (MemoryStream stream = new MemoryStream(Convert.FromBase64String(base64)))
-            {
-                Image i = System.Drawing.Image.FromStream(stream);
-                return i;
-            }
         }
     }
 
