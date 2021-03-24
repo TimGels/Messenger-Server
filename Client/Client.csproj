@@ -159,9 +159,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Expression.Interaction">
-      <Version>3.0.40218</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.10</Version>
     </PackageReference>
@@ -173,9 +170,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Uwp.Managed">
       <Version>2.0.1</Version>
-    </PackageReference>
-    <PackageReference Include="MicrosoftExpressionInteractions">
-      <Version>3.0.40218</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

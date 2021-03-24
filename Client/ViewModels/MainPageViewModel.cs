@@ -104,18 +104,20 @@ namespace Messenger_Client.ViewModels
             this.TypedText = "";
         } 
         
-        public void checkEnterPressed()
+        public void checkEnterPressed(object args)
         {
-            Debug.WriteLine("Tekst: " + this.TypedText);
-            this.TypedText = "";
-        }
-
-       
+            KeyRoutedEventArgs keyargs = (KeyRoutedEventArgs) args;
+            Debug.WriteLine(keyargs.Key);
+            if (keyargs.Key == Windows.System.VirtualKey.Enter)
+            {
+                sendMessage();
+            }
+        }       
 
         public MainPageViewModel()
         {
             SendMessageCommand = new RelayCommand(() => sendMessage());
-            CheckEnterCommand = new RelayCommand(() => checkEnterPressed());
+            CheckEnterCommand = new RelayCommand<object>(checkEnterPressed);
 
             this.MessageList = new List<TestMessage>();
             this.GroupList = new List<Group>();

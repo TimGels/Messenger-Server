@@ -140,8 +140,8 @@
                     
                     <TextBox Grid.Column="1" Margin="10" BorderThickness="0.5" Text="{Binding TypedText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                         <Interactivity:Interaction.Behaviors>
-                            <Core:EventTriggerBehavior EventName="" >
-                                <Core:InvokeCommandAction Command="{Binding SendMessageCommand}" CommandParameter="{}" />
+                            <Core:EventTriggerBehavior EventName="KeyDown" >
+                                <Core:InvokeCommandAction Command="{Binding CheckEnterCommand}"/>
                             </Core:EventTriggerBehavior>
                         </Interactivity:Interaction.Behaviors>
 
