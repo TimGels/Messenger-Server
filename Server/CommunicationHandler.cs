@@ -1,4 +1,5 @@
 ﻿using Shared;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Messenger_Server
@@ -76,15 +77,46 @@ namespace Messenger_Server
             // TODO: Add database validation and unsuccesful response.
             int databaseclientid = 99;
             string databaseusername = "name";
+            bool authenticated = true;
 
+            Message response = new Message()
+            {
+                MessageType = MessageType.SignInClientResponse
+            };
+
+            if (!authenticated)
+            {
+                response.ClientId = -1;
+                connection.SendData(response);
+                return;
+            }
+
+            // If the connection already exists, the client is already signed in.
+            if (Server.Instance.GetConnection(databaseclientid) != null)
+            {
+                response.ClientId = -2;
+                connection.SendData(response);
+                return;
+            }
+
+            // "Sign-in" by adding connection to client.
             Server.Instance.AddConnection(databaseclientid, connection);
 
-            connection.SendData(new Message()
+            // Get all groups which the client has joined.
+            List<Group> groupsWithClient = new List<Group>();
+            Server.Instance.Groups.ForEach(group =>
             {
-                MessageType = MessageType.SignInClientResponse,
-                ClientId = databaseclientid,
-                ClientName = databaseusername
+                if (group.ContainsClient(message.ClientId))
+                {
+                    groupsWithClient.Add(group);
+                }
             });
+
+            response.ClientId = databaseclientid;
+            response.ClientName = databaseusername;
+            response.GroupList = groupsWithClient.Cast<Shared.Group>().ToList();
+
+            connection.SendData(response);
         }
 
         /// <summary>
@@ -114,7 +146,7 @@ namespace Messenger_Server
         /// Handle incoming group list requests. The server returns a list of groups
         /// encoded as a string with Id's and names together.
         /// </summary>
-        /// <param name="connection"></param>
+        /// <param name="connection">The connection from which the request was sent.</param>
         private static void HandleRequestGroups(Connection connection)
         {
             connection.SendData(new Message()
@@ -124,14 +156,39 @@ namespace Messenger_Server
             });
         }
 
+        /// <summary>
+        /// Handle incoming join group requests. Adds a client to a group based on the
+        /// client Id and requested group Id.
+        /// </summary>
+        /// <param name="connection">The connection from which the request was sent.</param>
+        /// <param name="message">The message containing the client Id and group Id.</param>
         private static void HandleJoinGroup(Connection connection, Message message)
         {
+            // TODO: replace by database calls.
 
+            // Get client by client Id.
+            Client clientToAdd = Server.Instance.GetClient(message.ClientId);
+
+            // Get the group and add the client to it.
+            Server.Instance.GetGroup(message.GroupID).AddClient(clientToAdd);
+
+            connection.SendData(new Message()
+            {
+                MessageType = MessageType.JoinGroupResponse
+            });
         }
 
+        /// <summary>
+        /// Handle incoming leave group requests. Removes the client from a specified
+        /// group.
+        /// </summary>
+        /// <param name="connection">The connection from which the request was sent.</param>
+        /// <param name="message">The message containing the client Id and group Id.</param>
         private static void HandleLeaveGroup(Connection connection, Message message)
         {
+            Client client = Server.Instance.GetClient(message.ClientId);
 
+            Server.Instance.GetGroup(message.GroupID).RemoveClient(client);
         }
     }
 }

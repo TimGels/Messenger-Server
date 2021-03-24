@@ -46,6 +46,11 @@ namespace Messenger_Server
         /// </summary>
         private readonly ReaderWriterLockSlim groupLocker = new ReaderWriterLockSlim();
 
+        /// <summary>
+        /// Provides a link between clients and connections. All keys (clients) represent
+        /// the registered clients. If the value (connection) is non-null, the client has
+        /// logged in.
+        /// </summary>
         private readonly Dictionary<Client, Connection> clients;
 
         private readonly ReaderWriterLockSlim clientLocker = new ReaderWriterLockSlim();
@@ -229,8 +234,12 @@ namespace Messenger_Server
                 // Find client with the specified connection which we need to delete.
                 Client client = clients.Where(pair => pair.Value.Equals(connection)).FirstOrDefault().Key;
 
-                // Remove connection for found client.
-                clients[client] = null;
+                // Shouldn't happen, checking just in case.
+                if (client != null)
+                {
+                    // Remove connection for found client.
+                    clients[client] = null;
+                }
             }
             finally
             {
@@ -242,7 +251,7 @@ namespace Messenger_Server
         /// Retrieve a connection based on a client id.
         /// </summary>
         /// <param name="id">The client id.</param>
-        /// <returns></returns>
+        /// <returns>The connection linked tot the client, if found. Null otherwise.</returns>
         public Connection GetConnection(int id)
         {
             clientLocker.EnterReadLock();
@@ -250,7 +259,15 @@ namespace Messenger_Server
             try
             {
                 Client client = clients.Keys.Where(client => client.Id == id).FirstOrDefault();
-                return clients[client];
+
+                if (client == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return clients[client];
+                }
             }
             finally
             {
