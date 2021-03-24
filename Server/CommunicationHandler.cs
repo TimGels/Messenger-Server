@@ -133,16 +133,26 @@ namespace Messenger_Server
             connection.Close();
         }
 
+        /// <summary>
+        /// Handle incoming register group messages. Creates a new group based upon the
+        /// requested group Id and name.
+        /// </summary>
+        /// <param name="connection">The connection from which the request was sent.</param>
+        /// <param name="message">The message containing the group Id and name.</param>
         private static void HandleRegisterGroup(Connection connection, Message message)
         {
-            // Create a new group, add the sender as initial group member
-            // and return the ID of the new group.
+            // TODO: Add database calls.
+
+            // Create a new group and add the sender as initial group member
             Group newGroup = Server.Instance.CreateGroup(message.PayloadData);
             //newGroup.AddClient(client);
+
+            // Return the Id and name of the new group.
             Message response = new Message()
             {
+                MessageType = MessageType.RegisterGroupResponse,
                 GroupID = newGroup.Id,
-                MessageType = MessageType.RegisterGroupResponse
+                PayloadData = newGroup.Name
             };
             connection.SendData(response);
         }
@@ -169,17 +179,19 @@ namespace Messenger_Server
         /// <param name="message">The message containing the client Id and group Id.</param>
         private static void HandleJoinGroup(Connection connection, Message message)
         {
-            // TODO: replace by database calls.
+            // TODO: replace by database calls and unsuccesful response.
 
             // Get client by client Id.
             Client clientToAdd = Server.Instance.GetClient(message.ClientId);
 
             // Get the group and add the client to it.
-            Server.Instance.GetGroup(message.GroupID).AddClient(clientToAdd);
+            Group groupToJoin = Server.Instance.GetGroup(message.GroupID);
+            groupToJoin.AddClient(clientToAdd);
 
             connection.SendData(new Message()
             {
-                MessageType = MessageType.JoinGroupResponse
+                MessageType = MessageType.JoinGroupResponse,
+                PayloadData = groupToJoin.Name
             });
         }
 
