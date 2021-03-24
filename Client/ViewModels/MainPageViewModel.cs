@@ -98,26 +98,32 @@ namespace Messenger_Client.ViewModels
             }
         }
 
-        public void sendMessage()
+        public void SendMessage()
         {
-            Debug.WriteLine("Tekst: " + this.TypedText);
+            Client.Instance.Connection.SendMessage(new Message()
+            {
+                MessageType = MessageType.ChatMessage,
+                ClientId = Client.Instance.Id,
+                GroupID = SelectedGroupChat.Id,
+                PayloadData = this.TypedText
+            });
             this.TypedText = "";
         } 
         
-        public void checkEnterPressed(object args)
+        public void CheckEnterPressed(object args)
         {
             KeyRoutedEventArgs keyargs = (KeyRoutedEventArgs) args;
             Debug.WriteLine(keyargs.Key);
             if (keyargs.Key == Windows.System.VirtualKey.Enter)
             {
-                sendMessage();
+                SendMessage();
             }
         }       
 
         public MainPageViewModel()
         {
-            SendMessageCommand = new RelayCommand(() => sendMessage());
-            CheckEnterCommand = new RelayCommand<object>(checkEnterPressed);
+            SendMessageCommand = new RelayCommand(() => SendMessage());
+            CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
 
             this.MessageList = new List<TestMessage>();
             this.GroupList = new List<Group>();
