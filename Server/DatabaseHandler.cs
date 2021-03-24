@@ -264,20 +264,20 @@ namespace Messenger_Server
         /// Gets all the groupParticipants
         /// </summary>
         /// <returns> Dictionary with: GroupID, UserID</returns>
-        public static Dictionary<int, int> GetGroupParticipants()
+        public static List<KeyValuePair<int, int>> GetGroupParticipants()
         {
             using (SqliteConnection connection = new SqliteConnection(connectionString))
             {
                 SqliteCommand command = connection.CreateCommand();
                 command.CommandText = "SELECT groupid, userid FROM `GroupParticipants`;";
-                Dictionary<int, int> groupParticipants = new Dictionary<int, int>();
+                List<KeyValuePair<int, int>> groupParticipants = new List<KeyValuePair<int, int>>();
 
                 connection.Open();
                 using (SqliteDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        groupParticipants.Add(reader.GetInt32(0), reader.GetInt32(1));
+                        groupParticipants.Add(new KeyValuePair<int, int>(reader.GetInt32(0), reader.GetInt32(1)));
                     }
                 }
                 connection.Close();
