@@ -150,7 +150,6 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
-    <Compile Include="Services\Converters\Base64ToImageConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -195,6 +194,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Samples\apple-5477802_960_720.webp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\Converters\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

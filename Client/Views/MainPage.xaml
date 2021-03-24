@@ -13,9 +13,6 @@
     <Page.DataContext>
         <viewModels:MainPageViewModel x:Name="MainPageViewModel"/>
     </Page.DataContext>
-    <Page.Resources>
-        <converter:Base64ToImageConverter x:Key="Base64ToImageConverter"/>
-    </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
