@@ -7,11 +7,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:util="using:Messenger_Client.Services.Utilities"
-    xmlns:viewModels="using:Messenger_Client.ViewModels"
+    xmlns:viewModels="using:Messenger_Client.ViewModels" 
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.DataContext>
-        <viewModels:MainPageViewModel x:Name="ViewModel"/>
+        <viewModels:MainPageViewModel x:Name="MainPageViewModel"/>
     </Page.DataContext>
     <Page.Resources>
         <converter:Base64ToImageConverter x:Key="Base64ToImageConverter"/>
@@ -80,37 +80,41 @@
                             Margin="0,0,0,0"
                             ItemsSource="{Binding SelectedGroupChat.Messages}">
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Height="80" Margin="6">
+                        <DataTemplate x:Name="test">
+                            <Grid Height="Auto" Margin="6" x:Name="test">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <Border Width="110" Height="110">
-                                    <!--<Image Source="{Binding Image}" Stretch="UniformToFill"/>-->
-                                </Border>
-                                <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="10,0,0,0" x:Name="stack">
-                                    <TextBlock Text="{Binding PayloadData}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap"/>
-                                    <!--<TextBlock Text="{Binding Subtitle}" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap"/>-->
-                                    <!--<TextBlock Text="{Binding Description}" Style="{StaticResource BodyTextStyle}" MaxHeight="60"/>-->
+                                <!--<Border Width="110" Height="110">
+                                    -->
+                                <!--
+                                </Border>-->
+                                <StackPanel Grid.Column="0" VerticalAlignment="Top" Margin="10,0,0,0" x:Name="stack">
+                                    <!--<Grid>-->
+                                        <!--<Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="40"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>-->
+                                        <TextBlock Text="{Binding PayloadData}" TextWrapping="NoWrap"/>
+                                    <!--</Grid>-->
                                 </StackPanel>
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                     <ListView.ItemContainerStyleSelector>
                         <util:CustomItemContainerSelector>
-                            <util:CustomItemContainerSelector.StyleOwnMessage>
+                            <util:CustomItemContainerSelector.StyleOwnMessageContainer>
                                 <Style TargetType="ListViewItem">
-                                    <!--<Setter Property="FontWeight" Value="ExtraBold"/>-->
-                                    <Setter Property="BorderBrush" Value="Red"/>
                                     <Setter Property="Background" Value="Red"/>
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
                                 </Style>
-                            </util:CustomItemContainerSelector.StyleOwnMessage>
-                            <util:CustomItemContainerSelector.StyleOtherMessage>
+                            </util:CustomItemContainerSelector.StyleOwnMessageContainer>
+                            <util:CustomItemContainerSelector.StyleOtherMessageContainer>
                                 <Style TargetType="ListViewItem">
-                                    <!--<Setter Property="FontWeight" Value="ExtraBold"/>-->
-                                    <Setter Property="BorderBrush" Value="Green"/>
+                                    <Setter Property="Background" Value="Green"/>
+                                    <Setter Property="HorizontalAlignment" Value="Left"/>
                                 </Style>
-                            </util:CustomItemContainerSelector.StyleOtherMessage>
+                            </util:CustomItemContainerSelector.StyleOtherMessageContainer>
                         </util:CustomItemContainerSelector>
                     </ListView.ItemContainerStyleSelector>
                 </ListView>

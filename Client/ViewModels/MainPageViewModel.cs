@@ -1,24 +1,9 @@
 ﻿using Messenger_Client.Models;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Uwp;
 using Shared;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
-using Windows.ApplicationModel.Chat;
-using Windows.Storage;
-using Windows.Storage.Streams;
-using Windows.System;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
 
 namespace Messenger_Client.ViewModels
 {
@@ -26,52 +11,7 @@ namespace Messenger_Client.ViewModels
     {
         public List<TestMessage> MessageList { get; set; }
 
-        //public Client Client { get; set; }
         public List<Group> GroupList { get; set; }
-        //public string Base64ImageData { get; set; }
-
-        private string base64ImageData;
-
-        public string Base64ImageData
-        {
-            get
-            {
-                return base64ImageData;
-            }
-            set
-            {
-                base64ImageData = value;
-                OnPropertyChanged();
-            }
-
-        }
-
-        private string img;
-
-        public string Img
-        {
-            get
-            {
-                return img;
-            }
-            set
-            {
-                img = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private BitmapImage bmi;
-
-        public BitmapImage Bmi
-        {
-            get { return bmi; }
-            set
-            {
-                bmi = value;
-                OnPropertyChanged();
-            }
-        }
 
         private Group selectedGroupChat;
 
@@ -84,19 +24,15 @@ namespace Messenger_Client.ViewModels
             set
             {
                 selectedGroupChat = value;
-                Debug.WriteLine("Selected group chat: " + value.Name);
                 OnPropertyChanged();
             }
         }
-
-
 
         public MainPageViewModel()
         {
 
             this.MessageList = new List<TestMessage>();
             this.GroupList = new List<Group>();
-            this.Base64ImageData = "nodata";
 
 
             Client client = Client.Instance;
