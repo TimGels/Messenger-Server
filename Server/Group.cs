@@ -24,6 +24,25 @@ namespace Messenger_Server
         }
 
         /// <summary>
+        /// Finds out if a client with the specified Id exists in this group.
+        /// </summary>
+        /// <param name="clientId">The Id to search for.</param>
+        /// <returns>True if client with specified Id exists in group, otherwise false.</returns>
+        public bool ContainsClient(int clientId)
+        {
+            clientsLock.EnterReadLock();
+
+            try
+            {
+                return clients.Find(client => client.Id == clientId) != null;
+            }
+            finally
+            {
+                clientsLock.ExitReadLock();
+            }
+        }
+
+        /// <summary>
         /// Add a new client to the group. This method is thread-safe.
         /// </summary>
         /// <param name="client">The client to add.</param>
