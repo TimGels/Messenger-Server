@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Shared;
 
 namespace Messenger_Client.Models
 {
     class CommunicationHandler
     {
+
         public static void HandleMessage(Message message)
         {
             switch (message.MessageType)
@@ -37,7 +39,8 @@ namespace Messenger_Client.Models
             switch (message.ClientId)
             {
                 case -1:
-                    Console.WriteLine("Naam is al bezet!");
+                    Console.WriteLine("e-mail al in gebruik");
+                    //TODO: geef melding dat e-mail al in gebruik is.
                     break;
                 default:
                     Console.WriteLine("Account aangemaakt!");
@@ -52,9 +55,11 @@ namespace Messenger_Client.Models
             {
                 case -1:
                     Console.WriteLine("E-mail of wachtwoord verkeerd!");
+                    //TODO: geef melding dat de combinatie van e-mail en wachtwoord verkeerd is
                     break;
                 case -2:
                     Console.WriteLine("Already ingelogd!");
+                    //TODO: geef melding dat het account al ergens anders is ingelogd
                     break;
                 default:
                     message.GroupList.ForEach(group => Client.Instance.AddGroup(new Group(group)));
@@ -70,6 +75,7 @@ namespace Messenger_Client.Models
             {
                 case -1:
                     Console.WriteLine("failed to create group");
+                    //TODO: geef melding dat het aanmaken van een group mislukt is
                     break;
                 default:
                     Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
@@ -104,13 +110,15 @@ namespace Messenger_Client.Models
 
         private static void HandleChatMessage(Message message)
         {
-            List<Group> groups = Client.Instance.Groups;
-            foreach(Group group in groups)
+            Group group = Client.Instance.GetGroup(message.GroupID);
+            if (group != null)
             {
-                if(group.Id == message.GroupID)
-                {
-                    group.AddMessage(message);
-                }
+                group.AddMessage(message);
+            }
+            else
+            {
+                Console.WriteLine("group doesn't exist");
+                //TODO: doe iets wanneer de group niet bestaat
             }
         }
     }
