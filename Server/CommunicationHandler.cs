@@ -143,7 +143,6 @@ namespace Messenger_Server
             newGroup.AddClient(Server.Instance.GetClient(message.ClientId));
 
             // Return the Id and name of the new group.
-
             Message response = new Message()
             {
                 MessageType = MessageType.RegisterGroupResponse,
