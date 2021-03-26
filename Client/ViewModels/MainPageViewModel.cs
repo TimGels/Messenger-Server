@@ -16,6 +16,7 @@ namespace Messenger_Client.ViewModels
     {
         public ICommand SendMessageCommand { get; set; }
         public ICommand CheckEnterCommand { get; set; }
+        public ICommand AddGroupCommand { get; set; }
         public List<Models.TestMessage> MessageList { get; set; }
         public List<Group> GroupList { get; set; }
 
@@ -72,10 +73,17 @@ namespace Messenger_Client.ViewModels
             }
         }
 
+        private void OpenAddGroupView()
+        {
+               
+
+        }
+
         public MainPageViewModel()
         {
             SendMessageCommand = new RelayCommand(() => SendMessage());
             CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
+            AddGroupCommand = new RelayCommand(() => OpenAddGroupView());
 
             this.GroupList = new List<Group>();
             this.TypedText = "";
@@ -109,5 +117,7 @@ namespace Messenger_Client.ViewModels
                 GroupList[groupId].AddMessage(message);
             }
         }
+
+       
     }
 }

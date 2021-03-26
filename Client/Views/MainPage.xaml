@@ -11,7 +11,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.DataContext>
-        <viewModels:MainPageViewModel x:Name="MainPageViewModel"/>
+        <viewModels:MainPageViewModel x:Name="ViewModel"/>
     </Page.DataContext>
     <Grid>
         <Grid.RowDefinitions>
@@ -19,8 +19,20 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Background="Red"
+        <Grid Background="white"
               Grid.Row="0">
+
+            <MenuBar Style="{ThemeResource MenuBar}">
+                <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Group">
+                    <MenuFlyoutItem  Text="New group" Command="{Binding AddGroupCommand}" />
+                </MenuBarItem>
+                <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Settings">
+                    <MenuFlyoutItem  Text="New group" Command="{Binding AddGroupCommand}" />
+                </MenuBarItem>
+                <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="About">
+                    <MenuFlyoutItem  Text="About" Command="{Binding AddGroupCommand}" />
+                </MenuBarItem>
+            </MenuBar>
         </Grid>
 
         <Grid Grid.Row="1"
