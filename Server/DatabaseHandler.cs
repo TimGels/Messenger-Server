@@ -101,7 +101,7 @@ namespace Messenger_Server
             {
                 connection.Open();
                 SqliteCommand command = connection.CreateCommand();
-                command.CommandText = "CREATE TABLE `User` (id INTEGER PRIMARY KEY,userName VARCHAR(50),email VARCHAR(100) UNIQUE,passwd VARCHAR(100))";
+                command.CommandText = "CREATE TABLE `User` (id INTEGER PRIMARY KEY,userName VARCHAR(50),email VARCHAR(100) UNIQUE,password VARCHAR(100))";
                 command.ExecuteNonQuery();
                 connection.Close();
             }
@@ -144,12 +144,11 @@ namespace Messenger_Server
         }
 
         /// <summary>
-        /// This method will add the given group to the database. Then it will set and
-        /// return the id of the group.
+        /// This method will add the given group to the database. 
         /// </summary>
         /// <param name="group"></param>
         /// <returns>-1 when somethin went wrong, else the id of added group.</returns>
-        public static int AddGroup(Group group)
+        public static int AddGroup(string groupName)
         {
             try
             {
@@ -157,15 +156,13 @@ namespace Messenger_Server
                 {
                     SqliteCommand command = connection.CreateCommand();
                     command.CommandText = "insert into `Group` (groupName) values (@groupName)";
-                    command.Parameters.AddWithValue("@groupName", group.Name);
+                    command.Parameters.AddWithValue("@groupName", groupName);
 
                     SqliteCommand getIdCommand = new SqliteCommand("select last_insert_rowid() from `Group`", connection);
 
                     connection.Open();
                     command.ExecuteNonQuery();
-                    int id = (int)(long)getIdCommand.ExecuteScalar();
-                    group.Id = id;
-                    return id;
+                    return (int)(long)getIdCommand.ExecuteScalar();
                 }
             }
             catch (Exception e)
@@ -201,6 +198,25 @@ namespace Messenger_Server
                 Console.WriteLine(e.Message);
                 return -1;
             }
+        }
+
+        /// <summary>
+        /// Get the password from the client based on the email of the client.
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns></returns>
+        public static string GetPasswordFromClient(string email)
+        {
+            using(SqliteConnection connection = new SqliteConnection(connectionString))
+            {
+                SqliteCommand command = connection.CreateCommand();
+                command.CommandText = "select passwd from `User` where email = @userEmail";
+                command.Parameters.AddWithValue("@userEmail", email);
+
+                return (string)command.ExecuteScalar();
+            }
+
+
         }
 
         /// <summary>

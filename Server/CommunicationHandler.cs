@@ -53,21 +53,16 @@ namespace Messenger_Server
         /// <param name="message">The incoming registration message.</param>
         private static void HandleRegisterClient(Connection connection, Message message)
         {
-            // TODO: Add database validation and unsuccesful response.
-            int retreivedid = 0;
-            Client newClient = new Client()
-            {
-                Id = retreivedid,
-                Name = message.ClientName
-            };
+            string email = message.RegisterInfo.Login.Email;
+            string password = message.RegisterInfo.Login.Password;
+            string userName = message.RegisterInfo.Username;
 
-            // add client in database / internal dictionary
-            Server.Instance.AddClient(newClient, connection);
+            int id = Server.Instance.CreateAndAddClient(userName, email, password);
 
             connection.SendData(new Message()
             {
-                MessageType = MessageType.RegisterClientResponse,
-                ClientId = newClient.Id
+                ClientId = id,
+                MessageType = MessageType.RegisterClientResponse
             });
         }
 
@@ -79,10 +74,7 @@ namespace Messenger_Server
         /// <param name="message">The incoming signin message.</param>
         private static void HandleSignInClient(Connection connection, Message message)
         {
-            // TODO: Add database validation and unsuccesful response.
-            int databaseclientid = 99;
-            string databaseusername = "name";
-            bool authenticated = true;
+            bool authenticated = Helper.ValidatePassword(message.LoginInfo.Email, message.LoginInfo.Password);
 
             Message response = new Message()
             {
@@ -96,8 +88,12 @@ namespace Messenger_Server
                 return;
             }
 
+            Client client = Server.Instance.GetClient(message.LoginInfo.Email);
+
+
+
             // If the connection already exists, the client is already signed in.
-            if (Server.Instance.GetConnection(databaseclientid) != null)
+            if (Server.Instance.GetConnection(client.Id) != null)
             {
                 response.ClientId = -2;
                 connection.SendData(response);
@@ -105,7 +101,7 @@ namespace Messenger_Server
             }
 
             // "Sign-in" by adding connection to client.
-            Server.Instance.AddConnection(databaseclientid, connection);
+            Server.Instance.AddConnection(client.Id, connection);
 
             // Get all groups which the client has joined.
             List<Group> groupsWithClient = new List<Group>();
@@ -117,8 +113,8 @@ namespace Messenger_Server
                 }
             });
 
-            response.ClientId = databaseclientid;
-            response.ClientName = databaseusername;
+            response.ClientId = client.Id;
+            response.ClientName = client.Name;
             response.GroupList = groupsWithClient.Cast<Shared.Group>().ToList();
 
             connection.SendData(response);
@@ -138,7 +134,7 @@ namespace Messenger_Server
             // Create a new group, add the sender as initial group member
             // and return the ID of the new group.
             Group newGroup = Server.Instance.CreateGroup(message.PayloadData);
-            //newGroup.AddClient(client);
+            newGroup.AddClient(Server.Instance.GetClient(message.ClientId));
             Message response = new Message()
             {
                 GroupID = newGroup.Id,
@@ -169,13 +165,16 @@ namespace Messenger_Server
         /// <param name="message">The message containing the client Id and group Id.</param>
         private static void HandleJoinGroup(Connection connection, Message message)
         {
-            // TODO: replace by database calls.
-
             // Get client by client Id.
             Client clientToAdd = Server.Instance.GetClient(message.ClientId);
 
             // Get the group and add the client to it.
-            Server.Instance.GetGroup(message.GroupID).AddClient(clientToAdd);
+            Group groupToJoin = Server.Instance.GetGroup(message.GroupID);
+
+            if(clientToAdd != null && groupToJoin != null)
+            {
+                groupToJoin.AddClient(clientToAdd);
+            }
 
             connection.SendData(new Message()
             {

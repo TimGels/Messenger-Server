@@ -48,20 +48,37 @@ namespace Messenger_Server
         /// <param name="client">The client to add.</param>
         public void AddClient(Client client)
         {
+
+            DatabaseHandler.AddClientToGroup(this, client);
+
             clientsLock.EnterWriteLock();
-            this.clients.Add(client);
-            clientsLock.ExitWriteLock();
+            try
+            {
+                this.clients.Add(client);
+            }
+            finally
+            {
+                clientsLock.ExitWriteLock();
+            }
+
         }
 
         /// <summary>
         /// Remove a client from the group. This method is thread-safe.
+        /// TODO: add database handling.
         /// </summary>
         /// <param name="client">The client to remove.</param>
         public void RemoveClient(Client client)
         {
             clientsLock.EnterWriteLock();
-            this.clients.Remove(client);
-            clientsLock.ExitWriteLock();
+            try
+            {
+                this.clients.Remove(client);
+            }
+            finally
+            {
+                clientsLock.ExitWriteLock();
+            }
         }
 
         /// <summary>
@@ -82,7 +99,7 @@ namespace Messenger_Server
                     sendDataTasks.Add(Task.Run(() =>
                     {
                         Connection connection = Server.Instance.GetConnection(client.Id);
-                        if(connection != null)
+                        if (connection != null)
                         {
                             connection.SendData(message);
                         }

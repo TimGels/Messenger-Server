@@ -87,7 +87,7 @@ namespace Messenger_Server
         private void AddClientsToGroups()
         {
             //DatabaseHandler.getGroupsParticipants() returns a dictionary with: groupId, userId;
-            foreach(KeyValuePair<int, int> entry in DatabaseHandler.GetGroupParticipants())
+            foreach (KeyValuePair<int, int> entry in DatabaseHandler.GetGroupParticipants())
             {
                 int groupId = entry.Key;
                 int userId = entry.Value;
@@ -99,7 +99,7 @@ namespace Messenger_Server
                 Client client = this.GetClient(userId);
 
                 //check if client and group are not null
-                if(client != null && group != null)
+                if (client != null && group != null)
                 {
                     group.AddClient(client);
                 }
@@ -169,11 +169,13 @@ namespace Messenger_Server
         /// <returns>The group that was added.</returns>
         public Group CreateGroup(string groupName)
         {
-            // Lock here since we need the group count for the GroupID.
+            int groupID = DatabaseHandler.AddGroup(groupName);
+            Group group = new Group(groupID, groupName);
+
+            
             groupLocker.EnterWriteLock();
             try
             {
-                Group group = new Group(this.groups.Count, groupName);
                 this.groups.Add(group);
                 return group;
             }
@@ -184,28 +186,40 @@ namespace Messenger_Server
         }
 
         /// <summary>
-        /// Add a client to the server with its corresponding connection.
+        /// Add a client to the server
         /// </summary>
-        /// <param name="client">The client to add.</param>
-        /// <param name="connection">The connection to add.</param>
-        public void AddClient(Client client, Connection connection)
+        /// <param name="client"></param>
+        /// <returns>The id of the just created client</returns>
+        public int CreateAndAddClient(string userName, string email, string password)
         {
-            clientLocker.EnterWriteLock();
+            Client client = new Client()
+            {
+                Email = email,
+                Name = userName
+            };
 
-            try
+            client.Id = DatabaseHandler.AddClient(client, password);
+
+            if (client.Id >= 0)
             {
-                clients.Add(client, connection);
+                clientLocker.EnterWriteLock();
+
+                try
+                {
+                    this.clients.Add(client, null);
+                }
+                finally
+                {
+                    clientLocker.ExitWriteLock();
+                }
             }
-            finally
-            {
-                clientLocker.ExitWriteLock();
-            }
+            return client.Id;
         }
 
         /// <summary>
         /// Get a client by its Id.
         /// </summary>
-        /// <param name="clientId">The Id of the client to get.</param>
+        /// <param name="id">The Id of the client to get.</param>
         /// <returns></returns>
         public Client GetClient(int id)
         {
@@ -214,6 +228,25 @@ namespace Messenger_Server
             try
             {
                 return clients.Keys.Where(client => client.Id == id).FirstOrDefault();
+            }
+            finally
+            {
+                clientLocker.ExitReadLock();
+            }
+        }
+
+        /// <summary>
+        /// Get a client by its email.
+        /// </summary>
+        /// <param name="email">The email of the client to get.</param>
+        /// <returns></returns>
+        public Client GetClient(string email)
+        {
+            clientLocker.EnterReadLock();
+
+            try
+            {
+                return clients.Keys.Where(client => client.Email == email).FirstOrDefault();
             }
             finally
             {
