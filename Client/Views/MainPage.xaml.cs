@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Threading;
 using Messenger_Client.Models;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 
 namespace Messenger_Client.Views
 {

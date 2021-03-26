@@ -19,8 +19,7 @@ namespace Messenger_Client.Models
         /// Create a new group from a base group.
         /// </summary>
         /// <param name="group"></param>
-        public Group(Shared.Group group)
-            : this(group.Id, group.Name)
+        public Group(Shared.Group group) : this(group.Id, group.Name)
         {
 
         }
@@ -30,10 +29,9 @@ namespace Messenger_Client.Models
         /// </summary>
         /// <param name="id">The Id of the group.</param>
         /// <param name="name">The name of the group.</param>
-        public Group(int id, string name)
-            : base(id, name)
+        public Group(int id, string name) : base(id, name)
         {
-
+            this.Messages = new List<Message>();
         }
 
         /// <summary>
@@ -52,10 +50,10 @@ namespace Messenger_Client.Models
             {
                 this.messsageLocker.ExitWriteLock();
             }
-            
+
         }
 
-        public void SendMessage(String payload)
+        public void SendMessage(string payload)
         {
             //TODO: I think this method should be responsible for constructing a new message OR for adding the id and the name of the group to the message.
             // from here a call to the connection object is made which actually sends the message to the server.
@@ -72,7 +70,7 @@ namespace Messenger_Client.Models
                 MessageType = MessageType.ChatMessage
             };
             //call send method which actually sends this message to the server.
-            Task.Run(()=> Client.Instance.Connection.SendData(message));
+            Task.Run(() => Client.Instance.Connection.SendData(message));
 
         }
 
@@ -87,13 +85,15 @@ namespace Messenger_Client.Models
             string csvMessages = "";
             try
             {
-                foreach (Message message in this.Messages){
+                foreach (Message message in this.Messages)
+                {
                     //get the csv representation of each message and add it to the string.
                     csvMessages += message.GetCsvString();
                 }
 
                 return csvMessages;
-            } finally
+            }
+            finally
             {
                 //exit readlock of all messages
                 this.messsageLocker.ExitReadLock();

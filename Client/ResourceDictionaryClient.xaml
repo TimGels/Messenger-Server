@@ -22,6 +22,16 @@
         <Setter Property="PlaceholderText" Value="Username"/>
         <Setter Property="BorderThickness" Value="0,0,0,1"/>
         <Setter Property="Padding" Value="10,12,6,6"/>
+    </Style> 
+    
+    <Style TargetType="TextBox" x:Key="LoginMail">
+        <Setter Property="Height" Value="50"/>
+        <Setter Property="MinHeight" Value="50"/>
+        <Setter Property="Margin" Value="15"/>
+        <Setter Property="Foreground" Value="#EEEEEE"/>
+        <Setter Property="PlaceholderText" Value="E-mailadres"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="Padding" Value="10,12,6,6"/>
     </Style>
     
     <Style TargetType="PasswordBox" x:Key="LoginPassword">
@@ -51,5 +61,14 @@
         <Setter Property="TextAlignment" Value="Center"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <Style TargetType="MenuBarItem" x:Key="MenuBarItem">
+        <Setter Property="Padding" Value="10"/>
+        
+    </Style>
+    
+    <Style TargetType="MenuBar" x:Key="MenuBar">
+        <Setter Property="Padding" Value="0,0,0,10"/>      
     </Style>
 </ResourceDictionary>
