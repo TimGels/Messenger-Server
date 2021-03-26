@@ -220,7 +220,7 @@ namespace Messenger_Server
                 {
                     while (reader.Read())
                     {
-                        Group group = new Group(reader.GetString(1), reader.GetInt32(0));
+                        Group group = new Group(reader.GetInt32(0), reader.GetString(1));
                         groups.Add(group);
                     }
                 }
