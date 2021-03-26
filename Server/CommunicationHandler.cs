@@ -127,6 +127,7 @@ namespace Messenger_Server
         private static void HandleSignOutClient(Connection connection)
         {
             connection.Close();
+            //TODO: signoutclienResponse sturen.
         }
 
         private static void HandleRegisterGroup(Connection connection, Message message)
