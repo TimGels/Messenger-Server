@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="Messenger_Client.Views.AddGroupPage1"
+    x:Class="Messenger_Client.Views.JoinGroupPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Messenger_Client.Views"

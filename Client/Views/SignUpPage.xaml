@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:viewModels="using:Messenger_Client.ViewModels"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
     <Page.DataContext>
         <viewModels:SignUpPageViewModel x:Name="ViewModel"/>
     </Page.DataContext>
@@ -37,7 +38,7 @@
             <StackPanel Grid.Row="1" Grid.Column="1" Margin="5">
                 <TextBlock Text="Registreren" Padding="5" Style="{ThemeResource LoginHeading}"/>
                 <TextBox Style="{ThemeResource LoginName}" />
-                <TextBox Style="{ThemeResource LoginMail}" /> 
+                <TextBox Style="{ThemeResource LoginMail}" />
                 <PasswordBox Style="{ThemeResource LoginPassword}" />
                 <PasswordBox Style="{ThemeResource LoginPassword}" PlaceholderText="Herhaal wachtwoord"/>
                 <Button  Style="{ThemeResource LoginButton}" Content="Registreren"/>
