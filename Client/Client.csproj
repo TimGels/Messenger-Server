@@ -120,6 +120,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Client.cs" />
+    <Compile Include="Services\Converters\Base64ToImageConverter.cs" />
     <Compile Include="ViewModels\LoginPageViewModel.cs" />
     <Compile Include="Models\TestMessage.cs" />
     <Compile Include="Services\Utilities\CustomItemContainerSelector.cs" />
@@ -195,9 +196,7 @@
   <ItemGroup>
     <Content Include="Assets\Samples\apple-5477802_960_720.webp" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\Converters\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
