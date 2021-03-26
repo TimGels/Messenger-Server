@@ -115,7 +115,7 @@ namespace Messenger_Server
         /// <param name="password"></param>
         /// <returns>int -1 = there already exists a client with this email or something
         /// else went wrongor the id of the just added user.</returns>
-        public static int AddClient(Client client, String password)
+        public static int AddClient(Client client, string password)
         {
             try
             {
@@ -146,7 +146,7 @@ namespace Messenger_Server
         /// <summary>
         /// This method will add the given group to the database. 
         /// </summary>
-        /// <param name="group"></param>
+        /// <param name="groupName">The name of the group to add.</param>
         /// <returns>-1 when somethin went wrong, else the id of added group.</returns>
         public static int AddGroup(string groupName)
         {
@@ -203,7 +203,7 @@ namespace Messenger_Server
         /// <summary>
         /// Get the password from the client based on the email of the client.
         /// </summary>
-        /// <param name="client"></param>
+        /// <param name="email">The email of the client.</param>
         /// <returns></returns>
         public static string GetPasswordFromClient(string email)
         {
@@ -215,8 +215,6 @@ namespace Messenger_Server
 
                 return (string)command.ExecuteScalar();
             }
-
-
         }
 
         /// <summary>

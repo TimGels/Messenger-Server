@@ -38,8 +38,7 @@ namespace Messenger_Server
                     HandleLeaveGroup(connection, message);
                     break;
                 case MessageType.ChatMessage:
-                    // Relay the chatMessage to all other clients in the group.
-                    //Server.Instance.GetGroup(message.GroupID).SendMessageToClients(message);
+                    HandleChatMessage(connection, message);
                     break;
             }
         }
@@ -194,6 +193,18 @@ namespace Messenger_Server
             Client client = Server.Instance.GetClient(message.ClientId);
 
             Server.Instance.GetGroup(message.GroupID).RemoveClient(client);
+        }
+
+        /// <summary>
+        /// Handle incoming chatmessages. Relay the chatmessage to all other clients in
+        /// the group.
+        /// </summary>
+        /// <param name="connection">The connection from which the message was sent.</param>
+        /// <param name="message">The message containing the chatmessage.</param>
+        private static void HandleChatMessage(Connection connection, Message message)
+        {
+            // Relay the chatMessage to all other clients in the group.
+            Server.Instance.GetGroup(message.GroupID).SendMessageToClients(message);
         }
     }
 }
