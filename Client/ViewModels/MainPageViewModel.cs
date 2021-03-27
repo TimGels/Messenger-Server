@@ -3,6 +3,7 @@ using Microsoft.Toolkit.Mvvm.Input;
 using Shared;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Input;
@@ -17,9 +18,30 @@ namespace Messenger_Client.ViewModels
         public ICommand SendMessageCommand { get; set; }
         public ICommand CheckEnterCommand { get; set; }
         public ICommand AddGroupCommand { get; set; }
-        public List<Models.TestMessage> MessageList { get; set; }
-        public List<Group> GroupList { get; set; }
-
+        public ObservableCollection<Group> GroupList
+        {
+            get
+            {
+                return Client.Instance.Groups;
+            }
+        }
+        public ObservableCollection<Message> MessagesList
+        {
+            get
+            {
+                if (this.SelectedGroupChat == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return SelectedGroupChat.Messages;
+                }
+            }
+            set
+            {
+            }
+        }
 
         private Group selectedGroupChat;
 
@@ -32,7 +54,8 @@ namespace Messenger_Client.ViewModels
             set
             {
                 selectedGroupChat = value;
-                OnPropertyChanged();
+                OnPropertyChanged("MessagesList");
+                Debug.WriteLine("Moi");
             }
         }
 
@@ -55,13 +78,22 @@ namespace Messenger_Client.ViewModels
 
         public void SendMessage()
         {
-            Client.Instance.Connection.SendData(new Message()
+            if (this.TypedText.Equals(""))
+            {
+                return;
+            }
+
+            Message message = new Message()
             {
                 MessageType = MessageType.ChatMessage,
                 ClientId = Client.Instance.Id,
                 GroupID = SelectedGroupChat.Id,
+                DateTime = DateTime.Now,
                 PayloadData = this.TypedText
-            });
+            };
+
+            Client.Instance.Connection.SendData(message);
+            SelectedGroupChat.AddMessage(message);
             this.TypedText = "";
         }
 
@@ -77,7 +109,7 @@ namespace Messenger_Client.ViewModels
 
         private void OpenAddGroupView()
         {
-               
+
 
         }
 
@@ -87,19 +119,14 @@ namespace Messenger_Client.ViewModels
             CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
             AddGroupCommand = new RelayCommand(() => OpenAddGroupView());
             ImageString = "iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAIAAADTED8xAAADMElEQVR4nOzVwQnAIBQFQYXff81RUkQCOyDj1YOPnbXWPmeTRef+/3O/OyBjzh3CD95BfqICMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMO0TAAD//2Anhf4QtqobAAAAAElFTkSuQmCC";
-
-            this.GroupList = new List<Group>();
             this.TypedText = "";
-
-            Client client = Client.Instance;
 
             Random rnd = new Random();
 
             for (int i = 0; i < 20; i++)
             {
                 Group group = new Group(i, string.Format("GroupName {0}", i));
-                client.AddGroup(group);
-                GroupList.Add(group);
+                Client.Instance.AddGroup(group);
             }
 
 
@@ -121,6 +148,6 @@ namespace Messenger_Client.ViewModels
             }
         }
 
-       
+
     }
 }

@@ -8,6 +8,7 @@ using Messenger_Client.Models;
 using Windows.Storage.Pickers;
 using Connection = Messenger_Client.Models.Connection;
 using Group = Messenger_Client.Models.Group;
+using System.Collections.ObjectModel;
 
 namespace Messenger_Client
 {
@@ -38,13 +39,13 @@ namespace Messenger_Client
         public static Client Instance { get { return lazy.Value; } }
         public string ClientName { get; set; }
         public int Id { get; set; }
-        public List<Group> Groups { get; set; }
+        public ObservableCollection<Group> Groups { get; set; }
         public Connection Connection { get; set; }
 
 
         private Client()
         {
-            this.Groups = new List<Group>();
+            this.Groups = new ObservableCollection<Group>();
             this.Connection = new Connection(serverAddress, port);
             this.ClientName = "clientName";
             this.Id = 1;

@@ -90,8 +90,6 @@ namespace Messenger_Server
 
             Client client = Server.Instance.GetClient(message.LoginInfo.Email);
 
-
-
             // If the connection already exists, the client is already signed in.
             if (Server.Instance.GetConnection(client.Id) != null)
             {
