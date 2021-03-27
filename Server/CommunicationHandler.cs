@@ -1,6 +1,8 @@
 ﻿using Shared;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System;
 
 namespace Messenger_Server
 {
@@ -87,7 +89,6 @@ namespace Messenger_Server
                 connection.SendData(response);
                 return;
             }
-
             Client client = Server.Instance.GetClient(message.LoginInfo.Email);
 
             // If the connection already exists, the client is already signed in.

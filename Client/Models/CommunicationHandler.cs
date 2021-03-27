@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net;
+using System.Security;
 using System.Threading;
 using Shared;
 
@@ -32,41 +35,80 @@ namespace Messenger_Client.Models
                     break;
             }
         }
-        
+
+        public static event EventHandler LoggedInSuccesfully;
+
+        public static void SendLoginMessage(string email, string password)
+        {
+            Client.Instance.Connection.SendData(new Message()
+            {
+                MessageType = MessageType.SignInClient,
+                LoginInfo = new LoginStruct()
+                {
+                    Email = email,
+                    Password = password
+                }
+            });
+        }
+
+        internal static void SendRegisterMessage(string mail, string name, string password)
+        {
+            Client.Instance.Connection.SendData(new Message()
+            {
+                MessageType = MessageType.RegisterClient,
+                RegisterInfo = new RegisterStruct()
+                {
+                    Username = name,
+                    Login = new LoginStruct()
+                    {
+                        Email = mail,
+                        Password = password
+                    }
+                }
+            });
+        }
+
 
         private static void HandleRegisterClientResponse(Message message)
         {
             switch (message.ClientId)
             {
                 case -1:
-                    Console.WriteLine("e-mail al in gebruik");
+                    Debug.WriteLine("e-mail al in gebruik");
                     //TODO: geef melding dat e-mail al in gebruik is.
                     break;
                 default:
-                    Console.WriteLine("Account aangemaakt!");
-                    Client.Instance.Id = message.ClientId;
+                    //TODO mooie pop up ofso
+                    Debug.WriteLine("Account aangemaakt!");
+                    Debug.WriteLine("ClientID: " + message.ClientId);
+
                     break;
             }
         }
+
 
         private static void HandleSignInClientResponse(Message message)
         {
             switch (message.ClientId)
             {
                 case -1:
-                    Console.WriteLine("E-mail of wachtwoord verkeerd!");
+                    Debug.WriteLine("E-mail of wachtwoord verkeerd!");
                     //TODO: geef melding dat de combinatie van e-mail en wachtwoord verkeerd is
                     break;
                 case -2:
-                    Console.WriteLine("Already ingelogd!");
+                    Debug.WriteLine("Already ingelogd!");
                     //TODO: geef melding dat het account al ergens anders is ingelogd
                     break;
                 default:
-                    message.GroupList.ForEach(group => Client.Instance.AddGroup(new Group(group)));
-                    Console.WriteLine("Gefeliciteerd!");
+                    Debug.WriteLine("Gefeliciteerd!");
+                    Client.Instance.Id = message.ClientId;
+                    //TODO: dit werkt nog niet: FormatException
+                    //Debug.WriteLine("count of group list: " + message.GroupList.Count);
+                    //message.GroupList.ForEach(group => Client.Instance.AddGroup(new Group(group)));
+                    Debug.WriteLine("Klaar!");
+                    LoggedInSuccesfully?.Invoke(null, null);
                     break;
             }
-            Console.WriteLine(message.ClientId);
         }
 
         private static void HandleRegisterGroupResponse(Message message)

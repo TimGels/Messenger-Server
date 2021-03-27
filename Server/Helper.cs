@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,8 +19,7 @@ namespace Messenger_Server
 
         public static bool ValidatePassword(string email, string passwordToCheck)
         {
-            string password = DatabaseHandler.GetPasswordFromClient(email);
-            return passwordToCheck.Equals(password);
+            return passwordToCheck.Equals(DatabaseHandler.GetPasswordFromClient(email));
         }
     }
 }

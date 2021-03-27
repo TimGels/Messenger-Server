@@ -1,4 +1,5 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+﻿using Messenger_Client.Views;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Shared;
 using System;
@@ -7,6 +8,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Group = Messenger_Client.Models.Group;
 
@@ -18,6 +21,7 @@ namespace Messenger_Client.ViewModels
         public ICommand SendMessageCommand { get; set; }
         public ICommand CheckEnterCommand { get; set; }
         public ICommand AddGroupCommand { get; set; }
+        public ICommand SignUpCommand { get; set; }
         public ObservableCollection<Group> GroupList
         {
             get
@@ -49,7 +53,6 @@ namespace Messenger_Client.ViewModels
             get { return selectedGroupChat; }
             set { selectedGroupChat = value;
                 OnPropertyChanged("MessagesList");
-                Debug.WriteLine("Moi");
             }
         }
 
@@ -91,7 +94,6 @@ namespace Messenger_Client.ViewModels
         public void CheckEnterPressed(object args)
         {
             KeyRoutedEventArgs keyargs = (KeyRoutedEventArgs)args;
-            Debug.WriteLine(keyargs.Key);
             if (keyargs.Key == Windows.System.VirtualKey.Enter)
             {
                 SendMessage();
@@ -100,8 +102,14 @@ namespace Messenger_Client.ViewModels
 
         private void OpenAddGroupView()
         {
+            Debug.WriteLine("OpenAddGroupView");
+            (Window.Current.Content as Frame).Navigate(typeof(LoginPage));
 
+        }
 
+        private void OpenSignUpView()
+        {
+            Debug.WriteLine("OpenSignUpView");
         }
 
         public MainPageViewModel()
@@ -109,6 +117,8 @@ namespace Messenger_Client.ViewModels
             SendMessageCommand = new RelayCommand(() => SendMessage());
             CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
             AddGroupCommand = new RelayCommand(() => OpenAddGroupView());
+            SignUpCommand = new RelayCommand(() => OpenSignUpView());
+
             this.TypedText = "";
 
             Random rnd = new Random();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -172,7 +173,7 @@ namespace Messenger_Server
             int groupID = DatabaseHandler.AddGroup(groupName);
             Group group = new Group(groupID, groupName);
 
-            
+
             groupLocker.EnterWriteLock();
             try
             {
@@ -290,14 +291,23 @@ namespace Messenger_Server
                 // HACK: Only works when values (connections) in Server.clients are unique
 
                 // Find client with the specified connection which we need to delete.
-                Client client = clients.Where(pair => pair.Value.Equals(connection)).FirstOrDefault().Key;
+                var keyValuePairs = clients.Where(pair => connection.Equals(pair.Value));
 
                 // Shouldn't happen, checking just in case.
+                if (keyValuePairs == null)
+                {
+                    return;
+                }
+                // FirstOrDefault throws if keyValuePairs is null.
+                Client client = keyValuePairs.FirstOrDefault().Key;
                 if (client != null)
                 {
                     // Remove connection for found client.
                     clients[client] = null;
                 }
+            } catch(Exception e)
+            {
+                Debug.WriteLine(e.Message);
             }
             finally
             {
