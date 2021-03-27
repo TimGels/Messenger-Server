@@ -1,6 +1,7 @@
 ﻿using Shared;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,7 +9,7 @@ namespace Messenger_Client.Models
 {
     public class Group : Shared.Group
     {
-        public List<Message> Messages { get; set; }
+        public ObservableCollection<Message> Messages { get; set; }
 
         /// <summary>
         /// The read-write lock for the messages list.
@@ -31,7 +32,7 @@ namespace Messenger_Client.Models
         /// <param name="name">The name of the group.</param>
         public Group(int id, string name) : base(id, name)
         {
-            this.Messages = new List<Message>();
+            this.Messages = new ObservableCollection<Message>();
         }
 
         /// <summary>

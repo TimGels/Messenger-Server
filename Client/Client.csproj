@@ -122,7 +122,6 @@
     <Compile Include="Models\Client.cs" />
     <Compile Include="Services\Converters\Base64ToImageConverter.cs" />
     <Compile Include="ViewModels\LoginPageViewModel.cs" />
-    <Compile Include="Models\TestMessage.cs" />
     <Compile Include="Services\Utilities\CustomItemContainerSelector.cs" />
     <Compile Include="Services\Utilities\ImageUtilityService.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
