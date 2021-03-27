@@ -102,10 +102,7 @@ namespace Messenger_Client.Models
                 default:
                     Debug.WriteLine("Gefeliciteerd!");
                     Client.Instance.Id = message.ClientId;
-                    //TODO: dit werkt nog niet: FormatException
-                    //Debug.WriteLine("count of group list: " + message.GroupList.Count);
-                    //message.GroupList.ForEach(group => Client.Instance.AddGroup(new Group(group)));
-                    Debug.WriteLine("Klaar!");
+                    message.GroupList.ForEach(group => Client.Instance.AddGroup(new Group(group)));
                     LoggedInSuccesfully?.Invoke(null, null);
                     break;
             }
