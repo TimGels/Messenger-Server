@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{DE1CE964-815C-46CA-99E0-C22FC23B191C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{5B523ED5-0221-4527-9A52-792E3B8A4EF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{5B523ED5-0221-4527-9A52-792E3B8A4EF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +44,8 @@ Global
 		{06A85705-73E9-4277-92D0-1D5BC3BF1ECA}.Release|x86.ActiveCfg = Release|Any CPU
 		{06A85705-73E9-4277-92D0-1D5BC3BF1ECA}.Release|x86.Build.0 = Release|Any CPU
 		{DE1CE964-815C-46CA-99E0-C22FC23B191C}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{DE1CE964-815C-46CA-99E0-C22FC23B191C}.Debug|Any CPU.Build.0 = Debug|x86
+		{DE1CE964-815C-46CA-99E0-C22FC23B191C}.Debug|Any CPU.Deploy.0 = Debug|x86
 		{DE1CE964-815C-46CA-99E0-C22FC23B191C}.Debug|ARM.ActiveCfg = Debug|ARM
 		{DE1CE964-815C-46CA-99E0-C22FC23B191C}.Debug|ARM.Build.0 = Debug|ARM
 		{DE1CE964-815C-46CA-99E0-C22FC23B191C}.Debug|ARM.Deploy.0 = Debug|ARM

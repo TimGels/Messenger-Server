@@ -4,11 +4,74 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Messenger_Client.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:viewModels="using:Messenger_Client.ViewModels"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-    </Grid>
+        <Grid Grid.Row="0">
+
+
+            <MenuBar Style="{ThemeResource MenuBar}">
+                <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Settings">
+                    <MenuFlyoutItem  Text="New group" Command="{Binding AddGroupCommand}" />
+                </MenuBarItem>
+                <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Group">
+                    <MenuFlyoutSubItem  Text="Join group" >
+                        <MenuFlyoutItem>
+
+                        </MenuFlyoutItem>
+
+                    </MenuFlyoutSubItem>
+                </MenuBarItem>
+                <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="About">
+                    <MenuFlyoutItem  Text="About" />
+                </MenuBarItem>
+            </MenuBar>
+
+        </Grid>
+        <Grid Grid.Row="1" Background="Beige">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="50"  />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="500*" />
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Row="1" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="50"  />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50*"/>
+                        <ColumnDefinition Width="400" />
+                        <ColumnDefinition Width="50*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Row="1" Grid.Column="1">
+                        <TextBlock Text="Join group" Padding="5" Style="{ThemeResource JoinGroupHeading}"/>
+                        <ListView>
+                            
+                        </ListView>
+                        <Button  Style="{ThemeResource JoinGroupButton}"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+
+
+        </Grid>
+
+    </Grid> 
 </Page>

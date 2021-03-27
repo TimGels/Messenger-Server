@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Input;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Group = Messenger_Client.Models.Group;
 
@@ -16,9 +17,10 @@ namespace Messenger_Client.ViewModels
     {
         public ICommand SendMessageCommand { get; set; }
         public ICommand CheckEnterCommand { get; set; }
-        public ICommand AddGroupCommand { get; set; }
+        public ICommand ShowGroupsCommand { get; set; }
         public List<Models.TestMessage> MessageList { get; set; }
         public List<Group> GroupList { get; set; }
+        
 
 
         private Group selectedGroupChat;
@@ -73,17 +75,17 @@ namespace Messenger_Client.ViewModels
             }
         }
 
-        private void OpenAddGroupView()
+        private void ShowGroups(object args)
         {
-               
-
+            
+            
         }
 
         public MainPageViewModel()
         {
             SendMessageCommand = new RelayCommand(() => SendMessage());
             CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
-            AddGroupCommand = new RelayCommand(() => OpenAddGroupView());
+            ShowGroupsCommand = new RelayCommand<object>(ShowGroups);
 
             this.GroupList = new List<Group>();
             this.TypedText = "";
@@ -118,6 +120,6 @@ namespace Messenger_Client.ViewModels
             }
         }
 
-       
+
     }
 }

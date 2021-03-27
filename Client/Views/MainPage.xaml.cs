@@ -27,6 +27,7 @@ namespace Messenger_Client.Views
 
             Thread writerThread = new Thread(writerDoWork);
             writerThread.Start();
+
         }
 
         private void writerDoWork()
