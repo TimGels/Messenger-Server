@@ -121,6 +121,8 @@
     </Compile>
     <Compile Include="Models\Client.cs" />
     <Compile Include="Services\Converters\Base64ToImageConverter.cs" />
+    <Compile Include="Services\Converters\DateTimeToTimeConverter.cs" />
+    <Compile Include="Services\Utilities\MessageDataTemplateSelector.cs" />
     <Compile Include="ViewModels\LoginPageViewModel.cs" />
     <Compile Include="Models\TestMessage.cs" />
     <Compile Include="Services\Utilities\CustomItemContainerSelector.cs" />

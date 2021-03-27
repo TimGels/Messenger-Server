@@ -47,6 +47,7 @@ namespace Messenger_Client
             this.Groups = new List<Group>();
             this.Connection = new Connection(serverAddress, port);
             this.ClientName = "clientName";
+            this.Id = 1;
         }
         /// <summary>
         /// TODO: Make GroupID unique.

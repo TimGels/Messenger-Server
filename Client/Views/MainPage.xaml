@@ -13,6 +13,77 @@
     <Page.DataContext>
         <viewModels:MainPageViewModel x:Name="ViewModel"/>
     </Page.DataContext>
+    <Page.Resources>
+        <converter:Base64ToImageConverter x:Name="Base64ToImageConverter"/>
+        <converter:DateTimeToTimeConverter x:Name="DateTimeToTimeConverter"/>
+
+        <DataTemplate x:Key="OwnMessageDataTemplate">
+            <ListViewItem>
+                <Grid Margin="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="90*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="1" Margin="0,8,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Column="1" CornerRadius="8,8,8,0" Padding="10" Background="Red">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <!--<TextBlock Grid.Row="0" Text="{Binding PayloadData}" TextWrapping="NoWrap"/>-->
+                            <TextBlock Grid.Row="0" Text="Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney" TextWrapping='Wrap'/>
+                            <Image Grid.Row="1" DataContext="{Binding ImageString, Converter={StaticResource Base64ToImageConverter}}" Source="{Binding Result}" Margin="0" Width="300"/>
+                        </Grid>
+
+                        <TextBlock Text="{Binding DateTime, Converter={StaticResource DateTimeToTimeConverter}}"  VerticalAlignment="Bottom"/>
+                    </Grid>
+                </Grid>
+            </ListViewItem>
+        </DataTemplate>
+
+        <DataTemplate x:Key="SomeoneElseMessageDataTemplate">
+            <ListViewItem HorizontalAlignment="Right">
+                <Grid Margin="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="90*"/>
+                        <ColumnDefinition Width="10*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Margin="0,8,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Column="0" CornerRadius="8,8,0,8" Padding="10" Background="Green">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <!--<TextBlock Grid.Row="0" Text="{Binding PayloadData}" TextWrapping="NoWrap"/>-->
+                            <TextBlock Grid.Row="0" Text="Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney" TextWrapping='Wrap'/>
+                            <!--<Image Grid.Row="1" DataContext="{Binding ImageString, Converter={StaticResource Base64ToImageConverter}}" Source="{Binding Result}" Margin="0" MaxHeight="300"/>-->
+                        </Grid>
+
+                        <TextBlock Grid.Column="1" Text="{Binding DateTime, Converter={StaticResource DateTimeToTimeConverter}}" Margin="10,0,0,0" Padding="0,5,0,5" VerticalAlignment="Bottom"/>
+                    </Grid>
+
+                </Grid>
+            </ListViewItem>
+        </DataTemplate>
+
+        <util:MessageDataTemplateSelector x:Key="MessageDataTemplateSelector"
+                OwnMessageDataTemplate="{StaticResource OwnMessageDataTemplate}"
+                SomeoneElseMessageDataTemplate="{StaticResource SomeoneElseMessageDataTemplate}">
+        </util:MessageDataTemplateSelector>
+        
+    </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
@@ -65,7 +136,7 @@
                                 </Border>
                                 <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="10,0,0,0">
                                     <TextBlock Text="{Binding Name}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap"/>
-                                    <!--<TextBlock Text="{Binding Subtitle}" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap"/>-->
+                                    
                                     <!--<TextBlock Text="{Binding Description}" Style="{StaticResource BodyTextStyle}" MaxHeight="60"/>-->
                                 </StackPanel>
                             </Grid>
@@ -82,46 +153,9 @@
 
                 <ListView Grid.Column="0" x:Name="messageListView"
                             Grid.Row="0"
-                            Margin="0,0,0,0"
-                            ItemsSource="{Binding SelectedGroupChat.Messages}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate x:Name="test">
-                            <Grid Height="Auto" Margin="6" x:Name="test">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <!--<Border Width="110" Height="110">
-                                    -->
-                                <!--
-                                </Border>-->
-                                <StackPanel Grid.Column="0" VerticalAlignment="Top" Margin="10,0,0,0" x:Name="stack">
-                                    <!--<Grid>-->
-                                    <!--<Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="40"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>-->
-                                    <TextBlock Text="{Binding PayloadData}" TextWrapping="NoWrap"/>
-                                    <!--</Grid>-->
-                                </StackPanel>
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                    <ListView.ItemContainerStyleSelector>
-                        <util:CustomItemContainerSelector>
-                            <util:CustomItemContainerSelector.StyleOwnMessageContainer>
-                                <Style TargetType="ListViewItem">
-                                    <Setter Property="Background" Value="Red"/>
-                                    <Setter Property="HorizontalAlignment" Value="Right"/>
-                                </Style>
-                            </util:CustomItemContainerSelector.StyleOwnMessageContainer>
-                            <util:CustomItemContainerSelector.StyleOtherMessageContainer>
-                                <Style TargetType="ListViewItem">
-                                    <Setter Property="Background" Value="Green"/>
-                                    <Setter Property="HorizontalAlignment" Value="Left"/>
-                                </Style>
-                            </util:CustomItemContainerSelector.StyleOtherMessageContainer>
-                        </util:CustomItemContainerSelector>
-                    </ListView.ItemContainerStyleSelector>
+                            Padding="-5,0,0,0"
+                            ItemsSource="{Binding SelectedGroupChat.Messages}"
+                            ItemTemplateSelector="{StaticResource MessageDataTemplateSelector}">
                 </ListView>
 
                 <Grid Grid.Row="1" Grid.ColumnSpan="3">
