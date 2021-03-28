@@ -68,6 +68,15 @@ namespace Messenger_Client.Models
             });
         }
 
+        public static void SendRegisterGroupMessage(string name) {
+            Client.Instance.Connection.SendData(new Message()
+            {
+                ClientId = Client.Instance.Id,
+                MessageType = MessageType.RegisterGroup,
+                PayloadData = name
+            });
+        }
+        
 
         private static void HandleRegisterClientResponse(Message message)
         {
@@ -113,7 +122,7 @@ namespace Messenger_Client.Models
             switch (message.GroupID)
             {
                 case -1:
-                    Console.WriteLine("failed to create group");
+                    Debug.WriteLine("failed to create group");
                     //TODO: geef melding dat het aanmaken van een group mislukt is
                     break;
                 default:

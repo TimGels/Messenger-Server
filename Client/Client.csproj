@@ -121,11 +121,19 @@
     </Compile>
     <Compile Include="Models\Client.cs" />
     <Compile Include="Services\Converters\Base64ToImageConverter.cs" />
+    <Compile Include="ViewModels\AddGroupPageViewModel.cs" />
+    <Compile Include="ViewModels\JoinGroupPageViewModel.cs" />
     <Compile Include="ViewModels\LoginPageViewModel.cs" />
     <Compile Include="Services\Utilities\CustomItemContainerSelector.cs" />
     <Compile Include="Services\Utilities\ImageUtilityService.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\SignUpPageViewModel.cs" />
+    <Compile Include="Views\AddGroupPage.xaml.cs">
+      <DependentUpon>AddGroupPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\JoinGroupPage.xaml.cs">
+      <DependentUpon>JoinGroupPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
@@ -165,8 +173,12 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddGroupPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\JoinGroupPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\LoginPage.xaml">
       <SubType>Designer</SubType>

@@ -22,11 +22,17 @@ namespace Messenger_Client.ViewModels
         public ICommand CheckEnterCommand { get; set; }
         public ICommand AddGroupCommand { get; set; }
         public ICommand SignUpCommand { get; set; }
-        public ObservableCollection<Group> GroupList
+        public ICommand ShowAddGroupViewCommand { get; set; }
+        public ICommand ShowGroupsToJoinCommand { get; set; }
+        public ObservableCollection<Group> GroupList 
         {
             get
             {
                 return Client.Instance.Groups;
+            }
+            set
+            {
+
             }
         }
         public ObservableCollection<Message> MessagesList
@@ -100,11 +106,16 @@ namespace Messenger_Client.ViewModels
             }
         }
 
-        private void OpenAddGroupView()
+        private void ShowGroupsToJoin(object args)
         {
-            Debug.WriteLine("OpenAddGroupView");
-            (Window.Current.Content as Frame).Navigate(typeof(LoginPage));
+            Frame rootFrame = Window.Current.Content as Frame;
+            rootFrame.Navigate(typeof(JoinGroupPage));
+        }       
 
+        private void ShowAddGroupView(object obj)
+        {
+            Frame rootFrame = Window.Current.Content as Frame;
+            rootFrame.Navigate(typeof(AddGroupPage));
         }
 
         private void OpenSignUpView()
@@ -116,13 +127,12 @@ namespace Messenger_Client.ViewModels
         {
             SendMessageCommand = new RelayCommand(() => SendMessage());
             CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
-            AddGroupCommand = new RelayCommand(() => OpenAddGroupView());
-            SignUpCommand = new RelayCommand(() => OpenSignUpView());
+            ShowGroupsToJoinCommand = new RelayCommand<object>(ShowGroupsToJoin);
+            ShowAddGroupViewCommand = new RelayCommand<object>(ShowAddGroupView);
 
+            this.GroupList = new ObservableCollection<Group>();
             this.TypedText = "";
 
         }
-
-
     }
 }
