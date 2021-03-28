@@ -2,6 +2,7 @@
 using Messenger_Client.Views;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -54,10 +55,15 @@ namespace Messenger_Client
             {
                 if (rootFrame.Content == null)
                 {
-                    // When the navigation stack isn't restored navigate to the first page,
-                    // configuring the new page by passing required information as a navigation
-                    // parameter
-                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    //Go to mainpage when clienID isnt null. When it is not null it means that the user has a session.
+                    if (ApplicationData.Current.LocalSettings.Values["clientId"] != null)
+                    {
+                        rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    }
+                    else
+                    {
+                        rootFrame.Navigate(typeof(LoginPage), e.Arguments);
+                    }
                 }
                 // Ensure the current window is active
                 Window.Current.Activate();

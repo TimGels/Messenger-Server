@@ -29,7 +29,7 @@
         <Setter Property="MinHeight" Value="50"/>
         <Setter Property="Margin" Value="15"/>
         <Setter Property="Foreground" Value="#EEEEEE"/>
-        <Setter Property="PlaceholderText" Value="E-mailadres"/>
+        <Setter Property="PlaceholderText" Value="E-mail"/>
         <Setter Property="BorderThickness" Value="0,0,0,1"/>
         <Setter Property="Padding" Value="10,12,6,6"/>
     </Style>
@@ -50,6 +50,14 @@
         <Setter Property="Margin" Value="15"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="Content" Value="Inloggen"/>
+    </Style>
+
+    <Style TargetType="Button" x:Key="RegisterButton">
+        <Setter Property="MinHeight" Value="60"/>
+        <Setter Property="Width" Value="400"/>
+        <Setter Property="Margin" Value="15"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Content" Value="Sign up"/>
     </Style>
 
     <Style TargetType="TextBlock" x:Key="LoginError">

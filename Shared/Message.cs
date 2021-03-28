@@ -155,11 +155,17 @@ namespace Shared
             {
                 List<Group> groupList = new List<Group>();
 
-                string[] groupStrings = jsonMessage.Payload.Data.Split(';');
-                foreach (string groupString in groupStrings)
+                // Setting groups server-side with no registered groups works as expected:
+                // empty string. But getter needs a check.
+                if (!jsonMessage.Payload.Data.Equals(""))
                 {
-                    groupList.Add(Group.FromFormatString(groupString));
+                    string[] groupStrings = jsonMessage.Payload.Data.Split(';');
+                    foreach (string groupString in groupStrings)
+                    {
+                        groupList.Add(Group.FromFormatString(groupString));
+                    }
                 }
+
                 return groupList;
             }
             set

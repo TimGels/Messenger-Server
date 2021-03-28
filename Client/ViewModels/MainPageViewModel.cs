@@ -1,4 +1,5 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+﻿using Messenger_Client.Views;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Shared;
 using System;
@@ -7,6 +8,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Group = Messenger_Client.Models.Group;
 
@@ -18,6 +21,7 @@ namespace Messenger_Client.ViewModels
         public ICommand SendMessageCommand { get; set; }
         public ICommand CheckEnterCommand { get; set; }
         public ICommand AddGroupCommand { get; set; }
+        public ICommand SignUpCommand { get; set; }
         public ObservableCollection<Group> GroupList
         {
             get
@@ -78,7 +82,7 @@ namespace Messenger_Client.ViewModels
 
         public void SendMessage()
         {
-            if (this.TypedText.Equals(""))
+            if (this.TypedText.Equals("") || this.SelectedGroupChat == null)
             {
                 return;
             }
@@ -100,7 +104,6 @@ namespace Messenger_Client.ViewModels
         public void CheckEnterPressed(object args)
         {
             KeyRoutedEventArgs keyargs = (KeyRoutedEventArgs)args;
-            Debug.WriteLine(keyargs.Key);
             if (keyargs.Key == Windows.System.VirtualKey.Enter)
             {
                 SendMessage();
@@ -109,8 +112,14 @@ namespace Messenger_Client.ViewModels
 
         private void OpenAddGroupView()
         {
+            Debug.WriteLine("OpenAddGroupView");
+            (Window.Current.Content as Frame).Navigate(typeof(LoginPage));
 
+        }
 
+        private void OpenSignUpView()
+        {
+            Debug.WriteLine("OpenSignUpView");
         }
 
         public MainPageViewModel()
@@ -118,36 +127,9 @@ namespace Messenger_Client.ViewModels
             SendMessageCommand = new RelayCommand(() => SendMessage());
             CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
             AddGroupCommand = new RelayCommand(() => OpenAddGroupView());
-            ImageString = "iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAIAAADTED8xAAADMElEQVR4nOzVwQnAIBQFQYXff81RUkQCOyDj1YOPnbXWPmeTRef+/3O/OyBjzh3CD95BfqICMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMK0CMO0TAAD//2Anhf4QtqobAAAAAElFTkSuQmCC";
+            SignUpCommand = new RelayCommand(() => OpenSignUpView());
             this.TypedText = "";
 
-            Random rnd = new Random();
-
-            for (int i = 0; i < 20; i++)
-            {
-                Group group = new Group(i, string.Format("GroupName {0}", i));
-                Client.Instance.AddGroup(group);
-            }
-
-
-            for (int i = 0; i < 1000; i++)
-            {
-                int clientId = rnd.Next(0, 2);
-                int groupId = rnd.Next(0, 20);
-                Message message = new Message()
-                {
-                    ClientName = "ClientName1",
-                    ClientId = clientId,
-                    DateTime = DateTime.Now,
-                    GroupID = groupId,
-                    MessageType = MessageType.ChatMessage,
-                    PayloadData = $"this is a message with client {clientId} and group {groupId}",
-                };
-
-                GroupList[groupId].AddMessage(message);
-            }
         }
-
-
     }
 }
