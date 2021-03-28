@@ -81,7 +81,7 @@
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
-                        <Button  Style="{ThemeResource JoinGroupButton}"/>
+                        <Button  Style="{ThemeResource JoinGroupButton}" Command="{Binding JoinGroupCommand}"/>
                         <Button  Style="{ThemeResource CancelButton}"/>
                     </StackPanel>
                 </Grid>     

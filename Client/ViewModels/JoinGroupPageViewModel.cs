@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Messenger_Client.Models;
+using Microsoft.Toolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Group = Messenger_Client.Models.Group;
+using System.Windows.Input;
 
 namespace Messenger_Client.ViewModels
 {
     class JoinGroupPageViewModel
     {
-        private Group selectedChat;
+        public ICommand JoinGroupCommand { get; set; }
 
-        public ObservableCollection<Group> GroupList;
+        private Group selectedChat;
 
         public Group SelectedChat
         {
@@ -28,10 +23,17 @@ namespace Messenger_Client.ViewModels
             }
         }
 
+        public ObservableCollection<Group> GroupList { get; set; }
+
         public JoinGroupPageViewModel()
         {
-            Debug.WriteLine(GroupList.Count);
+            JoinGroupCommand = new RelayCommand(() => JoinGroup());
+            this.GroupList = new ObservableCollection<Group>();
         }
 
+        private void JoinGroup()
+        {
+
+        }
     }
 }
