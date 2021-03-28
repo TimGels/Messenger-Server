@@ -21,7 +21,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Text="{Binding PayloadData}" TextWrapping="NoWrap"/>
+                        <TextBlock Grid.Row="0" Text="{Binding PayloadData}" TextWrapping="Wrap"/>
                         <!--<TextBlock Grid.Row="0" Text="Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney" TextWrapping='Wrap'/>-->
                         <!--<Image Grid.Row="1" DataContext="{Binding ImageString, Converter={StaticResource Base64ToImageConverter}}" Source="{Binding Result}" Margin="0" Width="300"/>-->
                     </Grid>
@@ -30,7 +30,7 @@
             </Grid>
         </ListViewItem>
     </DataTemplate>
-
+    
     <DataTemplate x:Key="OwnMessageDataTemplate">
         <ListViewItem HorizontalAlignment="Right">
             <Grid Margin="0">
@@ -50,7 +50,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Text="{Binding PayloadData}" TextWrapping="NoWrap"/>
+                        <TextBlock Grid.Row="0" Text="{Binding PayloadData}" TextWrapping="Wrap"/>
                         <!--<TextBlock Grid.Row="0" Text="Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney" TextWrapping='Wrap'/>-->
                         <!--<Image Grid.Row="1" DataContext="{Binding ImageString, Converter={StaticResource Base64ToImageConverter}}" Source="{Binding Result}" Margin="0" MaxHeight="300"/>-->
                     </Grid>

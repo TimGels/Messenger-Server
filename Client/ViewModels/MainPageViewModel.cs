@@ -40,6 +40,7 @@ namespace Messenger_Client.ViewModels
             }
             set
             {
+                OnPropertyChanged("MessagesList");
             }
         }
 
@@ -54,8 +55,7 @@ namespace Messenger_Client.ViewModels
             set
             {
                 selectedGroupChat = value;
-                OnPropertyChanged("MessagesList");
-                Debug.WriteLine("Moi");
+                MessagesList = value.Messages;
             }
         }
 
