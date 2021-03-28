@@ -73,7 +73,7 @@ namespace Messenger_Client.ViewModels
 
         public void SendMessage()
         {
-            if (this.TypedText.Equals(""))
+            if (this.TypedText.Equals("") || this.SelectedGroupChat == null)
             {
                 return;
             }
@@ -121,31 +121,6 @@ namespace Messenger_Client.ViewModels
 
             this.TypedText = "";
 
-            Random rnd = new Random();
-
-            for (int i = 0; i < 20; i++)
-            {
-                Group group = new Group(i, string.Format("GroupName {0}", i));
-                Client.Instance.AddGroup(group);
-            }
-
-
-            for (int i = 0; i < 1000; i++)
-            {
-                int clientId = rnd.Next(0, 2);
-                int groupId = rnd.Next(0, 20);
-                Message message = new Message()
-                {
-                    ClientName = "ClientName1",
-                    ClientId = clientId,
-                    DateTime = DateTime.Now,
-                    GroupID = groupId,
-                    MessageType = MessageType.ChatMessage,
-                    PayloadData = $"this is a message with client {clientId} and group {groupId}",
-                };
-
-                GroupList[groupId].AddMessage(message);
-            }
         }
 
 

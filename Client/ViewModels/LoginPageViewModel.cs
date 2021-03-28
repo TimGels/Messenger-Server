@@ -25,6 +25,8 @@ namespace Messenger_Client.ViewModels
             this.RegisterButtonCommand = new RelayCommand(() => RegisterButtonClicked());
             this.LoginButtonCommand = new RelayCommand(() => LoginButtonClicked());
             this.CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
+            this.Email = "";
+            this.Password = "";
             //to be sure the client is reading when logging in..
             Client client = Client.Instance;
         }

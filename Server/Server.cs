@@ -23,24 +23,7 @@ namespace Messenger_Server
         /// <summary>
         /// All registered groups.
         /// </summary>
-        private readonly List<Group> groups;
-
-        public List<Group> Groups
-        {
-            get
-            {
-                groupLocker.EnterReadLock();
-
-                try
-                {
-                    return groups;
-                }
-                finally
-                {
-                    groupLocker.ExitReadLock();
-                }
-            }
-        }
+        private List<Group> groups;
 
         /// <summary>
         /// The read-write lock for the grouplist.
@@ -305,7 +288,8 @@ namespace Messenger_Server
                     // Remove connection for found client.
                     clients[client] = null;
                 }
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
             }
@@ -341,6 +325,46 @@ namespace Messenger_Server
             {
                 clientLocker.ExitReadLock();
             }
+        }
+
+        /// <summary>
+        /// getter for the group list
+        /// </summary>
+        /// <returns>a copy of the groups list in the server</returns>
+        public List<Group> GetGroups()
+        {
+            groupLocker.EnterReadLock();
+            try
+            {
+                return new List<Group>(this.groups);
+            }
+            finally
+            {
+                groupLocker.ExitReadLock();
+            }
+
+        }
+
+        public List<Group> getGroupsWithClient(Client client)
+        {
+            List<Group> groupsWithClient = new List<Group>();
+            groupLocker.EnterReadLock();
+            try
+            {
+                foreach (Group group in this.groups)
+                {
+                    if (group.ContainsClient(client.Id))
+                    {
+                        groupsWithClient.Add(group);
+                    }
+                }
+            }
+            finally
+            {
+                groupLocker.ExitReadLock();
+            }
+
+            return groupsWithClient;
         }
 
         /// <summary>

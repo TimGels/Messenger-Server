@@ -102,19 +102,9 @@ namespace Messenger_Server
             // "Sign-in" by adding connection to client.
             Server.Instance.AddConnection(client.Id, connection);
 
-            // Get all groups which the client has joined.
-            List<Group> groupsWithClient = new List<Group>();
-            Server.Instance.Groups.ForEach(group =>
-            {
-                if (group.ContainsClient(message.ClientId))
-                {
-                    groupsWithClient.Add(group);
-                }
-            });
-
             response.ClientId = client.Id;
             response.ClientName = client.Name;
-            response.GroupList = groupsWithClient.Cast<Shared.Group>().ToList();
+            response.GroupList = Server.Instance.getGroupsWithClient(client).Cast<Shared.Group>().ToList();
 
             connection.SendData(response);
         }
@@ -134,7 +124,12 @@ namespace Messenger_Server
             // Create a new group, add the sender as initial group member
             // and return the ID of the new group.
             Group newGroup = Server.Instance.CreateGroup(message.PayloadData);
-            newGroup.AddClient(Server.Instance.GetClient(message.ClientId));
+            Client client = Server.Instance.GetClient(message.ClientId);
+            if (client != null)
+            {
+                DatabaseHandler.AddClientToGroup(newGroup, client);
+                newGroup.AddClient(client);
+            }
             Message response = new Message()
             {
                 GroupID = newGroup.Id,
@@ -153,7 +148,7 @@ namespace Messenger_Server
             connection.SendData(new Message()
             {
                 MessageType = MessageType.RequestGroupsResponse,
-                GroupList = Server.Instance.Groups.Cast<Shared.Group>().ToList()
+                GroupList = Server.Instance.GetGroups().Cast<Shared.Group>().ToList()
             });
         }
 
@@ -173,6 +168,7 @@ namespace Messenger_Server
 
             if(clientToAdd != null && groupToJoin != null)
             {
+                DatabaseHandler.AddClientToGroup(groupToJoin, clientToAdd);
                 groupToJoin.AddClient(clientToAdd);
             }
 

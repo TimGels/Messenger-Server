@@ -49,8 +49,6 @@ namespace Messenger_Server
         public void AddClient(Client client)
         {
 
-            DatabaseHandler.AddClientToGroup(this, client);
-
             clientsLock.EnterWriteLock();
             try
             {
