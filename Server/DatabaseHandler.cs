@@ -101,7 +101,7 @@ namespace Messenger_Server
             {
                 connection.Open();
                 SqliteCommand command = connection.CreateCommand();
-                command.CommandText = "CREATE TABLE `User` (id INTEGER PRIMARY KEY,userName VARCHAR(50),email VARCHAR(100) UNIQUE,password VARCHAR(100))";
+                command.CommandText = "CREATE TABLE `User` (id INTEGER PRIMARY KEY,userName VARCHAR(50),email VARCHAR(100) UNIQUE,passwd VARCHAR(100))";
                 command.ExecuteNonQuery();
                 connection.Close();
             }
