@@ -125,16 +125,21 @@ namespace Messenger_Server
             // and return the ID of the new group.
             Group newGroup = Server.Instance.CreateGroup(message.PayloadData);
             Client client = Server.Instance.GetClient(message.ClientId);
+            Message response = new Message()
+            {
+                MessageType = MessageType.RegisterGroupResponse
+            };
             if (client != null)
             {
                 DatabaseHandler.AddClientToGroup(newGroup, client);
                 newGroup.AddClient(client);
-            }
-            Message response = new Message()
+                response.GroupID = newGroup.Id;
+                response.PayloadData = newGroup.Name;
+            } else
             {
-                GroupID = newGroup.Id,
-                MessageType = MessageType.RegisterGroupResponse
-            };
+                response.GroupID = -1;
+            }
+            
             connection.SendData(response);
         }
 

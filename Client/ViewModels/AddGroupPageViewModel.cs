@@ -28,7 +28,6 @@ namespace Messenger_Client.ViewModels
         private void CheckEnterPressed(object obj)
         {
             KeyRoutedEventArgs keyargs = (KeyRoutedEventArgs)obj;
-            Debug.WriteLine(keyargs.Key);
             if (keyargs.Key == Windows.System.VirtualKey.Enter)
             {
                 AddNewGroup();
