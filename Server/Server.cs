@@ -130,7 +130,8 @@ namespace Messenger_Server
         /// Retrieve a group by its GroupID.
         /// </summary>
         /// <param name="id">The GroupID</param>
-        /// <returns>The group with the associated ID.</returns>
+        /// <returns>The group with the associated Id or null if the group with the
+        /// specified Id doesn't exist.</returns>
         public Group GetGroup(int id)
         {
             groupLocker.EnterReadLock();
