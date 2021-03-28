@@ -44,7 +44,8 @@
                                            RevealBackground="{ThemeResource ListViewItemRevealBackground}"
                                            SelectedForeground="{ThemeResource ListViewItemForegroundSelected}"
                                            SelectionCheckMarkVisualEnabled="{ThemeResource ListViewItemSelectionCheckMarkVisualEnabled}"
-                                           SelectedBackground="#79E5DB" SelectedPressedBackground="#60b7af"
+                                           SelectedBackground="#79E5DB" 
+                                           SelectedPressedBackground="#60b7af"
                                            SelectedPointerOverBackground="#6ccec5" 
                                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
                         <VisualStateManager.VisualStateGroups>

@@ -107,8 +107,8 @@
                         <ColumnDefinition Width="100"/>
                     </Grid.ColumnDefinitions>
 
-                    <Button Grid.Row="1" HorizontalAlignment="Center" Grid.ColumnSpan="1" Width="75" Height="75">
-                        <FontIcon FontSize="50" FontFamily="Segoe MDL2 Assets" Glyph="&#xE723;" Foreground="White"/>
+                    <Button Style="{StaticResource AttachementButton}" Grid.Row="1" BorderThickness="0" HorizontalAlignment="Center" Grid.ColumnSpan="1" Width="75" Height="75" Background="#FAFAFA">
+                        <FontIcon FontSize="50" FontFamily="Segoe MDL2 Assets" Glyph="&#xE723;"/>
                     </Button>
 
                     <TextBox Grid.Column="1" Margin="10" BorderThickness="0.5" TextWrapping="Wrap" Text="{Binding TypedText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
@@ -117,12 +117,23 @@
                                 <Core:InvokeCommandAction Command="{Binding CheckEnterCommand}"/>
                             </Core:EventTriggerBehavior>
                         </Interactivity:Interaction.Behaviors>
-
                     </TextBox>
 
-
-                    <Button Grid.Row="1" Command="{Binding SendMessageCommand}" HorizontalAlignment="Center" Grid.Column="2" Grid.ColumnSpan="1" Width="75" Height="75" Background="Beige">
-                        <FontIcon FontSize="50"  FontFamily="Segoe MDL2 Assets" Glyph="&#xE724;" Foreground="White"/>
+                    <Button Style="{StaticResource SendMessageButton}" Grid.Row="1" Command="{Binding SendMessageCommand}"
+                            HorizontalAlignment="Center" 
+                            Grid.Column="2"
+                            Grid.ColumnSpan="1" 
+                            Width="75" 
+                            Height="75"
+                            Background="#FAFAFA"
+                            BorderThickness="0">
+                        <Button.Resources>
+                            <ResourceDictionary>
+                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#d6f7f4"/>
+                                <SolidColorBrush x:Key="SelectedPressedBackground" Color="#60b7af"/>
+                            </ResourceDictionary>
+                        </Button.Resources>
+                        <FontIcon FontSize="50"  FontFamily="Segoe MDL2 Assets" Glyph="&#xE724;" Foreground="#79E5DB"/>
                     </Button>
                 </Grid>
 
