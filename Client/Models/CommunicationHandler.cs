@@ -32,6 +32,14 @@ namespace Messenger_Client.Models
                     break;
             }
         }
+
+        public static void SendRegisterGroupMessage(string name) {
+            Client.Instance.Connection.SendData(new Message()
+            {
+                MessageType = MessageType.RegisterGroup,
+                PayloadData = name
+            }) ;
+        }
         
 
         private static void HandleRegisterClientResponse(Message message)

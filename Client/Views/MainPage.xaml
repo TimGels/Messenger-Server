@@ -21,19 +21,15 @@
 
         <Grid Background="white"
               Grid.Row="0">
- 
-            
+
+
             <MenuBar Style="{ThemeResource MenuBar}">
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Settings">
                     <MenuFlyoutItem  Text="New group" Command="{Binding AddGroupCommand}" />
                 </MenuBarItem>
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Group">
-                    <MenuFlyoutSubItem  Text="Join group" >
-                        <MenuFlyoutItem>
-                            
-                        </MenuFlyoutItem>
-
-                    </MenuFlyoutSubItem>
+                    <MenuFlyoutItem  Text="Join group" Command="{Binding ShowGroupsToJoinCommand}" />
+                    <MenuFlyoutItem  Text="Add group" Command="{Binding ShowAddGroupViewCommand}"/>
                 </MenuBarItem>
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="About">
                     <MenuFlyoutItem  Text="About" />

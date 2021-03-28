@@ -1,4 +1,5 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+﻿using Messenger_Client.Views;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Shared;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Input;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Group = Messenger_Client.Models.Group;
@@ -17,7 +19,8 @@ namespace Messenger_Client.ViewModels
     {
         public ICommand SendMessageCommand { get; set; }
         public ICommand CheckEnterCommand { get; set; }
-        public ICommand ShowGroupsCommand { get; set; }
+        public ICommand ShowGroupsToJoinCommand { get; set; }
+        public ICommand ShowAddGroupViewCommand { get; set; }
         public List<Models.TestMessage> MessageList { get; set; }
         public List<Group> GroupList { get; set; }
         
@@ -75,17 +78,25 @@ namespace Messenger_Client.ViewModels
             }
         }
 
-        private void ShowGroups(object args)
+        private void ShowGroupsToJoin(object args)
         {
-            
-            
+
+            Frame rootFrame = Window.Current.Content as Frame;
+            rootFrame.Navigate(typeof(JoinGroupPage));
+        }
+
+        private void ShowAddGroupView(object obj)
+        {
+            Frame rootFrame = Window.Current.Content as Frame;
+            rootFrame.Navigate(typeof(AddGroupPage));
         }
 
         public MainPageViewModel()
         {
             SendMessageCommand = new RelayCommand(() => SendMessage());
             CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
-            ShowGroupsCommand = new RelayCommand<object>(ShowGroups);
+            ShowGroupsToJoinCommand = new RelayCommand<object>(ShowGroupsToJoin);
+            ShowAddGroupViewCommand = new RelayCommand<object>(ShowAddGroupView);
 
             this.GroupList = new List<Group>();
             this.TypedText = "";
@@ -120,6 +131,6 @@ namespace Messenger_Client.ViewModels
             }
         }
 
-
+        
     }
 }
