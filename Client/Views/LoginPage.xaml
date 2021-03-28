@@ -5,8 +5,15 @@
     xmlns:local="using:Messenger_Client.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="using:Messenger_Client.ViewModels"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.DataContext>
+        <viewModels:LoginPageViewModel x:Name="ViewModel"/>
+    </Page.DataContext>
 
     <Grid Background="#03C04A">
         <Grid.RowDefinitions>
@@ -34,9 +41,16 @@
 
             <StackPanel Grid.Row="1" Grid.Column="1" Margin="5">
                 <TextBlock Text="Inloggen" Padding="5" Style="{ThemeResource LoginHeading}"/>
-                <TextBox Style="{ThemeResource LoginName}" />
-                <PasswordBox Style="{ThemeResource LoginPassword}" />
-                <Button  Style="{ThemeResource LoginButton}"/>
+                <TextBox Style="{ThemeResource LoginMail}" Text="{Binding Email, Mode=TwoWay}" />
+                <PasswordBox Style="{ThemeResource LoginPassword}" Password="{Binding Password, Mode=TwoWay}">
+                    <Interactivity:Interaction.Behaviors>
+                        <Core:EventTriggerBehavior EventName="KeyDown" >
+                            <Core:InvokeCommandAction Command="{Binding CheckEnterCommand}"/>
+                        </Core:EventTriggerBehavior>
+                    </Interactivity:Interaction.Behaviors>
+                </PasswordBox>
+                <Button  Style="{ThemeResource LoginButton}" Command="{Binding LoginButtonCommand}"/>
+                <Button  Style="{ThemeResource RegisterButton}" Command="{Binding RegisterButtonCommand}"/>
                 <TextBlock Text="Hier moet iets komen te staan als je ww of username fout is" Style="{ThemeResource LoginError}"/>
             </StackPanel>
         </Grid>

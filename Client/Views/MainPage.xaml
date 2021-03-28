@@ -7,7 +7,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:util="using:Messenger_Client.Services.Utilities"
-    xmlns:viewModels="using:Messenger_Client.ViewModels" xmlns:Interactivity="using:Microsoft.Xaml.Interactivity" xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:viewModels="using:Messenger_Client.ViewModels"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.DataContext>
@@ -22,17 +24,22 @@
         <Grid Background="white"
               Grid.Row="0">
 
+
             <MenuBar Style="{ThemeResource MenuBar}">
-                <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Group">
-                    <MenuFlyoutItem  Text="New group" Command="{Binding AddGroupCommand}" />
-                </MenuBarItem>
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Settings">
                     <MenuFlyoutItem  Text="New group" Command="{Binding AddGroupCommand}" />
                 </MenuBarItem>
+                <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Group">
+                    <MenuFlyoutItem  Text="Join group" Command="{Binding ShowGroupsToJoinCommand}" />
+                    <MenuFlyoutItem  Text="Add group" Command="{Binding ShowAddGroupViewCommand}"/>
+                </MenuBarItem>
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="About">
-                    <MenuFlyoutItem  Text="About" Command="{Binding AddGroupCommand}" />
+                    <MenuFlyoutItem  Text="About" />
                 </MenuBarItem>
             </MenuBar>
+
+
+
         </Grid>
 
         <Grid Grid.Row="1"
@@ -83,7 +90,7 @@
                 <ListView Grid.Column="0" x:Name="messageListView"
                             Grid.Row="0"
                             Margin="0,0,0,0"
-                            ItemsSource="{Binding SelectedGroupChat.Messages}">
+                            ItemsSource="{Binding MessagesList, Mode=TwoWay}">
                     <ListView.ItemTemplate>
                         <DataTemplate x:Name="test">
                             <Grid Height="Auto" Margin="6" x:Name="test">

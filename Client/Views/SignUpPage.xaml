@@ -4,9 +4,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Messenger_Client.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:viewModels="using:Messenger_Client.ViewModels"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:viewModels="using:Messenger_Client.ViewModels"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
     <Page.DataContext>
         <viewModels:SignUpPageViewModel x:Name="ViewModel"/>
     </Page.DataContext>
@@ -36,11 +38,12 @@
 
             <StackPanel Grid.Row="1" Grid.Column="1" Margin="5">
                 <TextBlock Text="Registreren" Padding="5" Style="{ThemeResource LoginHeading}"/>
-                <TextBox Style="{ThemeResource LoginName}" />
-                <TextBox Style="{ThemeResource LoginMail}" /> 
-                <PasswordBox Style="{ThemeResource LoginPassword}" />
-                <PasswordBox Style="{ThemeResource LoginPassword}" PlaceholderText="Herhaal wachtwoord"/>
-                <Button  Style="{ThemeResource LoginButton}" Content="Registreren"/>
+                <TextBox Style="{ThemeResource LoginName}" Text="{Binding Name, Mode=TwoWay}"/>
+                <TextBox Style="{ThemeResource LoginMail}"  Text="{Binding Mail, Mode=TwoWay}"/>
+                <PasswordBox Style="{ThemeResource LoginPassword}" Password="{Binding Password, Mode=TwoWay}"/>
+                <PasswordBox Style="{ThemeResource LoginPassword}" PlaceholderText="Repeat password" Password="{Binding RepeatPassword, Mode=TwoWay}" />
+                <Button  Style="{ThemeResource LoginButton}" Content="Registreren" Command="{Binding RegisterButtonCommand}"/>
+                <Button  Style="{ThemeResource LoginButton}" Content="Go  to login screen" Command="{Binding GoToLoginButtonCommand}"/>
                 <TextBlock Text="Hier moet iets komen te staan als je ww of username fout is" Style="{ThemeResource LoginError}"/>
             </StackPanel>
         </Grid>

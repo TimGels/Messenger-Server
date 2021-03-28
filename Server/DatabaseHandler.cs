@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -54,9 +55,9 @@ namespace Messenger_Server
         {
             using (SqliteConnection connection = new SqliteConnection(connectionString))
             {
-                connection.Open();
                 SqliteCommand command = connection.CreateCommand();
                 command.CommandText = "CREATE TABLE `Messsage` (id INTEGER PRIMARY KEY,payload TEXT,senderid INTEGER,groupid INTEGER,timesent DATETIME,FOREIGN KEY(senderid) REFERENCES `User`(id) ON DELETE CASCADE FOREIGN KEY(groupid) REFERENCES `Group`(id) ON DELETE CASCADE)";
+                connection.Open();
                 command.ExecuteNonQuery();
                 connection.Close();
             }
@@ -69,9 +70,9 @@ namespace Messenger_Server
         {
             using (SqliteConnection connection = new SqliteConnection(connectionString))
             {
-                connection.Open();
                 SqliteCommand command = connection.CreateCommand();
                 command.CommandText = "CREATE TABLE `GroupParticipants` (userid INTEGER NOT NULL,groupid INTEGER NOT NULL,FOREIGN KEY(userid) REFERENCES `User`(id) ON DELETE CASCADE FOREIGN KEY(groupid) REFERENCES `Group`(id) ON DELETE CASCADE PRIMARY KEY(userid, groupid))";
+                connection.Open();
                 command.ExecuteNonQuery();
                 connection.Close();
             }
@@ -84,9 +85,9 @@ namespace Messenger_Server
         {
             using (SqliteConnection connection = new SqliteConnection(connectionString))
             {
-                connection.Open();
                 SqliteCommand command = connection.CreateCommand();
                 command.CommandText = "CREATE TABLE `Group` (id INTEGER PRIMARY KEY,groupName VARCHAR(50))";
+                connection.Open();
                 command.ExecuteNonQuery();
                 connection.Close();
             }
@@ -99,8 +100,8 @@ namespace Messenger_Server
         {
             using (SqliteConnection connection = new SqliteConnection(connectionString))
             {
-                connection.Open();
                 SqliteCommand command = connection.CreateCommand();
+                connection.Open();
                 command.CommandText = "CREATE TABLE `User` (id INTEGER PRIMARY KEY,userName VARCHAR(50),email VARCHAR(100) UNIQUE,passwd VARCHAR(100))";
                 command.ExecuteNonQuery();
                 connection.Close();
@@ -207,13 +208,20 @@ namespace Messenger_Server
         /// <returns></returns>
         public static string GetPasswordFromClient(string email)
         {
-            using(SqliteConnection connection = new SqliteConnection(connectionString))
+            try
             {
-                SqliteCommand command = connection.CreateCommand();
-                command.CommandText = "select passwd from `User` where email = @userEmail";
-                command.Parameters.AddWithValue("@userEmail", email);
+                using (SqliteConnection connection = new SqliteConnection(connectionString))
+                {
+                    SqliteCommand command = connection.CreateCommand();
+                    command.CommandText = "select passwd from `User` where email = @userEmail";
+                    command.Parameters.AddWithValue("@userEmail", email);
 
-                return (string)command.ExecuteScalar();
+                    connection.Open();
+                    return (string)command.ExecuteScalar();
+                }
+            } catch (Exception e)
+            {
+                return string.Empty;
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -22,24 +23,7 @@ namespace Messenger_Server
         /// <summary>
         /// All registered groups.
         /// </summary>
-        private readonly List<Group> groups;
-
-        public List<Group> Groups
-        {
-            get
-            {
-                groupLocker.EnterReadLock();
-
-                try
-                {
-                    return groups;
-                }
-                finally
-                {
-                    groupLocker.ExitReadLock();
-                }
-            }
-        }
+        private List<Group> groups;
 
         /// <summary>
         /// The read-write lock for the grouplist.
@@ -173,7 +157,7 @@ namespace Messenger_Server
             int groupID = DatabaseHandler.AddGroup(groupName);
             Group group = new Group(groupID, groupName);
 
-            
+
             groupLocker.EnterWriteLock();
             try
             {
@@ -291,14 +275,24 @@ namespace Messenger_Server
                 // HACK: Only works when values (connections) in Server.clients are unique
 
                 // Find client with the specified connection which we need to delete.
-                Client client = clients.Where(pair => pair.Value.Equals(connection)).FirstOrDefault().Key;
+                var keyValuePairs = clients.Where(pair => connection.Equals(pair.Value));
 
                 // Shouldn't happen, checking just in case.
+                if (keyValuePairs == null)
+                {
+                    return;
+                }
+                // FirstOrDefault throws if keyValuePairs is null.
+                Client client = keyValuePairs.FirstOrDefault().Key;
                 if (client != null)
                 {
                     // Remove connection for found client.
                     clients[client] = null;
                 }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
             }
             finally
             {
@@ -332,6 +326,46 @@ namespace Messenger_Server
             {
                 clientLocker.ExitReadLock();
             }
+        }
+
+        /// <summary>
+        /// getter for the group list
+        /// </summary>
+        /// <returns>a copy of the groups list in the server</returns>
+        public List<Group> GetGroups()
+        {
+            groupLocker.EnterReadLock();
+            try
+            {
+                return new List<Group>(this.groups);
+            }
+            finally
+            {
+                groupLocker.ExitReadLock();
+            }
+
+        }
+
+        public List<Group> getGroupsWithClient(Client client)
+        {
+            List<Group> groupsWithClient = new List<Group>();
+            groupLocker.EnterReadLock();
+            try
+            {
+                foreach (Group group in this.groups)
+                {
+                    if (group.ContainsClient(client.Id))
+                    {
+                        groupsWithClient.Add(group);
+                    }
+                }
+            }
+            finally
+            {
+                groupLocker.ExitReadLock();
+            }
+
+            return groupsWithClient;
         }
 
         /// <summary>

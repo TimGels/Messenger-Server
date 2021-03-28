@@ -29,7 +29,7 @@
         <Setter Property="MinHeight" Value="50"/>
         <Setter Property="Margin" Value="15"/>
         <Setter Property="Foreground" Value="#EEEEEE"/>
-        <Setter Property="PlaceholderText" Value="E-mailadres"/>
+        <Setter Property="PlaceholderText" Value="E-mail"/>
         <Setter Property="BorderThickness" Value="0,0,0,1"/>
         <Setter Property="Padding" Value="10,12,6,6"/>
     </Style>
@@ -52,6 +52,14 @@
         <Setter Property="Content" Value="Inloggen"/>
     </Style>
 
+    <Style TargetType="Button" x:Key="RegisterButton">
+        <Setter Property="MinHeight" Value="60"/>
+        <Setter Property="Width" Value="400"/>
+        <Setter Property="Margin" Value="15"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Content" Value="Sign up"/>
+    </Style>
+
     <Style TargetType="TextBlock" x:Key="LoginError">
         <Setter Property="Margin" Value="15"/>
         <Setter Property="Height" Value="Auto"/>
@@ -64,11 +72,64 @@
     </Style>
 
     <Style TargetType="MenuBarItem" x:Key="MenuBarItem">
-        <Setter Property="Padding" Value="10"/>
-        
+        <Setter Property="Padding" Value="10"/>        
     </Style>
     
     <Style TargetType="MenuBar" x:Key="MenuBar">
         <Setter Property="Padding" Value="0,0,0,10"/>      
     </Style>
+
+    <!-- Add group view -->
+    <Style TargetType="TextBox" x:Key="GroupNameTextBox">
+        <Setter Property="Height" Value="50"/>
+        <Setter Property="MinHeight" Value="50"/>
+        <Setter Property="Margin" Value="15"/>
+        <Setter Property="Foreground" Value="#EEEEEE"/>
+        <Setter Property="PlaceholderText" Value="Group name"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="Padding" Value="10,12,6,6"/>
+    </Style>
+
+    <Style TargetType="TextBlock" x:Key="AddGroupHeading">
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="30"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style TargetType="Button" x:Key="AddGroupButton">
+        <Setter Property="MinHeight" Value="60"/>
+        <Setter Property="Width" Value="400"/>
+        <Setter Property="Margin" Value="15"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Content" Value="Add Group"/>
+    </Style>
+
+    <!-- Add group view -->
+    <Style TargetType="TextBlock" x:Key="JoinGroupHeading">
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="30"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style TargetType="Button" x:Key="JoinGroupButton">
+        <Setter Property="MinHeight" Value="60"/>
+        <Setter Property="Width" Value="400"/>
+        <Setter Property="Margin" Value="15"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Content" Value="Join Group"/>
+    </Style>
+    
+    <Style TargetType="Button" x:Key="CancelButton">
+        <Setter Property="MinHeight" Value="60"/>
+        <Setter Property="Width" Value="400"/>
+        <Setter Property="Background" Value="Beige"/>
+        <Setter Property="FontWeight" Value="Bold"/>        
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Content" Value="Cancel"/>
+    </Style>
+
+
 </ResourceDictionary>
+ 
