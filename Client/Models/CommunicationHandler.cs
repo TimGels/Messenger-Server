@@ -10,6 +10,20 @@ namespace Messenger_Client.Models
 {
     class CommunicationHandler
     {
+        #region events
+        public static event EventHandler LoggedInSuccesfully;
+        public static event EventHandler<GroupListEventArgs> ObtainedRequestedGroups;
+        public static event EventHandler JoinedGroup;
+
+        public class GroupListEventArgs : EventArgs
+        {
+            public List<Group> Groups { get; set; }
+            public GroupListEventArgs(List<Group> groups)
+            {
+                Groups = groups;
+            }
+        }
+        #endregion
 
         public static void HandleMessage(Message message)
         {
@@ -35,8 +49,28 @@ namespace Messenger_Client.Models
                     break;
             }
         }
+        #region send message methods
 
-        public static event EventHandler LoggedInSuccesfully;
+
+        public static void SendJoinGroupMessage(int groupId)
+        {
+            Client.Instance.Connection.SendData(new Message()
+            {
+                MessageType = MessageType.JoinGroup,
+                GroupID = groupId,
+                ClientId = Client.Instance.Id
+            });
+        }
+
+        public static void SendRequestGroupMessages()
+        {
+            Client.Instance.Connection.SendData(new Message()
+            {
+                MessageType = MessageType.RequestGroups,
+                ClientId = Client.Instance.Id
+            });
+        }
+
 
         public static void SendLoginMessage(string email, string password)
         {
@@ -51,7 +85,7 @@ namespace Messenger_Client.Models
             });
         }
 
-        internal static void SendRegisterMessage(string mail, string name, string password)
+        public static void SendRegisterMessage(string mail, string name, string password)
         {
             Client.Instance.Connection.SendData(new Message()
             {
@@ -76,7 +110,10 @@ namespace Messenger_Client.Models
                 PayloadData = name
             });
         }
-        
+        #endregion
+
+        #region handle incoming messages
+
 
         private static void HandleRegisterClientResponse(Message message)
         {
@@ -94,7 +131,6 @@ namespace Messenger_Client.Models
                     break;
             }
         }
-
 
         private static void HandleSignInClientResponse(Message message)
         {
@@ -134,11 +170,11 @@ namespace Messenger_Client.Models
         
         private static void HandleRequestGroupsResponse(Message message)
         {
-            List<Group> list = new List<Group>();
+            List<Group> groups = new List<Group>();
             // Convert Messenger_Client.Group to Shared.Group.
-            message.GroupList.ForEach(group => list.Add(new Group(group)));
+            message.GroupList.ForEach(group => groups.Add(new Group(group)));
 
-            // TODO: assign to some viewmodel list (with writelock?).
+            ObtainedRequestedGroups?.Invoke(null, new GroupListEventArgs(groups));
         }
 
         private static void HandleJoinGroupResponse(Message message)
@@ -146,12 +182,13 @@ namespace Messenger_Client.Models
             switch (message.GroupID)
             {
                 case -1:
-                    Console.WriteLine("something went wrong!");
+                    Debug.WriteLine("something went wrong!");
                     //TODO: create pop up
                     break;
                 default:
-                    Console.WriteLine("joined a group");
+                    Debug.WriteLine("joined a group");
                     Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
+                    JoinedGroup?.Invoke(null, null);
                     break;
             }
         }
@@ -169,5 +206,7 @@ namespace Messenger_Client.Models
                 //TODO: doe iets wanneer de group niet bestaat
             }
         }
+
+        #endregion
     }
 }
