@@ -101,10 +101,12 @@ namespace Messenger_Client.Models
             switch (message.ClientId)
             {
                 case -1:
+                    LoggedInSuccesfully?.Invoke("E-mail of wachtwoord verkeerd!", null);
                     Debug.WriteLine("E-mail of wachtwoord verkeerd!");
                     //TODO: geef melding dat de combinatie van e-mail en wachtwoord verkeerd is
                     break;
                 case -2:
+                    LoggedInSuccesfully?.Invoke("Je bent al ingelogd!", null);
                     Debug.WriteLine("Already ingelogd!");
                     //TODO: geef melding dat het account al ergens anders is ingelogd
                     break;

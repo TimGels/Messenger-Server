@@ -9,13 +9,30 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace Messenger_Client.ViewModels
 {
-    class LoginPageViewModel
+    public class LoginPageViewModel : ObservableRecipient
     {
         public string Email { get; set; }
         public string Password { get; set; }
+
+        private string loginErrorMessage = "";
+
+        public string LoginErrorMessage
+        {
+            get
+            {
+                return loginErrorMessage;
+            }
+            set
+            {
+                loginErrorMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ICommand RegisterButtonCommand { get; set; }
         public ICommand LoginButtonCommand { get; set; }
         public ICommand CheckEnterCommand { get; set; }
@@ -55,6 +72,8 @@ namespace Messenger_Client.ViewModels
             }
             else
             {
+                CommunicationHandler.LoggedInSuccesfully += communicationHandler_LoggedInSuccesfully;
+                LoginErrorMessage = "E-mail of wachtwoord is niet ingevuld!";
                 //TODO create pop up or something
                 Debug.WriteLine("email of password is empty!");
             }
@@ -62,10 +81,19 @@ namespace Messenger_Client.ViewModels
 
         private async void communicationHandler_LoggedInSuccesfully(object sender, EventArgs e)
         {
-            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+            if (sender == null)
             {
-                (Window.Current.Content as Frame).Navigate(typeof(MainPage));
-            });
+                await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+                {
+                    (Window.Current.Content as Frame).Navigate(typeof(MainPage));
+                });
+            } else
+            {
+                await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+                {
+                    LoginErrorMessage = sender.ToString();
+                });
+            }
         }
 
         private void RegisterButtonClicked()
