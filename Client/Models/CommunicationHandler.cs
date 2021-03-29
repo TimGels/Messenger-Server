@@ -119,7 +119,7 @@ namespace Messenger_Client.Models
             }
         }
 
-        private async static void HandleRegisterGroupResponse(Message message)
+        private static void HandleRegisterGroupResponse(Message message)
         {
             switch (message.GroupID)
             {
@@ -129,7 +129,7 @@ namespace Messenger_Client.Models
                     break;
                 default:
                     // Run on UI thread to prevent COMException.
-                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+                    _ = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Idle, () =>
                     {
                         Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
                     });
@@ -147,7 +147,7 @@ namespace Messenger_Client.Models
             // TODO: assign to some viewmodel list (with writelock?).
         }
 
-        private async static void HandleJoinGroupResponse(Message message)
+        private static void HandleJoinGroupResponse(Message message)
         {
             switch (message.GroupID)
             {
@@ -157,7 +157,7 @@ namespace Messenger_Client.Models
                     break;
                 default:
                     // Run on UI thread to prevent COMException.
-                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+                    _ = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Idle, () =>
                     {
                         Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
                     });
