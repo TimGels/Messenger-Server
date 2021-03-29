@@ -84,8 +84,6 @@ namespace Messenger_Client.ViewModels
             }
         }
 
-        public string ImageString { get; private set; }
-
         public void SendMessage()
         {
             if (this.TypedText.Equals("") || this.SelectedGroupChat == null)

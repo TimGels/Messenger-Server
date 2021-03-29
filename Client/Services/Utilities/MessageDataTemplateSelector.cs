@@ -30,8 +30,6 @@ namespace Messenger_Client.Services.Utilities
             {
                 return SomeoneElseMessageDataTemplate;
             }
-
-            //return base.SelectTemplateCore(item);
         }
 
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)

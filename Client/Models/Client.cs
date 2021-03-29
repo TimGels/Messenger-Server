@@ -39,10 +39,7 @@ namespace Messenger_Client
 
         public static Client Instance { get { return lazy.Value; } }
         public string ClientName { get; set; }
-        public int Id
-        {
-            get; set;
-        }
+        public int Id { get; set; }
         public ObservableCollection<Group> Groups { get; set; }
         public Connection Connection { get; set; }
 
