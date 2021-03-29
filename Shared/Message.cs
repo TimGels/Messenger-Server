@@ -248,6 +248,7 @@ namespace Shared
         JoinGroup,
         JoinGroupResponse,
         LeaveGroup,
-        ChatMessage
+        ChatMessage,
+        KeepAlive
     }
 }

@@ -32,6 +32,9 @@ namespace Messenger_Client.Models
                 case MessageType.ChatMessage:
                     HandleChatMessage(message);
                     break;
+                case MessageType.KeepAlive:
+                    HandleKeepAliveMessage(message);
+                    break;
             }
         }
 
@@ -178,6 +181,15 @@ namespace Messenger_Client.Models
                 Console.WriteLine("group doesn't exist");
                 //TODO: doe iets wanneer de group niet bestaat
             }
+        }
+
+        /// <summary>
+        /// Bounce the keepalive message back to the server.
+        /// </summary>
+        /// <param name="message"></param>
+        private static void HandleKeepAliveMessage(Message message)
+        {
+            Client.Instance.Connection.SendData(message);
         }
     }
 }
