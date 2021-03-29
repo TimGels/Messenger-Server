@@ -31,8 +31,6 @@
 
         <Grid Background="white"
               Grid.Row="0">
-
-
             <MenuBar Style="{ThemeResource MenuBar}">
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Settings">
                     <MenuFlyoutItem  Text="New group" Command="{Binding AddGroupCommand}" />

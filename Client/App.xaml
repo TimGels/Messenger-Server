@@ -14,6 +14,7 @@
             </ResourceDictionary.MergedDictionaries>
             <!-- Load the converters needed for resource dictionaries -->
             <converter:DateTimeToTimeConverter x:Key="DateTimeToTimeConverter"/>
+            <converter:Base64ToImageConverter x:Key="Base64ToImageConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
