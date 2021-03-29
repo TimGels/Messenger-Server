@@ -85,6 +85,8 @@ namespace Messenger_Server
         /// <param name="message"></param>
         public void SendMessageToClients(Message message)
         {
+            // TODO: Add message to this group in the database.
+
             // Lock the client list for reading, start sending messages and wait
             // for all tasks to complete before exiting the read lock.
             List<Task> sendDataTasks = new List<Task>();

@@ -41,14 +41,7 @@ namespace Messenger_Client
         public string ClientName { get; set; }
         public int Id
         {
-            get
-            {
-                return Id;
-            }
-            set
-            {
-                ApplicationData.Current.LocalSettings.Values["clientId"] = value;
-            }
+            get; set;
         }
         public ObservableCollection<Group> Groups { get; set; }
         public Connection Connection { get; set; }

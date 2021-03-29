@@ -40,8 +40,7 @@ namespace Messenger_Server
                     HandleLeaveGroup(connection, message);
                     break;
                 case MessageType.ChatMessage:
-                    // Relay the chatMessage to all other clients in the group.
-                    //Server.Instance.GetGroup(message.GroupID).SendMessageToClients(message);
+                    HandleChatMessage(connection, message);
                     break;
             }
         }
@@ -125,16 +124,21 @@ namespace Messenger_Server
             // and return the ID of the new group.
             Group newGroup = Server.Instance.CreateGroup(message.PayloadData);
             Client client = Server.Instance.GetClient(message.ClientId);
+            Message response = new Message()
+            {
+                MessageType = MessageType.RegisterGroupResponse
+            };
             if (client != null)
             {
                 DatabaseHandler.AddClientToGroup(newGroup, client);
                 newGroup.AddClient(client);
-            }
-            Message response = new Message()
+                response.GroupID = newGroup.Id;
+                response.PayloadData = newGroup.Name;
+            } else
             {
-                GroupID = newGroup.Id,
-                MessageType = MessageType.RegisterGroupResponse
-            };
+                response.GroupID = -1;
+            }
+            
             connection.SendData(response);
         }
 
@@ -189,6 +193,18 @@ namespace Messenger_Server
             Client client = Server.Instance.GetClient(message.ClientId);
 
             Server.Instance.GetGroup(message.GroupID).RemoveClient(client);
+        }
+
+        /// <summary>
+        /// Handle incoming chatmessages. Relay the chatmessage to all other clients in
+        /// the group.
+        /// </summary>
+        /// <param name="connection">The connection from which the message was sent.</param>
+        /// <param name="message">The message containing the chatmessage.</param>
+        private static void HandleChatMessage(Connection connection, Message message)
+        {
+            // Relay the chatMessage to all other clients in the group.
+            Server.Instance.GetGroup(message.GroupID).SendMessageToClients(message);
         }
     }
 }
