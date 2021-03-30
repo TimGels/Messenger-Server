@@ -38,6 +38,17 @@ namespace Messenger_Client.Models
 
         public static event EventHandler LoggedInSuccesfully;
 
+        public class LoggedInSuccesfullyEventArgs : EventArgs
+        {
+            private string m_Data;
+            public LoggedInSuccesfullyEventArgs(string _myData)
+            {
+                m_Data = _myData;
+            } // eo ctor
+
+            public string Data { get { return m_Data; } }
+        } // eo class MyEventArgs
+
         public static void SendLoginMessage(string email, string password)
         {
             Client.Instance.Connection.SendData(new Message()
@@ -101,12 +112,12 @@ namespace Messenger_Client.Models
             switch (message.ClientId)
             {
                 case -1:
-                    LoggedInSuccesfully?.Invoke("E-mail of wachtwoord verkeerd!", null);
+                    LoggedInSuccesfully?.Invoke(false, new LoggedInSuccesfullyEventArgs("E-mail of wachtwoord verkeerd!"));
                     Debug.WriteLine("E-mail of wachtwoord verkeerd!");
                     //TODO: geef melding dat de combinatie van e-mail en wachtwoord verkeerd is
                     break;
                 case -2:
-                    LoggedInSuccesfully?.Invoke("Je bent al ingelogd!", null);
+                    LoggedInSuccesfully?.Invoke(false, new LoggedInSuccesfullyEventArgs("Je bent al ingelogd!"));
                     Debug.WriteLine("Already ingelogd!");
                     //TODO: geef melding dat het account al ergens anders is ingelogd
                     break;
@@ -114,7 +125,7 @@ namespace Messenger_Client.Models
                     Debug.WriteLine("Gefeliciteerd!");
                     Client.Instance.Id = message.ClientId;
                     message.GroupList.ForEach(group => Client.Instance.AddGroup(new Group(group)));
-                    LoggedInSuccesfully?.Invoke(null, null);
+                    LoggedInSuccesfully?.Invoke(true, null);
                     break;
             }
         }
