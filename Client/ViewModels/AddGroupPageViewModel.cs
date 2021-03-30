@@ -1,7 +1,6 @@
 ﻿using Messenger_Client.Models;
 using Messenger_Client.Views;
 using Microsoft.Toolkit.Mvvm.Input;
-using System.Diagnostics;
 using System.Windows.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;

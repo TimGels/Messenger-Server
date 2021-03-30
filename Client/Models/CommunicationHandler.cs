@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net;
-using System.Security;
-using System.Threading;
 using Shared;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 
 namespace Messenger_Client.Models
 {
@@ -111,6 +110,9 @@ namespace Messenger_Client.Models
                 default:
                     Debug.WriteLine("Gefeliciteerd!");
                     Client.Instance.Id = message.ClientId;
+                    // AddGroup throwns no COMException since no ViewModel with
+                    // ObservableList<Group> has been constructed at this point.
+                    // Could be problematic on Logout->Login.
                     message.GroupList.ForEach(group => Client.Instance.AddGroup(new Group(group)));
                     LoggedInSuccesfully?.Invoke(null, null);
                     break;
@@ -126,7 +128,11 @@ namespace Messenger_Client.Models
                     //TODO: geef melding dat het aanmaken van een group mislukt is
                     break;
                 default:
-                    Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
+                    // Run on UI thread to prevent COMException.
+                    _ = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Idle, () =>
+                    {
+                        Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
+                    });
                     Console.WriteLine("Group aangemaakt!");
                     break;
             }
@@ -150,8 +156,12 @@ namespace Messenger_Client.Models
                     //TODO: create pop up
                     break;
                 default:
+                    // Run on UI thread to prevent COMException.
+                    _ = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Idle, () =>
+                    {
+                        Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
+                    });
                     Console.WriteLine("joined a group");
-                    Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
                     break;
             }
         }

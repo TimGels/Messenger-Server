@@ -6,7 +6,6 @@ using Shared;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -21,7 +20,7 @@ using Group = Messenger_Client.Models.Group;
 
 namespace Messenger_Client.ViewModels
 {
-    public class MainPageViewModel : ObservableRecipient, INotifyPropertyChanged
+    public class MainPageViewModel : ObservableRecipient
     {
         public ICommand SendMessageCommand { get; set; }
         public ICommand CheckEnterCommand { get; set; }

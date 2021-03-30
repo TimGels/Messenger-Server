@@ -1,14 +1,13 @@
-﻿using System;
+﻿using Messenger_Client.Models;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Shared;
-using Messenger_Client.Models;
 using Windows.Storage.Pickers;
 using Connection = Messenger_Client.Models.Connection;
 using Group = Messenger_Client.Models.Group;
-using System.Collections.ObjectModel;
 using Windows.Storage;
 
 namespace Messenger_Client
