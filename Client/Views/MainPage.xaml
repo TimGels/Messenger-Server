@@ -37,7 +37,7 @@
                     <MenuFlyoutItem  Text="About" />
                 </MenuBarItem>
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Export">
-                    <MenuFlyoutItem  Text="Export" Command="{Binding ExportTest}" />
+                    <MenuFlyoutItem  Text="Export" Command="{Binding ExportMessageCommand}" />
                 </MenuBarItem>
             </MenuBar>
 

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -24,6 +25,7 @@ namespace Messenger_Client.ViewModels
         public ICommand SignUpCommand { get; set; }
         public ICommand ShowAddGroupViewCommand { get; set; }
         public ICommand ShowGroupsToJoinCommand { get; set; }
+        public ICommand ExportMessageCommand { get; set; }
         public ObservableCollection<Group> GroupList 
         {
             get
@@ -123,12 +125,18 @@ namespace Messenger_Client.ViewModels
             Debug.WriteLine("OpenSignUpView");
         }
 
+        private void ExportMessage(object obj)
+        {
+            Client.Instance.ExportMessageToFileAsync();
+        }
+
         public MainPageViewModel()
         {
             SendMessageCommand = new RelayCommand(() => SendMessage());
             CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
             ShowGroupsToJoinCommand = new RelayCommand<object>(ShowGroupsToJoin);
             ShowAddGroupViewCommand = new RelayCommand<object>(ShowAddGroupView);
+            ExportMessageCommand = new RelayCommand<object>(ExportMessage);
 
             this.GroupList = new ObservableCollection<Group>();
             this.TypedText = "";
