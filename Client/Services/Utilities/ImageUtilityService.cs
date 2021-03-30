@@ -45,5 +45,14 @@ namespace Messenger_Client.Services
             img.SetSource(ims);
             return img;
         }
+
+        public static async Task<byte[]> ConvertStreamToByteArray(IRandomAccessStream s)
+        {
+            var dr = new DataReader(s.GetInputStreamAt(0));
+            var bytes = new byte[s.Size];
+            await dr.LoadAsync((uint)s.Size);
+            dr.ReadBytes(bytes);
+            return bytes;
+        }
     }
 }

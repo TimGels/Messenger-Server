@@ -2,13 +2,19 @@
     x:Class="Messenger_Client.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Messenger_Client">
+    xmlns:local="using:Messenger_Client"
+    xmlns:converter="using:Messenger_Client.Services.Converters">
 
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="ResourceDictionaryClient.xaml"/>
+                <ResourceDictionary Source="ListViewItemContainerStyles.xaml"/>
+                <ResourceDictionary Source="MessagesStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <!-- Load the converters needed for resource dictionaries -->
+            <converter:DateTimeToTimeConverter x:Key="DateTimeToTimeConverter"/>
+            <converter:Base64ToImageConverter x:Key="Base64ToImageConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

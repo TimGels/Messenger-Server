@@ -6,6 +6,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage.Pickers;
+using Connection = Messenger_Client.Models.Connection;
+using Group = Messenger_Client.Models.Group;
+using Windows.Storage;
 
 namespace Messenger_Client
 {
@@ -46,6 +49,7 @@ namespace Messenger_Client
             this.Connection = new Connection(serverAddress, port);
             this.ClientName = "clientName";
         }
+
         /// <summary>
         /// TODO: Make GroupID unique.
         /// </summary>

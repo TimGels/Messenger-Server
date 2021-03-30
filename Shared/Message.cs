@@ -40,17 +40,18 @@ namespace Shared
             }
         }
 
-        public Image Image
+        public string ImageString
         {
             get
             {
-                //TODO: check if data is from the type image?
-                return Helper.Base64StringToImage(jsonMessage.Payload.Data);
-            }
-            set
-            {
-                //TODO: also set the Payload.Type property?
-                this.jsonMessage.Payload.Data = Helper.ImageTobase64String(value);
+                if (PayloadType.Equals("image"))
+                {
+                    return jsonMessage.Payload.Data;
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 
@@ -58,6 +59,10 @@ namespace Shared
         {
             get
             {
+                if (PayloadType.Equals("image"))
+                {
+                    return null;
+                }
                 return jsonMessage.Payload.Data;
             }
             set

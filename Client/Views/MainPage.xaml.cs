@@ -19,6 +19,5 @@ namespace Messenger_Client.Views
         {
             this.InitializeComponent();
         }
-
     }
 }
