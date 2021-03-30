@@ -44,7 +44,7 @@ namespace Shared
         {
             get
             {
-                if (PayloadType.Equals("image"))
+                if (PayloadType != null && PayloadType.Equals("image"))
                 {
                     return jsonMessage.Payload.Data;
                 }
@@ -59,11 +59,11 @@ namespace Shared
         {
             get
             {
-                if (PayloadType.Equals("image"))
+                if (ImageString == null)
                 {
-                    return null;
+                    return jsonMessage.Payload.Data;
                 }
-                return jsonMessage.Payload.Data;
+                return null;
             }
             set
             {
