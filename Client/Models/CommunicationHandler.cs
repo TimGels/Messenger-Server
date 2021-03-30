@@ -129,7 +129,7 @@ namespace Messenger_Client.Models
                     break;
                 default:
                     // Run on UI thread to prevent COMException.
-                    _ = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Idle, () =>
+                    _ = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
                     {
                         Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
                     });
@@ -157,7 +157,7 @@ namespace Messenger_Client.Models
                     break;
                 default:
                     // Run on UI thread to prevent COMException.
-                    _ = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Idle, () =>
+                    _ = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
                     {
                         Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
                     });
