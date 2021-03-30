@@ -171,7 +171,10 @@ namespace Messenger_Client.Models
             Group group = Client.Instance.GetGroup(message.GroupID);
             if (group != null)
             {
-                group.AddMessage(message);
+                _ = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+                {
+                    group.AddMessage(message);
+                });
             }
             else
             {
