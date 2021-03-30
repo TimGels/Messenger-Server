@@ -107,7 +107,7 @@
                         <ColumnDefinition Width="100"/>
                     </Grid.ColumnDefinitions>
 
-                    <Button Style="{StaticResource AttachementButton}" Grid.Row="1" BorderThickness="0" HorizontalAlignment="Center" Grid.ColumnSpan="1" Width="75" Height="75" Background="#FAFAFA">
+                    <Button Style="{StaticResource AttachementButton}" Grid.Row="1" BorderThickness="0" HorizontalAlignment="Center" Grid.ColumnSpan="1" Width="75" Height="75" Background="#FAFAFA" Command="{Binding OpenFilePickerCommand}">
                         <FontIcon FontSize="50" FontFamily="Segoe MDL2 Assets" Glyph="&#xE723;"/>
                     </Button>
 
