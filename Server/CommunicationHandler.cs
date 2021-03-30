@@ -1,6 +1,4 @@
 ﻿using Shared;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System;
 
@@ -8,6 +6,11 @@ namespace Messenger_Server
 {
     public static class CommunicationHandler
     {
+        /// <summary>
+        /// Invoked when a client sends a keepalive message in response to the server.
+        /// </summary>
+        public static event EventHandler KeepAliveReceived;
+
         /// <summary>
         /// This method is called by the ReadData method in Client.
         /// It handles all incoming messages from clients.
@@ -41,6 +44,9 @@ namespace Messenger_Server
                     break;
                 case MessageType.ChatMessage:
                     HandleChatMessage(connection, message);
+                    break;
+                case MessageType.KeepAlive:
+                    KeepAliveReceived.Invoke(null, null);
                     break;
             }
         }
