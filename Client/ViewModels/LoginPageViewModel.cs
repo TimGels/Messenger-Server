@@ -68,31 +68,36 @@ namespace Messenger_Client.ViewModels
             {
 
                 CommunicationHandler.SendLoginMessage(Email, Password);
-                CommunicationHandler.LoggedInSuccesfully += communicationHandler_LoggedInSuccesfully;
+                CommunicationHandler.LoggedInResponse += communicationHandler_LoggedInResponse;
             }
             else
             {
-                CommunicationHandler.LoggedInSuccesfully += communicationHandler_LoggedInSuccesfully;
                 LoginErrorMessage = "E-mail of wachtwoord is niet ingevuld!";
-                //TODO create pop up or something
-                Debug.WriteLine("email of password is empty!");
             }
         }
 
-        private async void communicationHandler_LoggedInSuccesfully(object sender, EventArgs e)
+        private async void communicationHandler_LoggedInResponse(object sender, CommunicationHandler.LoggedInResponseEventArgs e)
         {
-            if (sender == null)
+            switch (e.State)
             {
-                await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
-                {
-                    (Window.Current.Content as Frame).Navigate(typeof(MainPage));
-                });
-            } else
-            {
-                await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
-                {
-                    LoginErrorMessage = sender.ToString();
-                });
+                case -1:
+                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+                    {
+                        LoginErrorMessage = "E-mail of wachtwoord verkeerd!";
+                    });
+                    break;
+                case -2:
+                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+                    {
+                        LoginErrorMessage = "Je bent al ingelogd!";
+                    });
+                    break;
+                default:
+                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+                    {
+                        (Window.Current.Content as Frame).Navigate(typeof(MainPage));
+                    });
+                break;
             }
         }
 

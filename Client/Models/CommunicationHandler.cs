@@ -36,18 +36,16 @@ namespace Messenger_Client.Models
             }
         }
 
-        public static event EventHandler LoggedInSuccesfully;
+        public static event EventHandler<LoggedInResponseEventArgs> LoggedInResponse;
 
-        public class LoggedInSuccesfullyEventArgs : EventArgs
+        public class LoggedInResponseEventArgs : EventArgs
         {
-            private string m_Data;
-            public LoggedInSuccesfullyEventArgs(string _myData)
+            public int State { get; set; }
+            public LoggedInResponseEventArgs(int state)
             {
-                m_Data = _myData;
-            } // eo ctor
-
-            public string Data { get { return m_Data; } }
-        } // eo class MyEventArgs
+                this.State = state;
+            }
+        }
 
         public static void SendLoginMessage(string email, string password)
         {
@@ -106,28 +104,14 @@ namespace Messenger_Client.Models
             }
         }
 
-
         private static void HandleSignInClientResponse(Message message)
         {
-            switch (message.ClientId)
+            if (message.ClientId >= 0)
             {
-                case -1:
-                    LoggedInSuccesfully?.Invoke(false, new LoggedInSuccesfullyEventArgs("E-mail of wachtwoord verkeerd!"));
-                    Debug.WriteLine("E-mail of wachtwoord verkeerd!");
-                    //TODO: geef melding dat de combinatie van e-mail en wachtwoord verkeerd is
-                    break;
-                case -2:
-                    LoggedInSuccesfully?.Invoke(false, new LoggedInSuccesfullyEventArgs("Je bent al ingelogd!"));
-                    Debug.WriteLine("Already ingelogd!");
-                    //TODO: geef melding dat het account al ergens anders is ingelogd
-                    break;
-                default:
-                    Debug.WriteLine("Gefeliciteerd!");
-                    Client.Instance.Id = message.ClientId;
-                    message.GroupList.ForEach(group => Client.Instance.AddGroup(new Group(group)));
-                    LoggedInSuccesfully?.Invoke(true, null);
-                    break;
+                Client.Instance.Id = message.ClientId;
+                message.GroupList.ForEach(group => Client.Instance.AddGroup(new Group(group)));
             }
+            LoggedInResponse?.Invoke(null, new LoggedInResponseEventArgs(message.ClientId));
         }
 
         private static void HandleRegisterGroupResponse(Message message)
