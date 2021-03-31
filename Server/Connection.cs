@@ -120,15 +120,33 @@ namespace Messenger_Server
                 {
                     if (client.GetStream().DataAvailable)
                     {
-                        Byte[] buffer = new Byte[client.Available];
-                        // Read() blocks until data is available and throws exception if
-                        // connection is closed.
-                        client.GetStream().Read(buffer, 0, buffer.Length);
-                        string data = Encoding.ASCII.GetString(buffer);
+                        // Result from multiple Read() calls will be stored here.
+                        string result = null;
+
+                        // Call Read() untill newline received.
+                        while (true)
+                        {
+                            Byte[] buffer = new Byte[client.Available];
+                            // Read() blocks until data is available and throws exception
+                            // if connection is closed.
+                            client.GetStream().Read(buffer, 0, buffer.Length);
+                            string chunk = Encoding.ASCII.GetString(buffer);
+
+                            // Append the read data to the final result.
+                            result += chunk;
+
+                            // Check for end of message.
+                            if (chunk.EndsWith("\r\n"))
+                            {
+                                // Remove trailing newline.
+                                result = result.Remove(result.Length - 2, "\r\n".Length);
+                                break;
+                            }
+                        }
 
                         Task.Run(() =>
                         {
-                            CommunicationHandler.HandleMessage(this, new Message(data));
+                            CommunicationHandler.HandleMessage(this, new Message(result));
                         });
                     }
 
