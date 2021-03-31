@@ -147,7 +147,7 @@ namespace Messenger_Client.Models
                 default:
                     Debug.WriteLine("Gefeliciteerd!");
                     Client.Instance.Id = message.ClientId;
-                    message.GroupList.ForEach(group => Client.Instance.AddGroupAsync(new Group(group)));
+                    message.GroupList.ForEach(group => Client.Instance.AddGroup(new Group(group)));
                     LoggedInSuccesfully?.Invoke(null, null);
                     break;
             }
@@ -162,7 +162,7 @@ namespace Messenger_Client.Models
                     //TODO: geef melding dat het aanmaken van een group mislukt is
                     break;
                 default:
-                    Client.Instance.AddGroupAsync(new Group(message.GroupID, message.PayloadData));
+                    Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
                     Console.WriteLine("Group aangemaakt!");
                     break;
             }
@@ -187,7 +187,7 @@ namespace Messenger_Client.Models
                     break;
                 default:
                     Debug.WriteLine("joined a group");
-                    Client.Instance.AddGroupAsync(new Group(message.GroupID, message.PayloadData));
+                    Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
                     JoinedGroup?.Invoke(null, null);
                     break;
             }

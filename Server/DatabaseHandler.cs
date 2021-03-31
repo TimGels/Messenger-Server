@@ -218,7 +218,6 @@ namespace Messenger_Server
 
                     connection.Open();
                     return (string)command.ExecuteScalar();
-                   
                 }
             } catch (Exception e)
             {

@@ -7,8 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:viewModels="using:Messenger_Client.ViewModels"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    MinHeight="800">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.DataContext>
         <viewModels:JoinGroupPageViewModel x:Name="ViewModel"/>
     </Page.DataContext>
@@ -26,8 +25,8 @@
                     <MenuFlyoutItem  Text="New group" Command="{Binding AddGroupCommand}" />
                 </MenuBarItem>
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Group">
-                    <MenuFlyoutItem  Text="Join group" Command="{Binding ShowGroupsToJoinCommand}" />
-                    <MenuFlyoutItem  Text="Add group" Command="{Binding ShowAddGroupViewCommand}"/>
+                    <MenuFlyoutItem  Text="Join group"/>
+                    <MenuFlyoutItem  Text="Add group" />
                 </MenuBarItem>
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="About">
                     <MenuFlyoutItem  Text="About" />
@@ -50,9 +49,9 @@
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Row="1" Grid.Column="1">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="50"/>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="18"  />
+                        <RowDefinition Height="50"  />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="50*"/>
@@ -61,35 +60,29 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Row="1" Grid.Column="1">
                         <TextBlock Text="Join group" Padding="5" Style="{ThemeResource JoinGroupHeading}"/>
-                        
+                        <Button  Style="{ThemeResource JoinGroupButton}" Command="{Binding JoinGroupButtonCommand}"/>
+                        <Button  Style="{ThemeResource CancelButton}" Command="{Binding CancelButtonCommand}"/>
                         <ListView
-                            MaxHeight="350"
                             ItemsSource="{Binding GroupList}"
-                            SelectedItem="{Binding GroupToJoin, Mode=TwoWay}"
-                            ScrollViewer.VerticalScrollBarVisibility="Visible">
+                            SelectedItem="{Binding GroupToJoin, Mode=TwoWay}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Height="80" Margin="6">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        
+                                        <Border Width="110" Height="110">
+                                            <!--<Image Source="{Binding Image}" Stretch="UniformToFill"/>-->
+                                        </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="10,0,0,0">
-                                            <TextBlock Text="{Binding Name}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap">
-                                                <Run Text="{Binding Name}"/> 
-                                                 <LineBreak />
-                                                <Run Text="Group ID: "/>       
-                                                <Run  Text="{Binding Id}"/>       
-                                            </TextBlock>
-
-
+                                            <TextBlock Text="{Binding Name}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap"/>
+                                            <!--<TextBlock Text="{Binding Subtitle}" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap"/>-->
+                                            <!--<TextBlock Text="{Binding Description}" Style="{StaticResource BodyTextStyle}" MaxHeight="60"/>-->
                                         </StackPanel>
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
-                        <Button  Style="{ThemeResource JoinGroupButton}" Command="{Binding JoinGroupButtonCommand}"/>
-                        <Button  Style="{ThemeResource CancelButton}" Command="{Binding BackToMainPageCommand}"/>
                     </StackPanel>
                 </Grid>     
             </Grid>

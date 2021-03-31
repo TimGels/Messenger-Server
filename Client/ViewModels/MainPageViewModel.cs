@@ -30,7 +30,10 @@ namespace Messenger_Client.ViewModels
             {
                 return Client.Instance.Groups;
             }
-            set { }
+            set
+            {
+
+            }
         }
         public ObservableCollection<Message> MessagesList
         {

@@ -3,6 +3,7 @@ using Messenger_Client.Views;
 using Microsoft.Toolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows.Input;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
@@ -15,46 +16,26 @@ namespace Messenger_Client.ViewModels
     class JoinGroupPageViewModel
     {
         public Group GroupToJoin { get; set; }
+
         public ICommand JoinGroupButtonCommand { get; set; }
-        public ICommand BackToMainPageCommand { get; set; }
+        public ICommand CancelButtonCommand { get; set; }
         public ObservableCollection<Group> GroupList { get; set; }
-        public ICommand ShowAddGroupViewCommand { get; set; }
-        public ICommand ShowGroupsToJoinCommand { get; set; }
 
 
         public JoinGroupPageViewModel()
         {
             GroupList = new ObservableCollection<Group>();
             CommunicationHandler.SendRequestGroupMessages();
-            CommunicationHandler.ObtainedRequestedGroups += obtainedRequestedGroupsAsync;
-            
+            CommunicationHandler.ObtainedRequestedGroups += obtainedRequestedGroups;
             JoinGroupButtonCommand = new RelayCommand(SendJoinGroupMessage);
-            BackToMainPageCommand = new RelayCommand<object>(BackToMain);
-            ShowGroupsToJoinCommand = new RelayCommand<object>(ShowGroupsToJoin);
-            ShowAddGroupViewCommand = new RelayCommand<object>(ShowAddGroupView);
-        }
-        private void ShowGroupsToJoin(object args)
-        {
-            Frame rootFrame = Window.Current.Content as Frame;
-            rootFrame.Navigate(typeof(JoinGroupPage));
-        }
-
-        private void ShowAddGroupView(object obj)
-        {
-            Frame rootFrame = Window.Current.Content as Frame;
-            rootFrame.Navigate(typeof(AddGroupPage));
-        }
-
-        private void BackToMain(object obj)
-        {
-            Frame rootFrame = Window.Current.Content as Frame;
-            rootFrame.Navigate(typeof(MainPage));
+            CancelButtonCommand = new RelayCommand(navigateToMain);
         }
 
         private void SendJoinGroupMessage()
         {
            if(GroupToJoin != null)
             {
+                Debug.WriteLine(GroupToJoin.Id);
                 CommunicationHandler.SendJoinGroupMessage(GroupToJoin.Id);
                 CommunicationHandler.JoinedGroup += navigateToMainAsync;
             }
@@ -64,16 +45,22 @@ namespace Messenger_Client.ViewModels
         {
             await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
             {
-                (Window.Current.Content as Frame).Navigate(typeof(MainPage));
+                navigateToMain();
             });
         }
 
-        private async void obtainedRequestedGroupsAsync(object sender, CommunicationHandler.GroupListEventArgs groups)
+        private void navigateToMain()
+        {
+            (Window.Current.Content as Frame).Navigate(typeof(MainPage));
+        }
+
+        private async void obtainedRequestedGroups(object sender, CommunicationHandler.GroupListEventArgs groups)
         {
             await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
             {
                 groups.Groups.ForEach(group => GroupList.Add(group));
             });
+            
         }
     }
 }

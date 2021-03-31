@@ -1,15 +1,16 @@
-﻿using Messenger_Client.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Core;
+using Shared;
+using Messenger_Client.Models;
 using Windows.Storage.Pickers;
-using Windows.UI.Core;
 using Connection = Messenger_Client.Models.Connection;
 using Group = Messenger_Client.Models.Group;
+using System.Collections.ObjectModel;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 
 namespace Messenger_Client
 {
@@ -55,23 +56,23 @@ namespace Messenger_Client
         /// </summary>
         /// <param name="group"></param>
 
-        public async Task AddGroupAsync(Group group)
+        public void AddGroup(Group group)
         {
             // Lock here since we need the group count for the GroupID.
             groupLocker.EnterWriteLock();
             try
             {
-                await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+                CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
                 {
                     this.Groups.Add(group);
-                });
+                }).AsTask();
+                
             }
             finally
             {
                 groupLocker.ExitWriteLock();
             }
         }
-        
 
         public Group GetGroup(int id)
         {
