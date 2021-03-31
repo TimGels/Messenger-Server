@@ -114,6 +114,11 @@ namespace Messenger_Client
                 this.groupLocker.ExitReadLock();
             }
 
+            if (file is null)
+            {
+                return;
+            }
+
             await Windows.Storage.FileIO.WriteTextAsync(file, csvString);
         }
 
