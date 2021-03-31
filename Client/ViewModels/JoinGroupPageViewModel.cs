@@ -15,16 +15,40 @@ namespace Messenger_Client.ViewModels
     class JoinGroupPageViewModel
     {
         public Group GroupToJoin { get; set; }
-
         public ICommand JoinGroupButtonCommand { get; set; }
-        public ObservableCollection<Group> GroupList;
+        public ICommand BackToMainPageCommand { get; set; }
+        public ObservableCollection<Group> GroupList { get; set; }
+        public ICommand ShowAddGroupViewCommand { get; set; }
+        public ICommand ShowGroupsToJoinCommand { get; set; }
+
 
         public JoinGroupPageViewModel()
         {
             GroupList = new ObservableCollection<Group>();
             CommunicationHandler.SendRequestGroupMessages();
-            CommunicationHandler.ObtainedRequestedGroups += obtainedRequestedGroups;
+            CommunicationHandler.ObtainedRequestedGroups += obtainedRequestedGroupsAsync;
+            
             JoinGroupButtonCommand = new RelayCommand(SendJoinGroupMessage);
+            BackToMainPageCommand = new RelayCommand<object>(BackToMain);
+            ShowGroupsToJoinCommand = new RelayCommand<object>(ShowGroupsToJoin);
+            ShowAddGroupViewCommand = new RelayCommand<object>(ShowAddGroupView);
+        }
+        private void ShowGroupsToJoin(object args)
+        {
+            Frame rootFrame = Window.Current.Content as Frame;
+            rootFrame.Navigate(typeof(JoinGroupPage));
+        }
+
+        private void ShowAddGroupView(object obj)
+        {
+            Frame rootFrame = Window.Current.Content as Frame;
+            rootFrame.Navigate(typeof(AddGroupPage));
+        }
+
+        private void BackToMain(object obj)
+        {
+            Frame rootFrame = Window.Current.Content as Frame;
+            rootFrame.Navigate(typeof(MainPage));
         }
 
         private void SendJoinGroupMessage()
@@ -44,9 +68,12 @@ namespace Messenger_Client.ViewModels
             });
         }
 
-        private void obtainedRequestedGroups(object sender, CommunicationHandler.GroupListEventArgs groups)
+        private async void obtainedRequestedGroupsAsync(object sender, CommunicationHandler.GroupListEventArgs groups)
         {
-            groups.Groups.ForEach(group => GroupList.Add(group));
+            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+            {
+                groups.Groups.ForEach(group => GroupList.Add(group));
+            });
         }
     }
 }
