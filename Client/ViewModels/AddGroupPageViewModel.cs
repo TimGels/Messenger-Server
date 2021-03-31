@@ -31,7 +31,13 @@ namespace Messenger_Client.ViewModels
             if (keyargs.Key == Windows.System.VirtualKey.Enter)
             {
                 AddNewGroup();
+                navigateToMain();
             }
+        }
+
+        private void navigateToMain()
+        {
+            (Window.Current.Content as Frame).Navigate(typeof(MainPage));
         }
 
         private void AddNewGroup()
@@ -39,6 +45,7 @@ namespace Messenger_Client.ViewModels
             if (!this.NewGroupName.Equals(""))
             {
                 CommunicationHandler.SendRegisterGroupMessage(this.NewGroupName);
+                navigateToMain();
             }
         }
 
