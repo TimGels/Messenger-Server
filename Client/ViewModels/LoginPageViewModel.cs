@@ -68,7 +68,7 @@ namespace Messenger_Client.ViewModels
             {
 
                 CommunicationHandler.SendLoginMessage(Email, Password);
-                CommunicationHandler.LoggedInResponse += communicationHandler_LoggedInResponse;
+                CommunicationHandler.LoggedInResponse += CommunicationHandler_LoggedInResponse;
             }
             else
             {
@@ -76,24 +76,24 @@ namespace Messenger_Client.ViewModels
             }
         }
 
-        private async void communicationHandler_LoggedInResponse(object sender, CommunicationHandler.LoggedInResponseEventArgs e)
+        private async void CommunicationHandler_LoggedInResponse(object sender, CommunicationHandler.ResponseStateEventArgs e)
         {
             switch (e.State)
             {
                 case -1:
-                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
                         LoginErrorMessage = "E-mail of wachtwoord verkeerd!";
                     });
                     break;
                 case -2:
-                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
                         LoginErrorMessage = "Je bent al ingelogd!";
                     });
                     break;
                 default:
-                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
                         (Window.Current.Content as Frame).Navigate(typeof(MainPage));
                     });

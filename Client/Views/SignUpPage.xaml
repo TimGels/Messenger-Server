@@ -44,7 +44,7 @@
                 <PasswordBox Style="{ThemeResource LoginPassword}" PlaceholderText="Repeat password" Password="{Binding RepeatPassword, Mode=TwoWay}" />
                 <Button  Style="{ThemeResource LoginButton}" Content="Registreren" Command="{Binding RegisterButtonCommand}"/>
                 <Button  Style="{ThemeResource LoginButton}" Content="Go to login screen" Command="{Binding GoToLoginButtonCommand}"/>
-                <TextBlock Text="Hier moet iets komen te staan als je ww of username fout is" Style="{ThemeResource LoginError}"/>
+                <TextBlock Foreground="Red" FontWeight="Bold" Text="{Binding SignUpErrorMessage}" Style="{ThemeResource LoginError}"/>
             </StackPanel>
         </Grid>
     </Grid>

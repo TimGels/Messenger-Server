@@ -36,12 +36,14 @@ namespace Messenger_Client.Models
             }
         }
 
-        public static event EventHandler<LoggedInResponseEventArgs> LoggedInResponse;
+        public static event EventHandler<ResponseStateEventArgs> LoggedInResponse;
+        public static event EventHandler<ResponseStateEventArgs> SignUpResponse;
+        public static event EventHandler<ResponseStateEventArgs> RegisterGroupResponse;
 
-        public class LoggedInResponseEventArgs : EventArgs
+        public class ResponseStateEventArgs : EventArgs
         {
             public int State { get; set; }
-            public LoggedInResponseEventArgs(int state)
+            public ResponseStateEventArgs(int state)
             {
                 this.State = state;
             }
@@ -89,19 +91,7 @@ namespace Messenger_Client.Models
 
         private static void HandleRegisterClientResponse(Message message)
         {
-            switch (message.ClientId)
-            {
-                case -1:
-                    Debug.WriteLine("e-mail al in gebruik");
-                    //TODO: geef melding dat e-mail al in gebruik is.
-                    break;
-                default:
-                    //TODO mooie pop up ofso
-                    Debug.WriteLine("Account aangemaakt!");
-                    Debug.WriteLine("ClientID: " + message.ClientId);
-
-                    break;
-            }
+            SignUpResponse?.Invoke(null, new ResponseStateEventArgs(message.ClientId));
         }
 
         private static void HandleSignInClientResponse(Message message)
@@ -111,22 +101,12 @@ namespace Messenger_Client.Models
                 Client.Instance.Id = message.ClientId;
                 message.GroupList.ForEach(group => Client.Instance.AddGroup(new Group(group)));
             }
-            LoggedInResponse?.Invoke(null, new LoggedInResponseEventArgs(message.ClientId));
+            LoggedInResponse?.Invoke(null, new ResponseStateEventArgs(message.ClientId));
         }
 
         private static void HandleRegisterGroupResponse(Message message)
         {
-            switch (message.GroupID)
-            {
-                case -1:
-                    Debug.WriteLine("failed to create group");
-                    //TODO: geef melding dat het aanmaken van een group mislukt is
-                    break;
-                default:
-                    Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
-                    Console.WriteLine("Group aangemaakt!");
-                    break;
-            }
+            RegisterGroupResponse?.Invoke(null, new ResponseStateEventArgs(message.ClientId));
         }
         
         private static void HandleRequestGroupsResponse(Message message)
