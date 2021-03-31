@@ -172,16 +172,7 @@ namespace Messenger_Client.ViewModels
             KeyRoutedEventArgs keyargs = (KeyRoutedEventArgs)args;
             if (keyargs.Key == Windows.System.VirtualKey.Enter)
             {
-                Message message = new Message()
-                {
-                    MessageType = MessageType.ChatMessage,
-                    ClientId = Client.Instance.Id,
-                    GroupID = SelectedGroupChat.Id,
-                    DateTime = DateTime.Now,
-                    PayloadData = this.TypedText
-                };
-
-                SendMessage(message);
+                ConstructTextMessage();
             }
         }
 
