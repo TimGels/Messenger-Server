@@ -217,10 +217,8 @@ namespace Messenger_Server
                     command.Parameters.AddWithValue("@userEmail", email);
 
                     connection.Open();
-                    string result = (string)command.ExecuteScalar();
-                    Console.WriteLine(result);
-                    return result;
-                   //return (string)command.ExecuteScalar();
+                    return (string)command.ExecuteScalar();
+                   
                 }
             } catch (Exception e)
             {
