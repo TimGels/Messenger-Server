@@ -73,9 +73,9 @@
                                 </Core:EventTriggerBehavior>
                             </Interactivity:Interaction.Behaviors>
                         </TextBox>
-
                         <Button  Style="{ThemeResource AddGroupButton}" Command="{Binding AddGroupCommand}"/>
                         <Button  Style="{ThemeResource CancelButton}" Command="{Binding BackToMainPageCommand}"/>
+                        <TextBlock Foreground="Red" FontWeight="Bold"  Text="{Binding CreateGroupErrorMessage}" Style="{ThemeResource LoginError}"/>
                     </StackPanel>
                 </Grid>
             </Grid>

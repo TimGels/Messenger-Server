@@ -42,6 +42,9 @@
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="About">
                     <MenuFlyoutItem  Text="About" />
                 </MenuBarItem>
+                <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Export">
+                    <MenuFlyoutItem  Text="Export" Command="{Binding ExportMessageCommand}" />
+                </MenuBarItem>
             </MenuBar>
         </Grid>
 

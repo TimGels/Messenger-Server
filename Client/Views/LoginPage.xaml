@@ -51,7 +51,7 @@
                 </PasswordBox>
                 <Button  Style="{ThemeResource LoginButton}" Command="{Binding LoginButtonCommand}"/>
                 <Button  Style="{ThemeResource RegisterButton}" Command="{Binding RegisterButtonCommand}"/>
-                <TextBlock Text="Hier moet iets komen te staan als je ww of username fout is" Style="{ThemeResource LoginError}"/>
+                <TextBlock Foreground="Red" FontWeight="Bold"  Text="{Binding LoginErrorMessage}" Style="{ThemeResource LoginError}"/>
             </StackPanel>
         </Grid>
     </Grid>
