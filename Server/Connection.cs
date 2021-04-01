@@ -39,7 +39,7 @@ namespace Messenger_Server
             CommunicationHandler.KeepAliveReceived += OnKeepAliveReceived;
 
             keepAliveTimer.Elapsed += OnKeepaliveTimerElapsed;
-            keepAliveTimer.Start();
+            //keepAliveTimer.Start();
         }
 
         /// <summary>
@@ -118,36 +118,48 @@ namespace Messenger_Server
                 // Don't lock closed since it is not crucial to keep going once more.
                 while (client.Connected && !closed)
                 {
-                    if (client.GetStream().DataAvailable)
+                    // Buffer to hold the size of the message.
+                    Byte[] sizeBuffer = new Byte[sizeof(Int32)];
+
+                    // Read size of message into sizeBuffer. Blocks untill data is
+                    // available. FIN will read 0 bytes, RST will throw.
+                    if (client.GetStream().Read(sizeBuffer, 0, sizeof(Int32)) > 0)
                     {
-                        // Result from multiple Read() calls will be stored here.
-                        string result = null;
+                        // Convert the bytes into the size of the actual data, set
+                        // ReceiveBufferSize and allocate enough spae to hold the data.
+                        int total = BitConverter.ToInt32(sizeBuffer, 0);
+                        client.ReceiveBufferSize = total;
+                        Byte[] buffer = new byte[total];
 
-                        // Call Read() untill newline received.
-                        while (true)
+                        // Loop through Receive() until enough data has been read and
+                        // remember how much has been read.
+                        int read = 0;
+                        while (read < total)
                         {
-                            Byte[] buffer = new Byte[client.Available];
-                            // Read() blocks until data is available and throws exception
-                            // if connection is closed.
-                            client.GetStream().Read(buffer, 0, buffer.Length);
-                            string chunk = Encoding.ASCII.GetString(buffer);
+                            // Determine amount to read based on amount of already read bytes.
+                            int sizeToRead = total - read;
 
-                            // Append the read data to the final result.
-                            result += chunk;
-
-                            // Check for end of message.
-                            if (chunk.EndsWith("\r\n"))
+                            // If size is larger than available, only read what's available.
+                            // Remaining data will be read by subsequent Receive() calls.
+                            if (sizeToRead > client.Available)
                             {
-                                // Remove trailing newline.
-                                result = result.Remove(result.Length - 2, "\r\n".Length);
-                                break;
+                                sizeToRead = client.Available;
                             }
+
+                            // Increment the read counter.
+                            read += client.GetStream().Read(buffer, read, sizeToRead);
                         }
 
                         Task.Run(() =>
                         {
-                            CommunicationHandler.HandleMessage(this, new Message(result));
+                            string json = Encoding.ASCII.GetString(buffer);
+                            CommunicationHandler.HandleMessage(this, new Message(json));
                         });
+                    }
+                    else
+                    {
+                        Console.WriteLine("Received FIN!");
+                        break;
                     }
 
                     Thread.Sleep(50);
