@@ -9,13 +9,30 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace Messenger_Client.ViewModels
 {
-    class LoginPageViewModel
+    public class LoginPageViewModel : ObservableRecipient
     {
         public string Email { get; set; }
         public string Password { get; set; }
+
+        private string loginErrorMessage = "";
+
+        public string LoginErrorMessage
+        {
+            get
+            {
+                return loginErrorMessage;
+            }
+            set
+            {
+                loginErrorMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ICommand RegisterButtonCommand { get; set; }
         public ICommand LoginButtonCommand { get; set; }
         public ICommand CheckEnterCommand { get; set; }
@@ -51,21 +68,37 @@ namespace Messenger_Client.ViewModels
             {
 
                 CommunicationHandler.SendLoginMessage(Email, Password);
-                CommunicationHandler.LoggedInSuccesfully += communicationHandler_LoggedInSuccesfully;
+                CommunicationHandler.LoggedInResponse += CommunicationHandler_LoggedInResponse;
             }
             else
             {
-                //TODO create pop up or something
-                Debug.WriteLine("email of password is empty!");
+                LoginErrorMessage = "E-mail of wachtwoord is niet ingevuld!";
             }
         }
 
-        private async void communicationHandler_LoggedInSuccesfully(object sender, EventArgs e)
+        private async void CommunicationHandler_LoggedInResponse(object sender, CommunicationHandler.ResponseStateEventArgs e)
         {
-            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+            switch (e.State)
             {
-                (Window.Current.Content as Frame).Navigate(typeof(MainPage));
-            });
+                case -1:
+                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        LoginErrorMessage = "E-mail of wachtwoord verkeerd!";
+                    });
+                    break;
+                case -2:
+                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        LoginErrorMessage = "Je bent al ingelogd!";
+                    });
+                    break;
+                default:
+                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        (Window.Current.Content as Frame).Navigate(typeof(MainPage));
+                    });
+                break;
+            }
         }
 
         private void RegisterButtonClicked()

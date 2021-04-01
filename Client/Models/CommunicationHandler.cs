@@ -38,7 +38,18 @@ namespace Messenger_Client.Models
             }
         }
 
-        public static event EventHandler LoggedInSuccesfully;
+        public static event EventHandler<ResponseStateEventArgs> LoggedInResponse;
+        public static event EventHandler<ResponseStateEventArgs> SignUpResponse;
+        public static event EventHandler<ResponseStateEventArgs> RegisterGroupResponse;
+
+        public class ResponseStateEventArgs : EventArgs
+        {
+            public int State { get; set; }
+            public ResponseStateEventArgs(int state)
+            {
+                this.State = state;
+            }
+        }
 
         public static void SendLoginMessage(string email, string password)
         {
@@ -82,63 +93,22 @@ namespace Messenger_Client.Models
 
         private static void HandleRegisterClientResponse(Message message)
         {
-            switch (message.ClientId)
-            {
-                case -1:
-                    Debug.WriteLine("e-mail al in gebruik");
-                    //TODO: geef melding dat e-mail al in gebruik is.
-                    break;
-                default:
-                    //TODO mooie pop up ofso
-                    Debug.WriteLine("Account aangemaakt!");
-                    Debug.WriteLine("ClientID: " + message.ClientId);
-
-                    break;
-            }
+            SignUpResponse?.Invoke(null, new ResponseStateEventArgs(message.ClientId));
         }
-
 
         private static void HandleSignInClientResponse(Message message)
         {
-            switch (message.ClientId)
+            if (message.ClientId >= 0)
             {
-                case -1:
-                    Debug.WriteLine("E-mail of wachtwoord verkeerd!");
-                    //TODO: geef melding dat de combinatie van e-mail en wachtwoord verkeerd is
-                    break;
-                case -2:
-                    Debug.WriteLine("Already ingelogd!");
-                    //TODO: geef melding dat het account al ergens anders is ingelogd
-                    break;
-                default:
-                    Debug.WriteLine("Gefeliciteerd!");
-                    Client.Instance.Id = message.ClientId;
-                    // AddGroup throwns no COMException since no ViewModel with
-                    // ObservableList<Group> has been constructed at this point.
-                    // Could be problematic on Logout->Login.
-                    message.GroupList.ForEach(group => Client.Instance.AddGroup(new Group(group)));
-                    LoggedInSuccesfully?.Invoke(null, null);
-                    break;
+                Client.Instance.Id = message.ClientId;
+                message.GroupList.ForEach(group => Client.Instance.AddGroup(new Group(group)));
             }
+            LoggedInResponse?.Invoke(null, new ResponseStateEventArgs(message.ClientId));
         }
 
         private static void HandleRegisterGroupResponse(Message message)
         {
-            switch (message.GroupID)
-            {
-                case -1:
-                    Debug.WriteLine("failed to create group");
-                    //TODO: geef melding dat het aanmaken van een group mislukt is
-                    break;
-                default:
-                    // Run on UI thread to prevent COMException.
-                    _ = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
-                    {
-                        Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
-                    });
-                    Console.WriteLine("Group aangemaakt!");
-                    break;
-            }
+            RegisterGroupResponse?.Invoke(null, new ResponseStateEventArgs(message.ClientId));
         }
         
         private static void HandleRequestGroupsResponse(Message message)
