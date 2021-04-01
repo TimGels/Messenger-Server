@@ -113,6 +113,7 @@ namespace Messenger_Client.Models
                 default:
                     Debug.WriteLine("Gefeliciteerd!");
                     Client.Instance.Id = message.ClientId;
+                    Client.Instance.ClientName = message.ClientName;
                     // AddGroup throwns no COMException since no ViewModel with
                     // ObservableList<Group> has been constructed at this point.
                     // Could be problematic on Logout->Login.
