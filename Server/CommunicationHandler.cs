@@ -64,7 +64,8 @@ namespace Messenger_Server
             string password = message.RegisterInfo.Login.Password;
             string userName = message.RegisterInfo.Username;
 
-            int id = Server.Instance.CreateAndAddClient(userName, email, password);
+            string hashedPassword = Helper.HashPassword(password);
+            int id = Server.Instance.CreateAndAddClient(userName, email, hashedPassword);
 
             connection.SendData(new Message()
             {

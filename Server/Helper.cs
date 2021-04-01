@@ -16,10 +16,14 @@ namespace Messenger_Server
         /// <param name="client"></param>
         /// <param name="passwordToCheck"></param>
         /// <returns></returns>
-
         public static bool ValidatePassword(string email, string passwordToCheck)
         {
-            return passwordToCheck.Equals(DatabaseHandler.GetPasswordFromClient(email));
+            return BCrypt.Net.BCrypt.Verify(passwordToCheck, DatabaseHandler.GetPasswordFromClient(email));
+        }
+
+        public static string HashPassword(string passwordToHash)
+        {
+            return BCrypt.Net.BCrypt.HashPassword(passwordToHash);
         }
     }
 }

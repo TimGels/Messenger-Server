@@ -182,7 +182,6 @@ namespace Messenger_Server
                 Email = email,
                 Name = userName
             };
-
             client.Id = DatabaseHandler.AddClient(client, password);
 
             if (client.Id >= 0)
