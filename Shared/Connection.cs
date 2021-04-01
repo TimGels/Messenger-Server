@@ -11,6 +11,11 @@ namespace Shared
         /// </summary>
         protected readonly TcpClient client;
 
+        /// <summary>
+        /// Synchronises access to the Send() buffer.
+        /// </summary>
+        private readonly object writeLocker = new object();
+
         public Connection(TcpClient client)
         {
             this.client = client;
@@ -30,7 +35,10 @@ namespace Shared
         {
             string data = Message.SerializeMessage(message);
             Byte[] buffer = Encoding.ASCII.GetBytes(data);
-            client.GetStream().Write(buffer, 0, buffer.Length);
+            lock (writeLocker)
+            {
+                client.GetStream().Write(buffer, 0, buffer.Length);
+            }
         }
     }
 }
