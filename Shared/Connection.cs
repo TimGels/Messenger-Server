@@ -28,7 +28,7 @@ namespace Shared
         /// <param name="message">The message to send.</param>
         public virtual void SendData(Message message)
         {
-            string data = Message.SerializeMessage(message) + "\r\n";
+            string data = Message.SerializeMessage(message);
             Byte[] buffer = Encoding.ASCII.GetBytes(data);
             client.GetStream().Write(buffer, 0, buffer.Length);
         }
