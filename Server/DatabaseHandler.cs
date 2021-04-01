@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
+using Shared;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -56,7 +57,7 @@ namespace Messenger_Server
             using (SqliteConnection connection = new SqliteConnection(connectionString))
             {
                 SqliteCommand command = connection.CreateCommand();
-                command.CommandText = "CREATE TABLE `Messsage` (id INTEGER PRIMARY KEY,payload TEXT, messageType VARCHAR(30), senderid INTEGER,groupid INTEGER,timesent DATETIME,FOREIGN KEY(senderid) REFERENCES `User`(id) ON DELETE CASCADE FOREIGN KEY(groupid) REFERENCES `Group`(id) ON DELETE CASCADE)";
+                command.CommandText = "CREATE TABLE `Message` (id INTEGER PRIMARY KEY,payload TEXT, messageType VARCHAR(30), senderid INTEGER,groupid INTEGER,timesent DATETIME,FOREIGN KEY(senderid) REFERENCES `User`(id) ON DELETE CASCADE FOREIGN KEY(groupid) REFERENCES `Group`(id) ON DELETE CASCADE)";
                 connection.Open();
                 command.ExecuteNonQuery();
                 connection.Close();
@@ -105,6 +106,31 @@ namespace Messenger_Server
                 command.CommandText = "CREATE TABLE `User` (id INTEGER PRIMARY KEY,userName VARCHAR(50),email VARCHAR(100) UNIQUE,passwd VARCHAR(100))";
                 command.ExecuteNonQuery();
                 connection.Close();
+            }
+        }
+
+        public static void AddMessage(Message message)
+        {
+            try
+            {
+                using(SqliteConnection connection = new SqliteConnection(connectionString))
+                {
+                    SqliteCommand command = connection.CreateCommand();
+                    command.CommandText = "insert into `Message` (payload, messageType, senderid, groupid, timesent) values (@payload, @messageType, @senderid, @groupid, @timesent)";
+                    command.Parameters.AddWithValue("@payload", message.PayloadData);
+                    command.Parameters.AddWithValue("@messageType", message.MessageType);
+                    command.Parameters.AddWithValue("@senderid", message.ClientId);
+                    command.Parameters.AddWithValue("@groupid", message.GroupID);
+                    command.Parameters.AddWithValue("@timesent", message.DateTime);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            catch (Exception e) 
+            {
+                Console.WriteLine(e.Message);
             }
         }
 
