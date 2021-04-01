@@ -25,7 +25,6 @@ namespace Messenger_Client.ViewModels
         public string Mail { get; set; }
         public string Name { get; set; }
 
-        //public string SignUpErrorMessage { get; set; }
 
         private string signUpErrorMessage = "";
 
