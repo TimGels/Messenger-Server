@@ -227,6 +227,8 @@ namespace Messenger_Server
         /// <param name="message">The message containing the chatmessage.</param>
         private static void HandleChatMessage(Connection connection, Message message)
         {
+            //add message to database
+            DatabaseHandler.AddMessage(message);
             // Relay the chatMessage to all other clients in the group.
             Server.Instance.GetGroup(message.GroupID).SendMessageToClients(message);
         }
