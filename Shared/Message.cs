@@ -40,17 +40,18 @@ namespace Shared
             }
         }
 
-        public Image Image
+        public string ImageString
         {
             get
             {
-                //TODO: check if data is from the type image?
-                return Helper.Base64StringToImage(jsonMessage.Payload.Data);
-            }
-            set
-            {
-                //TODO: also set the Payload.Type property?
-                this.jsonMessage.Payload.Data = Helper.ImageTobase64String(value);
+                if (PayloadType != null && PayloadType.Equals("image"))
+                {
+                    return jsonMessage.Payload.Data;
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 
@@ -58,7 +59,11 @@ namespace Shared
         {
             get
             {
-                return jsonMessage.Payload.Data;
+                if (ImageString == null)
+                {
+                    return jsonMessage.Payload.Data;
+                }
+                return null;
             }
             set
             {
@@ -248,6 +253,7 @@ namespace Shared
         JoinGroup,
         JoinGroupResponse,
         LeaveGroup,
-        ChatMessage
+        ChatMessage,
+        KeepAlive
     }
 }

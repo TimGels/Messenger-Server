@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net;
-using System.Security;
-using System.Threading;
 using Shared;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 
 namespace Messenger_Client.Models
 {
@@ -32,6 +31,9 @@ namespace Messenger_Client.Models
                     break;
                 case MessageType.ChatMessage:
                     HandleChatMessage(message);
+                    break;
+                case MessageType.KeepAlive:
+                    HandleKeepAliveMessage(message);
                     break;
             }
         }
@@ -127,8 +129,12 @@ namespace Messenger_Client.Models
                     //TODO: create pop up
                     break;
                 default:
+                    // Run on UI thread to prevent COMException.
+                    _ = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+                    {
+                        Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
+                    });
                     Console.WriteLine("joined a group");
-                    Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
                     break;
             }
         }
@@ -138,13 +144,25 @@ namespace Messenger_Client.Models
             Group group = Client.Instance.GetGroup(message.GroupID);
             if (group != null)
             {
-                group.AddMessage(message);
+                _ = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+                {
+                    group.AddMessage(message);
+                });
             }
             else
             {
                 Console.WriteLine("group doesn't exist");
                 //TODO: doe iets wanneer de group niet bestaat
             }
+        }
+
+        /// <summary>
+        /// Bounce the keepalive message back to the server.
+        /// </summary>
+        /// <param name="message"></param>
+        private static void HandleKeepAliveMessage(Message message)
+        {
+            Client.Instance.Connection.SendData(message);
         }
     }
 }

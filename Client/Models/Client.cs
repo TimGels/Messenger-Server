@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Shared;
-using Messenger_Client.Models;
 using Windows.Storage.Pickers;
 using Connection = Messenger_Client.Models.Connection;
 using Group = Messenger_Client.Models.Group;
-using System.Collections.ObjectModel;
 
 namespace Messenger_Client
 {
@@ -49,6 +47,7 @@ namespace Messenger_Client
             this.Connection = new Connection(serverAddress, port);
             this.ClientName = "clientName";
         }
+
         /// <summary>
         /// TODO: Make GroupID unique.
         /// </summary>
@@ -94,6 +93,11 @@ namespace Messenger_Client
             // Default file name if the user does not type one in or select a file to replace
             savePicker.SuggestedFileName = "New Document";
             Windows.Storage.StorageFile file = await savePicker.PickSaveFileAsync();
+
+            if (file is null)
+            {
+                return;
+            }
 
             //enter read lock of groups
             this.groupLocker.EnterReadLock();

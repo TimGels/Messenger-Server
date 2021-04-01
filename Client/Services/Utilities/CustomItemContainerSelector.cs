@@ -13,8 +13,7 @@ namespace Messenger_Client.Services.Utilities
         {
             var message = (Message)item;
 
-            //TODO: client ID halen uit client.   
-            if (message.ClientId == 1)
+            if (message.ClientId == Client.Instance.Id)
             {
                 return StyleOwnMessageContainer;
             }
