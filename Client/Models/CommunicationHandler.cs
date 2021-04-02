@@ -122,7 +122,6 @@ namespace Messenger_Client.Models
 
         #region handle incoming messages
 
-
         private static void HandleRegisterClientResponse(Message message)
         {
             SignUpResponse?.Invoke(null, new ResponseStateEventArgs(message.ClientId));
@@ -186,5 +185,8 @@ namespace Messenger_Client.Models
                 //TODO: doe iets wanneer de group niet bestaat
             }
         }
+
+        #endregion
+
     }
 }
