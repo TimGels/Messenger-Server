@@ -106,6 +106,11 @@ namespace Messenger_Client.ViewModels
 
         private async void OpenFilePicker()
         {
+            if (this.SelectedGroupChat == null)
+            {
+                return;
+            }
+
             var picker = new Windows.Storage.Pickers.FileOpenPicker();
             picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
             picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
