@@ -18,6 +18,7 @@ namespace Messenger_Client.ViewModels
         public ICommand BackToMainPageCommand { get; set; }
         public ICommand AddGroupCommand { get; set; }
         public ICommand CheckEnterCommand { get; set; }
+        public ICommand LogoutCommand { get; set; }
 
         public string NewGroupName { get; set; }
 
@@ -41,6 +42,7 @@ namespace Messenger_Client.ViewModels
             BackToMainPageCommand = new RelayCommand<object>(BackToMain);
             AddGroupCommand = new RelayCommand(AddNewGroup);
             CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
+            LogoutCommand = new RelayCommand(Logout);
         }
 
         private void CheckEnterPressed(object obj)
@@ -90,6 +92,17 @@ namespace Messenger_Client.ViewModels
         {
             Frame rootFrame = Window.Current.Content as Frame;
             rootFrame.Navigate(typeof(MainPage));
+        }
+
+        private void Logout()
+        {
+            //TODO: Logout implementation
+            //Client.Instance.Connection.Close();
+
+            Frame rootFrame = Window.Current.Content as Frame;
+            rootFrame.Navigate(typeof(LoginPage));
+
+            Debug.WriteLine("Logout");
         }
     }
 }
