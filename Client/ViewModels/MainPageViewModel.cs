@@ -205,6 +205,11 @@ namespace Messenger_Client.ViewModels
         private void Logout()
         {
             //TODO: Logout implementation
+            //Client.Instance.Connection.Close();
+
+            Frame rootFrame = Window.Current.Content as Frame;
+            rootFrame.Navigate(typeof(LoginPage));
+            
             Debug.WriteLine("Logout");
         }
     }
