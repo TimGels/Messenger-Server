@@ -23,65 +23,10 @@ namespace Messenger_Server
         /// </summary>
         private readonly object closedLock = new object();
 
-        /// <summary>
-        /// Timer to check for an active connection.
-        /// </summary>
-        private readonly Timer keepAliveTimer = new Timer(5 * 1000);
-
-        /// <summary>
-        /// Indicates whether a keepalive has been received.
-        /// </summary>
-        private bool keepAliveReceived = true;
-
         public Connection(TcpClient client)
             : base(client)
         {
-            CommunicationHandler.KeepAliveReceived += OnKeepAliveReceived;
 
-            keepAliveTimer.Elapsed += OnKeepaliveTimerElapsed;
-            //keepAliveTimer.Start();
-        }
-
-        /// <summary>
-        /// Indicates the keepalive from the client has been received.
-        /// </summary>
-        /// <param name="sender">Should be null.</param>
-        /// <param name="e">Should be null.</param>
-        private void OnKeepAliveReceived(object sender, EventArgs e)
-        {
-            keepAliveReceived = true;
-        }
-
-        /// <summary>
-        /// Invoked when timer elapsed. Checks if keepalive has been received. If so,
-        /// resend keepalive. If not, Close() the connection.
-        /// </summary>
-        /// <param name="sender">Should be null.</param>
-        /// <param name="e">Should be null.</param>
-        private void OnKeepaliveTimerElapsed(object sender, ElapsedEventArgs e)
-        {
-            lock (closedLock)
-            {
-                if (closed)
-                {
-                    return;
-                }
-            }
-
-            // Check if client has responded.
-            if (!keepAliveReceived)
-            {
-                Close();
-            }
-            else
-            {
-                keepAliveReceived = false;
-
-                SendData(new Message()
-                {
-                    MessageType = MessageType.KeepAlive
-                });
-            }
         }
 
         /// <summary>
@@ -102,11 +47,6 @@ namespace Messenger_Server
                     // Close the connection.
                     client.Close();
                     client.Dispose();
-
-                    // Remove event handlers and stop timer.
-                    CommunicationHandler.KeepAliveReceived -= OnKeepAliveReceived;
-                    keepAliveTimer.Elapsed -= OnKeepaliveTimerElapsed;
-                    keepAliveTimer.Stop();
                 }
             }
         }
