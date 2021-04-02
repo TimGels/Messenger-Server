@@ -136,6 +136,7 @@ namespace Messenger_Client.Models
             if (message.ClientId >= 0)
             {
                 Client.Instance.Id = message.ClientId;
+                Client.Instance.Name = message.ClientName;
                 message.GroupList.ForEach(group => Client.Instance.AddGroup(new Group(group)));
             }
             LogInResponse?.Invoke(null, new ResponseStateEventArgs(message.ClientId));
