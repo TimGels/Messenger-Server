@@ -45,7 +45,7 @@ namespace Messenger_Client
         {
             this.Groups = new ObservableCollection<Group>();
             this.Connection = new Connection(serverAddress, port);
-            this.ClientName = "clientName";
+            this.ClientName = "ClientNameNeedsToBeSet";
         }
 
         /// <summary>
