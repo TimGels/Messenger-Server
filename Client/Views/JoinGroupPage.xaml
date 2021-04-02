@@ -29,7 +29,7 @@
                     <MenuFlyoutItem  Text="Add group" />
                 </MenuBarItem>
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="About">
-                    <MenuFlyoutItem  Text="About" />
+                    <MenuFlyoutItem  Text="About" Command="{Binding AboutDialogCommand}" />
                 </MenuBarItem>
             </MenuBar>
 

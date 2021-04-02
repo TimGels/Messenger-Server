@@ -18,6 +18,7 @@ namespace Messenger_Client.ViewModels
         public ICommand BackToMainPageCommand { get; set; }
         public ICommand AddGroupCommand { get; set; }
         public ICommand CheckEnterCommand { get; set; }
+        public ICommand AboutDialogCommand { get; set; }
 
         public string NewGroupName { get; set; }
 
@@ -41,6 +42,7 @@ namespace Messenger_Client.ViewModels
             BackToMainPageCommand = new RelayCommand<object>(BackToMain);
             AddGroupCommand = new RelayCommand(AddNewGroup);
             CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
+            AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
         }
 
         private void CheckEnterPressed(object obj)
@@ -90,6 +92,22 @@ namespace Messenger_Client.ViewModels
         {
             Frame rootFrame = Window.Current.Content as Frame;
             rootFrame.Navigate(typeof(MainPage));
+        }
+
+        private async void DisplayAboutDialog()
+        {
+            ContentDialog aboutDialog = new ContentDialog
+            {
+                Title = "About Messenger Vision",
+                PrimaryButtonText = "Ok",
+                DefaultButton = ContentDialogButton.Primary
+            };
+
+            aboutDialog.Content += "Application: Messenger Vision\n";
+            aboutDialog.Content += "Version: 1.0\n";
+            aboutDialog.Content += "Developers: Jochem Brans, Johannes Kaufmann, Sietze Koonstra, Tim Gels, Rik van Rijn, Ruben Kuilder\n";
+
+            await aboutDialog.ShowAsync();
         }
     }
 }

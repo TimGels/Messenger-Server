@@ -12,9 +12,11 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Group = Messenger_Client.Models.Group;
 
 
@@ -30,6 +32,7 @@ namespace Messenger_Client.ViewModels
         public ICommand ShowGroupsToJoinCommand { get; set; }
         public ICommand ExportMessageCommand { get; set; }
         public ICommand OpenFilePickerCommand { get; set; }
+        public ICommand AboutDialogCommand { get; set; }
 
         public ObservableCollection<Group> GroupList
         {
@@ -99,6 +102,7 @@ namespace Messenger_Client.ViewModels
             ShowAddGroupViewCommand = new RelayCommand(ShowAddGroupView);
             OpenFilePickerCommand = new RelayCommand(OpenFilePicker);
             ExportMessageCommand = new RelayCommand<object>(ExportMessage);
+            AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
             
             this.GroupList = new ObservableCollection<Group>();
             this.TypedText = "";
@@ -198,6 +202,22 @@ namespace Messenger_Client.ViewModels
         private void ExportMessage(object obj)
         {
             Client.Instance.ExportMessageToFileAsync();
+        }
+
+        private async void DisplayAboutDialog()
+        {
+            ContentDialog aboutDialog = new ContentDialog
+            {
+                Title = "About Messenger Vision",
+                PrimaryButtonText = "Ok",
+                DefaultButton = ContentDialogButton.Primary
+            };
+
+            aboutDialog.Content += "Application: Messenger Vision\n";
+            aboutDialog.Content += "Version: 1.0\n";
+            aboutDialog.Content += "Developers: Jochem Brans, Johannes Kaufmann, Sietze Koonstra, Tim Gels, Rik van Rijn, Ruben Kuilder\n";
+
+            await aboutDialog.ShowAsync();
         }
     }
 }
