@@ -57,9 +57,6 @@ namespace Messenger_Client.Models
                 case MessageType.ChatMessage:
                     HandleChatMessage(message);
                     break;
-                case MessageType.KeepAlive:
-                    HandleKeepAliveMessage(message);
-                    break;
             }
         }
         #region send message methods
@@ -124,7 +121,6 @@ namespace Messenger_Client.Models
         #endregion
 
         #region handle incoming messages
-
 
         private static void HandleRegisterClientResponse(Message message)
         {
@@ -191,13 +187,6 @@ namespace Messenger_Client.Models
         }
 
         #endregion
-        /// <summary>
-        /// Bounce the keepalive message back to the server.
-        /// </summary>
-        /// <param name="message"></param>
-        private static void HandleKeepAliveMessage(Message message)
-        {
-            Client.Instance.Connection.SendData(message);
-        }
+
     }
 }

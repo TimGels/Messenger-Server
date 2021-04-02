@@ -23,65 +23,10 @@ namespace Messenger_Server
         /// </summary>
         private readonly object closedLock = new object();
 
-        /// <summary>
-        /// Timer to check for an active connection.
-        /// </summary>
-        private readonly Timer keepAliveTimer = new Timer(5 * 1000);
-
-        /// <summary>
-        /// Indicates whether a keepalive has been received.
-        /// </summary>
-        private bool keepAliveReceived = true;
-
         public Connection(TcpClient client)
             : base(client)
         {
-            CommunicationHandler.KeepAliveReceived += OnKeepAliveReceived;
 
-            keepAliveTimer.Elapsed += OnKeepaliveTimerElapsed;
-            keepAliveTimer.Start();
-        }
-
-        /// <summary>
-        /// Indicates the keepalive from the client has been received.
-        /// </summary>
-        /// <param name="sender">Should be null.</param>
-        /// <param name="e">Should be null.</param>
-        private void OnKeepAliveReceived(object sender, EventArgs e)
-        {
-            keepAliveReceived = true;
-        }
-
-        /// <summary>
-        /// Invoked when timer elapsed. Checks if keepalive has been received. If so,
-        /// resend keepalive. If not, Close() the connection.
-        /// </summary>
-        /// <param name="sender">Should be null.</param>
-        /// <param name="e">Should be null.</param>
-        private void OnKeepaliveTimerElapsed(object sender, ElapsedEventArgs e)
-        {
-            lock (closedLock)
-            {
-                if (closed)
-                {
-                    return;
-                }
-            }
-
-            // Check if client has responded.
-            if (!keepAliveReceived)
-            {
-                Close();
-            }
-            else
-            {
-                keepAliveReceived = false;
-
-                SendData(new Message()
-                {
-                    MessageType = MessageType.KeepAlive
-                });
-            }
         }
 
         /// <summary>
@@ -102,11 +47,6 @@ namespace Messenger_Server
                     // Close the connection.
                     client.Close();
                     client.Dispose();
-
-                    // Remove event handlers and stop timer.
-                    CommunicationHandler.KeepAliveReceived -= OnKeepAliveReceived;
-                    keepAliveTimer.Elapsed -= OnKeepaliveTimerElapsed;
-                    keepAliveTimer.Stop();
                 }
             }
         }
@@ -118,18 +58,48 @@ namespace Messenger_Server
                 // Don't lock closed since it is not crucial to keep going once more.
                 while (client.Connected && !closed)
                 {
-                    if (client.GetStream().DataAvailable)
+                    // Buffer to hold the size of the message.
+                    Byte[] sizeBuffer = new Byte[sizeof(Int32)];
+
+                    // Read size of message into sizeBuffer. Blocks untill data is
+                    // available. FIN will read 0 bytes, RST will throw.
+                    if (client.GetStream().Read(sizeBuffer, 0, sizeof(Int32)) > 0)
                     {
-                        Byte[] buffer = new Byte[client.Available];
-                        // Read() blocks until data is available and throws exception if
-                        // connection is closed.
-                        client.GetStream().Read(buffer, 0, buffer.Length);
-                        string data = Encoding.ASCII.GetString(buffer);
+                        // Convert the bytes into the size of the actual data, set
+                        // ReceiveBufferSize and allocate enough spae to hold the data.
+                        int total = BitConverter.ToInt32(sizeBuffer, 0);
+                        client.ReceiveBufferSize = total;
+                        Byte[] buffer = new byte[total];
+
+                        // Loop through Receive() until enough data has been read and
+                        // remember how much has been read.
+                        int read = 0;
+                        while (read < total)
+                        {
+                            // Determine amount to read based on amount of already read bytes.
+                            int sizeToRead = total - read;
+
+                            // If size is larger than available, only read what's available.
+                            // Remaining data will be read by subsequent Receive() calls.
+                            if (sizeToRead > client.Available)
+                            {
+                                sizeToRead = client.Available;
+                            }
+
+                            // Increment the read counter.
+                            read += client.GetStream().Read(buffer, read, sizeToRead);
+                        }
 
                         Task.Run(() =>
                         {
-                            CommunicationHandler.HandleMessage(this, new Message(data));
+                            string json = Encoding.ASCII.GetString(buffer);
+                            CommunicationHandler.HandleMessage(this, new Message(json));
                         });
+                    }
+                    else
+                    {
+                        Console.WriteLine("Received FIN!");
+                        break;
                     }
 
                     Thread.Sleep(50);
