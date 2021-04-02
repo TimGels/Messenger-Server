@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Windows.Storage.Pickers;
 using Connection = Messenger_Client.Models.Connection;
 using Group = Messenger_Client.Models.Group;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 
 namespace Messenger_Client
 {
@@ -59,7 +61,10 @@ namespace Messenger_Client
             groupLocker.EnterWriteLock();
             try
             {
-                this.Groups.Add(group);
+                CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+                {
+                    this.Groups.Add(group);
+                }).AsTask();
             }
             finally
             {
