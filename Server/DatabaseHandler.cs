@@ -175,6 +175,10 @@ namespace Messenger_Server
             }
         }
 
+        /// <summary>
+        /// Insert a message into the database.
+        /// </summary>
+        /// <param name="message">The message to add.</param>
         public static void AddMessage(Message message)
         {
             try
@@ -194,7 +198,7 @@ namespace Messenger_Server
                     connection.Close();
                 }
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
@@ -206,8 +210,8 @@ namespace Messenger_Server
         /// </summary>
         /// <param name="client"></param>
         /// <param name="password"></param>
-        /// <returns>int -1 = there already exists a client with this email or something
-        /// else went wrongor the id of the just added user.</returns>
+        /// <returns>int < 0 means there already exists a client with this email or something
+        /// else went wrong, int >= 0 means id of the just added user.</returns>
         public static int AddClient(Client client, string password)
         {
             try
@@ -297,7 +301,7 @@ namespace Messenger_Server
         /// Get the password from the client based on the email of the client.
         /// </summary>
         /// <param name="email">The email of the client.</param>
-        /// <returns></returns>
+        /// <returns>Password for the given email, null if user with email does not exist.</returns>
         public static string GetPasswordFromClient(string email)
         {
             try
@@ -311,7 +315,8 @@ namespace Messenger_Server
                     connection.Open();
                     return (string)command.ExecuteScalar();
                 }
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 return string.Empty;
             }
