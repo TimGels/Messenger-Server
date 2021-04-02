@@ -194,9 +194,9 @@ namespace Messenger_Client.ViewModels
             Debug.WriteLine("OpenSignUpView");
         }
 
-        private void ExportMessage()
+        private async void ExportMessage()
         {
-            Client.Instance.ExportMessageToFileAsync();
+            await Client.Instance.ExportMessageToFileAsync();
         }
     }
 }

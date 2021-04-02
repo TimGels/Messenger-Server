@@ -164,13 +164,11 @@ namespace Messenger_Client.Models
             switch (message.GroupID)
             {
                 case -1:
-                    Debug.WriteLine("something went wrong!");
                     //TODO: create pop up
                     break;
                 default:
                     Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
                     JoinedGroup?.Invoke(null, null);
-                    Console.WriteLine("joined a group");
                     break;
             }
         }
