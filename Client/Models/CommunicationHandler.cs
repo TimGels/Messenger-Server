@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Shared;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
