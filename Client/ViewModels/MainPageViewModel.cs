@@ -98,7 +98,7 @@ namespace Messenger_Client.ViewModels
             ShowGroupsToJoinCommand = new RelayCommand(ShowGroupsToJoin);
             ShowAddGroupViewCommand = new RelayCommand(ShowAddGroupView);
             OpenFilePickerCommand = new RelayCommand(OpenFilePicker);
-            ExportMessageCommand = new RelayCommand<object>(ExportMessage);
+            ExportMessageCommand = new RelayCommand(ExportMessage);
             
             this.GroupList = new ObservableCollection<Group>();
             this.TypedText = "";
@@ -195,7 +195,7 @@ namespace Messenger_Client.ViewModels
             Debug.WriteLine("OpenSignUpView");
         }
 
-        private void ExportMessage(object obj)
+        private void ExportMessage()
         {
             Client.Instance.ExportMessageToFileAsync();
         }
