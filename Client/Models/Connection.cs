@@ -1,10 +1,9 @@
 ﻿using Shared;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,47 +21,62 @@ namespace Messenger_Client.Models
 
         public override void ReadData()
         {
-            while (true)
+            try
             {
-                try
+                while (true)
                 {
-                    if (client.GetStream().DataAvailable)
+                    // Buffer to hold the size of the message.
+                    Byte[] sizeBuffer = new Byte[sizeof(Int32)];
+
+                    // Read size of message into sizeBuffer. Blocks untill data is
+                    // available. FIN will read 0 bytes, RST will throw.
+                    if (client.GetStream().Read(sizeBuffer, 0, sizeof(Int32)) > 0)
                     {
-                        // Result from multiple Read() calls will be stored here.
-                        string result = null;
+                        // Convert the bytes into the size of the actual data, set
+                        // ReceiveBufferSize and allocate enough spae to hold the data.
+                        int total = BitConverter.ToInt32(sizeBuffer, 0);
+                        client.ReceiveBufferSize = total;
+                        Byte[] buffer = new byte[total];
 
-                        // Call Read() untill newline received.
-                        while (true)
+                        // Loop through Receive() until enough data has been read and
+                        // remember how much has been read.
+                        int read = 0;
+                        while (read < total)
                         {
-                            Byte[] buffer = new Byte[client.Available];
-                            // Read() blocks until data is available and throws exception
-                            // if connection is closed.
-                            client.GetStream().Read(buffer, 0, buffer.Length);
-                            string chunk = Encoding.ASCII.GetString(buffer);
+                            // Determine amount to read based on amount of already read bytes.
+                            int sizeToRead = total - read;
 
-                            // Append the read data to the final result.
-                            result += chunk;
-
-                            // Check for end of message.
-                            if (chunk.EndsWith("\r\n"))
+                            // If size is larger than available, only read what's available.
+                            // Remaining data will be read by subsequent Receive() calls.
+                            if (sizeToRead > client.Available)
                             {
-                                // Remove trailing newline.
-                                result = result.Remove(result.Length - 2, "\r\n".Length);
-                                break;
+                                sizeToRead = client.Available;
                             }
+
+                            // Increment the read counter.
+                            read += client.GetStream().Read(buffer, read, sizeToRead);
                         }
 
                         Task.Run(() =>
                         {
-                            CommunicationHandler.HandleMessage(new Message(result));
+                            string json = Encoding.ASCII.GetString(buffer);
+                            CommunicationHandler.HandleMessage(new Message(json));
                         });
+
+                        Thread.Sleep(50);
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Received FIN!");
+                        break;
                     }
                 }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e);
-                    break;
-                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(String.Format("{0} failed with {1}",
+                    MethodBase.GetCurrentMethod().Name,
+                    e.GetType().FullName));
             }
         }
     }

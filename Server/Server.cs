@@ -46,7 +46,7 @@ namespace Messenger_Server
 
         public static void Main(string[] args)
         {
-            DatabaseHandler.CreateDatabase();
+            DatabaseHandler.Initialize();
             Server.Instance.StartListening();
         }
 
@@ -57,6 +57,8 @@ namespace Messenger_Server
         {
             get { return lazy.Value; }
         }
+
+        
 
         private Server()
         {
@@ -182,7 +184,6 @@ namespace Messenger_Server
                 Email = email,
                 Name = userName
             };
-
             client.Id = DatabaseHandler.AddClient(client, password);
 
             if (client.Id >= 0)

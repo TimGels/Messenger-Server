@@ -85,10 +85,10 @@ namespace Messenger_Client.ViewModels
             }
 
             CommunicationHandler.SendRegisterMessage(Mail, Name, Password);
-            CommunicationHandler.SignUpResponse += CommunicationHandler_SignUpResponse;
+            CommunicationHandler.SignUpResponse += OnSignUpResponseReceived;
         }
 
-        private async void CommunicationHandler_SignUpResponse(object sender, CommunicationHandler.ResponseStateEventArgs e)
+        private async void OnSignUpResponseReceived(object sender, CommunicationHandler.ResponseStateEventArgs e)
         {
             switch (e.State)
             {

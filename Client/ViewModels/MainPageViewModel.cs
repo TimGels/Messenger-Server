@@ -4,11 +4,8 @@ using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Shared;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Storage;
 using Windows.Storage.Streams;
@@ -98,7 +95,7 @@ namespace Messenger_Client.ViewModels
             ShowGroupsToJoinCommand = new RelayCommand(ShowGroupsToJoin);
             ShowAddGroupViewCommand = new RelayCommand(ShowAddGroupView);
             OpenFilePickerCommand = new RelayCommand(OpenFilePicker);
-            ExportMessageCommand = new RelayCommand<object>(ExportMessage);
+            ExportMessageCommand = new RelayCommand(ExportMessage);
             
             this.GroupList = new ObservableCollection<Group>();
             this.TypedText = "";
@@ -137,6 +134,7 @@ namespace Messenger_Client.ViewModels
                 GroupID = SelectedGroupChat.Id,
                 DateTime = DateTime.Now,
                 PayloadType = "image",
+                ClientName = Client.Instance.ClientName,
                 PayloadData = imageBase64String
             };
             SendMessage(message);
@@ -156,6 +154,7 @@ namespace Messenger_Client.ViewModels
                 GroupID = SelectedGroupChat.Id,
                 DateTime = DateTime.Now,
                 PayloadType = "text",
+                ClientName = Client.Instance.ClientName,
                 PayloadData = this.TypedText
             };
             SendMessage(message);
@@ -195,9 +194,9 @@ namespace Messenger_Client.ViewModels
             Debug.WriteLine("OpenSignUpView");
         }
 
-        private void ExportMessage(object obj)
+        private async void ExportMessage()
         {
-            Client.Instance.ExportMessageToFileAsync();
+            await Client.Instance.ExportMessageToFileAsync();
         }
     }
 }

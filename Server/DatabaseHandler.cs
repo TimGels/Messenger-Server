@@ -1,7 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
+using Shared;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -16,6 +16,12 @@ namespace Messenger_Server
 
         private static readonly string connectionString = CreateConnectionString();
 
+        public static void Initialize()
+        {
+            CreateDatabase();
+            SetJournalModeDatabase();
+        }
+
         private static string CreateConnectionString()
         {
             // Create new connection string builder and set the dataSource to the databaseFilePath.
@@ -24,14 +30,75 @@ namespace Messenger_Server
                 DataSource = databaseFilePath
             };
 
+            if (IsDatabaseSharedCacheEnabled())
+            {
+                Console.WriteLine("Datbaseconnections will be created with Shared Cache!");
+                connectionStringBuilder.Cache = SqliteCacheMode.Shared;
+            }
+
             return connectionStringBuilder.ToString();
+        }
+
+        private static void SetJournalModeDatabase()
+        {
+            string walEnabledSetting = Configuration.GetSetting("walEnabled");
+            bool enableWal = false;
+
+            if (walEnabledSetting != null)
+            {
+                if (bool.Parse(walEnabledSetting))
+                {
+                    enableWal = true;
+                }
+            }
+
+            ExecuteJournalModeQuery(enableWal);
+        }
+
+        private static bool IsDatabaseSharedCacheEnabled()
+        {
+            string valueFromSetting = Configuration.GetSetting("databaseCacheShared");
+            if(valueFromSetting == null)
+            {
+                return false;
+            } else
+            {
+                return bool.Parse(valueFromSetting);
+            }
+        }
+
+        private static void ExecuteJournalModeQuery(bool enabled)
+        {
+            string status = "";
+            if (enabled && !IsDatabaseSharedCacheEnabled())
+            {
+                status = "Shared Cache is not enabled! WAL isn't possible.\n";
+                enabled = false;
+            }
+            using (SqliteConnection connection = new SqliteConnection(connectionString))
+            {
+                // Enable or disable write-ahead logging
+                SqliteCommand command = connection.CreateCommand();
+                if (enabled)
+                {
+                    command.CommandText = @"PRAGMA journal_mode = 'wal'";
+                } else
+                {
+                    command.CommandText = @"PRAGMA journal_mode = 'delete'";
+                }
+                
+                connection.Open();
+                status += "Database journal mode was set to: " + (string)command.ExecuteScalar();
+            }
+
+            Console.WriteLine(status);
         }
 
         /// <summary>
         /// Method for creating the database. This method will call several createTable methods.
         /// When calling this methods, the database file will be created if it not exists.
         /// </summary>
-        public static void CreateDatabase()
+        private static void CreateDatabase()
         {
             // If the database file already exists, we assume that the neccessary tables are already properly created.
             if (File.Exists(databaseFilePath))
@@ -56,7 +123,7 @@ namespace Messenger_Server
             using (SqliteConnection connection = new SqliteConnection(connectionString))
             {
                 SqliteCommand command = connection.CreateCommand();
-                command.CommandText = "CREATE TABLE `Messsage` (id INTEGER PRIMARY KEY,payload TEXT,senderid INTEGER,groupid INTEGER,timesent DATETIME,FOREIGN KEY(senderid) REFERENCES `User`(id) ON DELETE CASCADE FOREIGN KEY(groupid) REFERENCES `Group`(id) ON DELETE CASCADE)";
+                command.CommandText = "CREATE TABLE `Message` (id INTEGER PRIMARY KEY,payload TEXT, messageType VARCHAR(30), senderid INTEGER,groupid INTEGER,timesent DATETIME,FOREIGN KEY(senderid) REFERENCES `User`(id) ON DELETE CASCADE FOREIGN KEY(groupid) REFERENCES `Group`(id) ON DELETE CASCADE)";
                 connection.Open();
                 command.ExecuteNonQuery();
                 connection.Close();
@@ -109,13 +176,42 @@ namespace Messenger_Server
         }
 
         /// <summary>
+        /// Insert a message into the database.
+        /// </summary>
+        /// <param name="message">The message to add.</param>
+        public static void AddMessage(Message message)
+        {
+            try
+            {
+                using(SqliteConnection connection = new SqliteConnection(connectionString))
+                {
+                    SqliteCommand command = connection.CreateCommand();
+                    command.CommandText = "insert into `Message` (payload, messageType, senderid, groupid, timesent) values (@payload, @messageType, @senderid, @groupid, @timesent)";
+                    command.Parameters.AddWithValue("@payload", message.PayloadData);
+                    command.Parameters.AddWithValue("@messageType", message.MessageType);
+                    command.Parameters.AddWithValue("@senderid", message.ClientId);
+                    command.Parameters.AddWithValue("@groupid", message.GroupID);
+                    command.Parameters.AddWithValue("@timesent", message.DateTime);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        /// <summary>
         /// Add the given client to the database. Then it will set and return the id of
         /// the client.
         /// </summary>
         /// <param name="client"></param>
         /// <param name="password"></param>
-        /// <returns>int -1 = there already exists a client with this email or something
-        /// else went wrongor the id of the just added user.</returns>
+        /// <returns>int < 0 means there already exists a client with this email or something
+        /// else went wrong, int >= 0 means id of the just added user.</returns>
         public static int AddClient(Client client, string password)
         {
             try
@@ -205,7 +301,7 @@ namespace Messenger_Server
         /// Get the password from the client based on the email of the client.
         /// </summary>
         /// <param name="email">The email of the client.</param>
-        /// <returns></returns>
+        /// <returns>Password for the given email, null if user with email does not exist.</returns>
         public static string GetPasswordFromClient(string email)
         {
             try
@@ -219,7 +315,8 @@ namespace Messenger_Server
                     connection.Open();
                     return (string)command.ExecuteScalar();
                 }
-            } catch (Exception e)
+            }
+            catch (Exception)
             {
                 return string.Empty;
             }
