@@ -5,6 +5,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
+using Timer = System.Timers.Timer;
 
 namespace Messenger_Server
 {
@@ -21,10 +23,65 @@ namespace Messenger_Server
         /// </summary>
         private readonly object closedLock = new object();
 
+        /// <summary>
+        /// Timer to check for an active connection.
+        /// </summary>
+        private readonly Timer keepAliveTimer = new Timer(5 * 1000);
+
+        /// <summary>
+        /// Indicates whether a keepalive has been received.
+        /// </summary>
+        private bool keepAliveReceived = true;
+
         public Connection(TcpClient client)
             : base(client)
         {
-            
+            CommunicationHandler.KeepAliveReceived += OnKeepAliveReceived;
+
+            keepAliveTimer.Elapsed += OnKeepaliveTimerElapsed;
+            keepAliveTimer.Start();
+        }
+
+        /// <summary>
+        /// Indicates the keepalive from the client has been received.
+        /// </summary>
+        /// <param name="sender">Should be null.</param>
+        /// <param name="e">Should be null.</param>
+        private void OnKeepAliveReceived(object sender, EventArgs e)
+        {
+            keepAliveReceived = true;
+        }
+
+        /// <summary>
+        /// Invoked when timer elapsed. Checks if keepalive has been received. If so,
+        /// resend keepalive. If not, Close() the connection.
+        /// </summary>
+        /// <param name="sender">Should be null.</param>
+        /// <param name="e">Should be null.</param>
+        private void OnKeepaliveTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            lock (closedLock)
+            {
+                if (closed)
+                {
+                    return;
+                }
+            }
+
+            // Check if client has responded.
+            if (!keepAliveReceived)
+            {
+                Close();
+            }
+            else
+            {
+                keepAliveReceived = false;
+
+                SendData(new Message()
+                {
+                    MessageType = MessageType.KeepAlive
+                });
+            }
         }
 
         /// <summary>
@@ -33,14 +90,23 @@ namespace Messenger_Server
         /// </summary>
         public void Close()
         {
-            lock(closedLock)
+            lock (closedLock)
             {
                 if (!closed)
                 {
+                    closed = true;
+
+                    // "Logout" by removing the connection.
                     Server.Instance.DeleteConnection(this);
+
+                    // Close the connection.
                     client.Close();
                     client.Dispose();
-                    closed = true;
+
+                    // Remove event handlers and stop timer.
+                    CommunicationHandler.KeepAliveReceived -= OnKeepAliveReceived;
+                    keepAliveTimer.Elapsed -= OnKeepaliveTimerElapsed;
+                    keepAliveTimer.Stop();
                 }
             }
         }
@@ -49,19 +115,21 @@ namespace Messenger_Server
         {
             try
             {
-                while (true)
+                // Don't lock closed since it is not crucial to keep going once more.
+                while (client.Connected && !closed)
                 {
-                    Byte[] buffer = new Byte[client.Available];
-                    // Read() blocks until data is available and throws exception if
-                    // connection is closed.
-                    client.GetStream().Read(buffer, 0, buffer.Length);
-                    string data = Encoding.ASCII.GetString(buffer);
-
-                    // HACK: Should use DataAvaliable. On every message from the client,
-                    // another one is send with an empty string.
-                    if (!data.Equals(""))
+                    if (client.GetStream().DataAvailable)
                     {
-                        Task.Run(() => CommunicationHandler.HandleMessage(this, new Message(data)));
+                        Byte[] buffer = new Byte[client.Available];
+                        // Read() blocks until data is available and throws exception if
+                        // connection is closed.
+                        client.GetStream().Read(buffer, 0, buffer.Length);
+                        string data = Encoding.ASCII.GetString(buffer);
+
+                        Task.Run(() =>
+                        {
+                            CommunicationHandler.HandleMessage(this, new Message(data));
+                        });
                     }
 
                     Thread.Sleep(50);
@@ -69,9 +137,9 @@ namespace Messenger_Server
             }
             catch (Exception e)
             {
-                Console.WriteLine(String.Format("Exception of type {0} occured in {1}",
-                    e.GetType().FullName,
-                    MethodBase.GetCurrentMethod().Name));
+                Console.WriteLine(String.Format("{0} failed with {1}",
+                    MethodBase.GetCurrentMethod().Name,
+                    e.GetType().FullName));
             }
             finally
             {
@@ -85,15 +153,25 @@ namespace Messenger_Server
 
         public override void SendData(Message message)
         {
+
+            // Check connection state.
+            if (!client.Connected || closed)
+            {
+                return;
+            }
+
             try
             {
                 base.SendData(message);
             }
             catch (Exception e)
             {
-                Console.WriteLine(String.Format("Exception of type {0} occured in {1}",
-                    e.GetType().FullName,
-                    MethodBase.GetCurrentMethod().Name));
+                Console.WriteLine(String.Format("{0} failed with {1}",
+                    MethodBase.GetCurrentMethod().Name,
+                    e.GetType().FullName));
+
+                // Close the connection and shutdown on exception.
+                Close();
             }
         }
     }

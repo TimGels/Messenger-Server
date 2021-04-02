@@ -33,7 +33,7 @@ namespace Messenger_Client.ViewModels
 
         private void SendJoinGroupMessage()
         {
-           if(GroupToJoin != null)
+            if (GroupToJoin != null)
             {
                 Debug.WriteLine(GroupToJoin.Id);
                 CommunicationHandler.SendJoinGroupMessage(GroupToJoin.Id);
@@ -60,7 +60,7 @@ namespace Messenger_Client.ViewModels
             {
                 groups.Groups.ForEach(group => GroupList.Add(group));
             });
-            
         }
     }
 }
+

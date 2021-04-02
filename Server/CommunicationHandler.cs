@@ -1,13 +1,17 @@
 ﻿using Shared;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System;
+using System.Collections.Generic;
 
 namespace Messenger_Server
 {
     public static class CommunicationHandler
     {
+        /// <summary>
+        /// Invoked when a client sends a keepalive message in response to the server.
+        /// </summary>
+        public static event EventHandler KeepAliveReceived;
+
         /// <summary>
         /// This method is called by the ReadData method in Client.
         /// It handles all incoming messages from clients.
@@ -42,6 +46,9 @@ namespace Messenger_Server
                 case MessageType.ChatMessage:
                     HandleChatMessage(connection, message);
                     break;
+                case MessageType.KeepAlive:
+                    KeepAliveReceived.Invoke(null, null);
+                    break;
             }
         }
 
@@ -58,7 +65,8 @@ namespace Messenger_Server
             string password = message.RegisterInfo.Login.Password;
             string userName = message.RegisterInfo.Username;
 
-            int id = Server.Instance.CreateAndAddClient(userName, email, password);
+            string hashedPassword = Helper.HashPassword(password);
+            int id = Server.Instance.CreateAndAddClient(userName, email, hashedPassword);
 
             connection.SendData(new Message()
             {
@@ -88,6 +96,8 @@ namespace Messenger_Server
                 connection.SendData(response);
                 return;
             }
+
+            // Retrieve client by unique email.
             Client client = Server.Instance.GetClient(message.LoginInfo.Email);
 
             // If the connection already exists, the client is already signed in.
@@ -118,23 +128,35 @@ namespace Messenger_Server
             //TODO: signoutclienResponse sturen.
         }
 
+        /// <summary>
+        /// Handle incoming register group messages. Creates a new group based upon the
+        /// requested group Id and name.
+        /// </summary>
+        /// <param name="connection">The connection from which the request was sent.</param>
+        /// <param name="message">The message containing the group Id and name.</param>
         private static void HandleRegisterGroup(Connection connection, Message message)
         {
-            // Create a new group, add the sender as initial group member
-            // and return the ID of the new group.
-            Group newGroup = Server.Instance.CreateGroup(message.PayloadData);
-            Client client = Server.Instance.GetClient(message.ClientId);
+            // Construct a basic response.
             Message response = new Message()
             {
                 MessageType = MessageType.RegisterGroupResponse
             };
+
+            Client client = Server.Instance.GetClient(message.ClientId);
+
+            // Check if the client exists.
             if (client != null)
             {
+                // Create new group, insert into database and add sender as initial member.
+                Group newGroup = Server.Instance.CreateGroup(message.PayloadData);
                 DatabaseHandler.AddClientToGroup(newGroup, client);
                 newGroup.AddClient(client);
+
+                // Return the Id and name of the new group.
                 response.GroupID = newGroup.Id;
                 response.PayloadData = newGroup.Name;
-            } else
+            }
+            else
             {
                 response.GroupID = -1;
             }
@@ -185,6 +207,7 @@ namespace Messenger_Server
                 groupToJoin.AddClient(clientToAdd);
             }
 
+            // TODO: Unsuccesful response.
             connection.SendData(new Message()
             {
                 MessageType = MessageType.JoinGroupResponse,
@@ -214,6 +237,8 @@ namespace Messenger_Server
         /// <param name="message">The message containing the chatmessage.</param>
         private static void HandleChatMessage(Connection connection, Message message)
         {
+            //add message to database
+            DatabaseHandler.AddMessage(message);
             // Relay the chatMessage to all other clients in the group.
             Server.Instance.GetGroup(message.GroupID).SendMessageToClients(message);
         }

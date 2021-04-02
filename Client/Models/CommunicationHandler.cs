@@ -1,19 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net;
-using System.Security;
-using System.Threading;
 using Shared;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 
 namespace Messenger_Client.Models
 {
     class CommunicationHandler
     {
         #region events
-        public static event EventHandler LoggedInSuccesfully;
+
         public static event EventHandler<GroupListEventArgs> ObtainedRequestedGroups;
         public static event EventHandler JoinedGroup;
+        public static event EventHandler<ResponseStateEventArgs> LoggedInResponse;
+        public static event EventHandler<ResponseStateEventArgs> SignUpResponse;
+        public static event EventHandler<ResponseStateEventArgs> RegisterGroupResponse;
+
+        public class ResponseStateEventArgs : EventArgs
+        {
+            public int State { get; set; }
+            public ResponseStateEventArgs(int state)
+            {
+                this.State = state;
+            }
+        }
 
         public class GroupListEventArgs : EventArgs
         {
@@ -47,6 +58,9 @@ namespace Messenger_Client.Models
                 case MessageType.ChatMessage:
                     HandleChatMessage(message);
                     break;
+                case MessageType.KeepAlive:
+                    HandleKeepAliveMessage(message);
+                    break;
             }
         }
         #region send message methods
@@ -70,7 +84,6 @@ namespace Messenger_Client.Models
                 ClientId = Client.Instance.Id
             });
         }
-
 
         public static void SendLoginMessage(string email, string password)
         {
@@ -117,55 +130,26 @@ namespace Messenger_Client.Models
 
         private static void HandleRegisterClientResponse(Message message)
         {
-            switch (message.ClientId)
-            {
-                case -1:
-                    Debug.WriteLine("e-mail al in gebruik");
-                    //TODO: geef melding dat e-mail al in gebruik is.
-                    break;
-                default:
-                    //TODO mooie pop up ofso
-                    Debug.WriteLine("Account aangemaakt!");
-                    Debug.WriteLine("ClientID: " + message.ClientId);
-
-                    break;
-            }
+            SignUpResponse?.Invoke(null, new ResponseStateEventArgs(message.ClientId));
         }
 
         private static void HandleSignInClientResponse(Message message)
         {
-            switch (message.ClientId)
+            if (message.ClientId >= 0)
             {
-                case -1:
-                    Debug.WriteLine("E-mail of wachtwoord verkeerd!");
-                    //TODO: geef melding dat de combinatie van e-mail en wachtwoord verkeerd is
-                    break;
-                case -2:
-                    Debug.WriteLine("Already ingelogd!");
-                    //TODO: geef melding dat het account al ergens anders is ingelogd
-                    break;
-                default:
-                    Debug.WriteLine("Gefeliciteerd!");
-                    Client.Instance.Id = message.ClientId;
-                    message.GroupList.ForEach(group => Client.Instance.AddGroup(new Group(group)));
-                    LoggedInSuccesfully?.Invoke(null, null);
-                    break;
+                Client.Instance.Id = message.ClientId;
+                message.GroupList.ForEach(group => Client.Instance.AddGroup(new Group(group)));
             }
+            LoggedInResponse?.Invoke(null, new ResponseStateEventArgs(message.ClientId));
         }
 
         private static void HandleRegisterGroupResponse(Message message)
         {
-            switch (message.GroupID)
+            if(message.GroupID > 0)
             {
-                case -1:
-                    Debug.WriteLine("failed to create group");
-                    //TODO: geef melding dat het aanmaken van een group mislukt is
-                    break;
-                default:
-                    Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
-                    Console.WriteLine("Group aangemaakt!");
-                    break;
+                Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
             }
+            RegisterGroupResponse?.Invoke(null, new ResponseStateEventArgs(message.ClientId));
         }
         
         private static void HandleRequestGroupsResponse(Message message)
@@ -186,9 +170,9 @@ namespace Messenger_Client.Models
                     //TODO: create pop up
                     break;
                 default:
-                    Debug.WriteLine("joined a group");
                     Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
                     JoinedGroup?.Invoke(null, null);
+                    Console.WriteLine("joined a group");
                     break;
             }
         }
@@ -198,7 +182,10 @@ namespace Messenger_Client.Models
             Group group = Client.Instance.GetGroup(message.GroupID);
             if (group != null)
             {
-                group.AddMessage(message);
+                _ = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+                {
+                    group.AddMessage(message);
+                });
             }
             else
             {
@@ -208,5 +195,13 @@ namespace Messenger_Client.Models
         }
 
         #endregion
+        /// <summary>
+        /// Bounce the keepalive message back to the server.
+        /// </summary>
+        /// <param name="message"></param>
+        private static void HandleKeepAliveMessage(Message message)
+        {
+            Client.Instance.Connection.SendData(message);
+        }
     }
 }

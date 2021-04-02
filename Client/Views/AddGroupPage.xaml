@@ -5,7 +5,9 @@
     xmlns:local="using:Messenger_Client.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:viewModels="using:Messenger_Client.ViewModels" xmlns:Core="using:Microsoft.Xaml.Interactions.Core" xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:viewModels="using:Messenger_Client.ViewModels" 
+    xmlns:Core="using:Microsoft.Xaml.Interactions.Core" 
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     >
@@ -73,9 +75,9 @@
                                 </Core:EventTriggerBehavior>
                             </Interactivity:Interaction.Behaviors>
                         </TextBox>
-
                         <Button  Style="{ThemeResource AddGroupButton}" Command="{Binding AddGroupCommand}"/>
                         <Button  Style="{ThemeResource CancelButton}" Command="{Binding BackToMainPageCommand}"/>
+                        <TextBlock Foreground="Red" FontWeight="Bold"  Text="{Binding CreateGroupErrorMessage}" Style="{ThemeResource LoginError}"/>
                     </StackPanel>
                 </Grid>
             </Grid>

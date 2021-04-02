@@ -1,13 +1,17 @@
-﻿using Messenger_Client.Views;
+﻿using Messenger_Client.Services;
+using Messenger_Client.Views;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Shared;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -16,7 +20,7 @@ using Group = Messenger_Client.Models.Group;
 
 namespace Messenger_Client.ViewModels
 {
-    public class MainPageViewModel : ObservableRecipient, INotifyPropertyChanged
+    public class MainPageViewModel : ObservableRecipient
     {
         public ICommand SendMessageCommand { get; set; }
         public ICommand CheckEnterCommand { get; set; }
@@ -24,7 +28,10 @@ namespace Messenger_Client.ViewModels
         public ICommand SignUpCommand { get; set; }
         public ICommand ShowAddGroupViewCommand { get; set; }
         public ICommand ShowGroupsToJoinCommand { get; set; }
-        public ObservableCollection<Group> GroupList 
+        public ICommand ExportMessageCommand { get; set; }
+        public ICommand OpenFilePickerCommand { get; set; }
+
+        public ObservableCollection<Group> GroupList
         {
             get
             {
@@ -39,7 +46,6 @@ namespace Messenger_Client.ViewModels
         {
             get
             {
-
                 if (this.SelectedGroupChat == null)
                 {
                     return null;
@@ -49,16 +55,24 @@ namespace Messenger_Client.ViewModels
                     return SelectedGroupChat.Messages;
                 }
             }
-            set { }
+            set
+            {
+                OnPropertyChanged("MessagesList");
+            }
         }
 
         private Group selectedGroupChat;
 
         public Group SelectedGroupChat
         {
-            get { return selectedGroupChat; }
-            set { selectedGroupChat = value;
-                OnPropertyChanged("MessagesList");
+            get
+            {
+                return selectedGroupChat;
+            }
+            set
+            {
+                selectedGroupChat = value;
+                MessagesList = value.Messages;
             }
         }
 
@@ -77,7 +91,59 @@ namespace Messenger_Client.ViewModels
             }
         }
 
-        public void SendMessage()
+        public MainPageViewModel()
+        {
+            SendMessageCommand = new RelayCommand(ConstructTextMessage);
+            CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
+            ShowGroupsToJoinCommand = new RelayCommand(ShowGroupsToJoin);
+            ShowAddGroupViewCommand = new RelayCommand(ShowAddGroupView);
+            OpenFilePickerCommand = new RelayCommand(OpenFilePicker);
+            ExportMessageCommand = new RelayCommand(ExportMessage);
+            
+            this.GroupList = new ObservableCollection<Group>();
+            this.TypedText = "";
+        }
+
+        private async void OpenFilePicker()
+        {
+            var picker = new Windows.Storage.Pickers.FileOpenPicker();
+            picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
+            picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
+            picker.FileTypeFilter.Add(".jpg");
+            picker.FileTypeFilter.Add(".jpeg");
+            picker.FileTypeFilter.Add(".png");
+
+            StorageFile file = await picker.PickSingleFileAsync();
+            if (file != null)
+            {
+                IRandomAccessStream stream = await file.OpenAsync(FileAccessMode.Read);
+
+                string imageString = Convert.ToBase64String(await ImageUtilityService.ConvertStreamToByteArray(stream));
+                ConstructImageMessage(imageString);
+            }
+            else
+            {
+                //this.textBlock.Text = "Operation cancelled.";
+            }
+        }
+
+
+        private void ConstructImageMessage(string imageBase64String)
+        {
+            Message message = new Message()
+            {
+                MessageType = MessageType.ChatMessage,
+                ClientId = Client.Instance.Id,
+                GroupID = SelectedGroupChat.Id,
+                DateTime = DateTime.Now,
+                PayloadType = "image",
+                ClientName = Client.Instance.ClientName,
+                PayloadData = imageBase64String
+            };
+            SendMessage(message);
+        }
+
+        private void ConstructTextMessage()
         {
             if (this.TypedText.Equals("") || this.SelectedGroupChat == null)
             {
@@ -89,30 +155,38 @@ namespace Messenger_Client.ViewModels
                 MessageType = MessageType.ChatMessage,
                 ClientId = Client.Instance.Id,
                 GroupID = SelectedGroupChat.Id,
+                DateTime = DateTime.Now,
+                PayloadType = "text",
+                ClientName = Client.Instance.ClientName,
                 PayloadData = this.TypedText
             };
+            SendMessage(message);
+        }
+
+        private void SendMessage(Message message)
+        {
 
             Client.Instance.Connection.SendData(message);
             SelectedGroupChat.AddMessage(message);
             this.TypedText = "";
         }
 
-        public void CheckEnterPressed(object args)
+        private void CheckEnterPressed(object args)
         {
             KeyRoutedEventArgs keyargs = (KeyRoutedEventArgs)args;
             if (keyargs.Key == Windows.System.VirtualKey.Enter)
             {
-                SendMessage();
+                ConstructTextMessage();
             }
         }
 
-        private void ShowGroupsToJoin(object args)
+        private void ShowGroupsToJoin()
         {
             Frame rootFrame = Window.Current.Content as Frame;
             rootFrame.Navigate(typeof(JoinGroupPage));
-        }       
+        }
 
-        private void ShowAddGroupView(object obj)
+        private void ShowAddGroupView()
         {
             Frame rootFrame = Window.Current.Content as Frame;
             rootFrame.Navigate(typeof(AddGroupPage));
@@ -123,16 +197,9 @@ namespace Messenger_Client.ViewModels
             Debug.WriteLine("OpenSignUpView");
         }
 
-        public MainPageViewModel()
+        private void ExportMessage()
         {
-            SendMessageCommand = new RelayCommand(() => SendMessage());
-            CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
-            ShowGroupsToJoinCommand = new RelayCommand<object>(ShowGroupsToJoin);
-            ShowAddGroupViewCommand = new RelayCommand<object>(ShowAddGroupView);
-
-            this.GroupList = new ObservableCollection<Group>();
-            this.TypedText = "";
-
+            Client.Instance.ExportMessageToFileAsync();
         }
     }
 }

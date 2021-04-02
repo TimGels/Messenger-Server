@@ -121,6 +121,8 @@
     </Compile>
     <Compile Include="Models\Client.cs" />
     <Compile Include="Services\Converters\Base64ToImageConverter.cs" />
+    <Compile Include="Services\Converters\DateTimeToTimeConverter.cs" />
+    <Compile Include="Services\Utilities\MessageDataTemplateSelector.cs" />
     <Compile Include="ViewModels\AddGroupPageViewModel.cs" />
     <Compile Include="ViewModels\JoinGroupPageViewModel.cs" />
     <Compile Include="ViewModels\LoginPageViewModel.cs" />
@@ -168,13 +170,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="ListViewItemContainerStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MessagesStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ResourceDictionaryClient.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddGroupPage.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\JoinGroupPage.xaml">
       <SubType>Designer</SubType>
