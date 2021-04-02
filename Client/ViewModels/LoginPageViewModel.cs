@@ -66,9 +66,8 @@ namespace Messenger_Client.ViewModels
         {
             if (!Email.Equals("") && !Password.Equals(""))
             {
-
                 CommunicationHandler.SendLoginMessage(Email, Password);
-                CommunicationHandler.LoggedInResponse += CommunicationHandler_LoggedInResponse;
+                CommunicationHandler.LogInResponse += OnLoginInResponseReceived;
             }
             else
             {
@@ -76,14 +75,14 @@ namespace Messenger_Client.ViewModels
             }
         }
 
-        private async void CommunicationHandler_LoggedInResponse(object sender, CommunicationHandler.ResponseStateEventArgs e)
+        private async void OnLoginInResponseReceived(object sender, CommunicationHandler.ResponseStateEventArgs e)
         {
             switch (e.State)
             {
                 case -1:
                     await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
-                        LoginErrorMessage = "E-mail of wachtwoord verkeerd!";
+                        LoginErrorMessage = "E-mail of wachtwoord verkeerd of account bestaat niet!";
                     });
                     break;
                 case -2:

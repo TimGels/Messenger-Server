@@ -38,7 +38,7 @@ namespace Messenger_Client.Models
             }
         }
 
-        public static event EventHandler<ResponseStateEventArgs> LoggedInResponse;
+        public static event EventHandler<ResponseStateEventArgs> LogInResponse;
         public static event EventHandler<ResponseStateEventArgs> SignUpResponse;
         public static event EventHandler<ResponseStateEventArgs> RegisterGroupResponse;
 
@@ -103,7 +103,7 @@ namespace Messenger_Client.Models
                 Client.Instance.Id = message.ClientId;
                 message.GroupList.ForEach(group => Client.Instance.AddGroup(new Group(group)));
             }
-            LoggedInResponse?.Invoke(null, new ResponseStateEventArgs(message.ClientId));
+            LogInResponse?.Invoke(null, new ResponseStateEventArgs(message.ClientId));
         }
 
         private static void HandleRegisterGroupResponse(Message message)
