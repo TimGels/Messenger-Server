@@ -125,6 +125,7 @@ namespace Messenger_Server
                         // connection is closed.
                         client.GetStream().Read(buffer, 0, buffer.Length);
                         string data = Encoding.ASCII.GetString(buffer);
+
                         Task.Run(() =>
                         {
                             CommunicationHandler.HandleMessage(this, new Message(data));
