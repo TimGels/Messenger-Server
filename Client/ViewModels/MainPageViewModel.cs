@@ -30,6 +30,7 @@ namespace Messenger_Client.ViewModels
         public ICommand ShowGroupsToJoinCommand { get; set; }
         public ICommand ExportMessageCommand { get; set; }
         public ICommand OpenFilePickerCommand { get; set; }
+        public ICommand LogoutCommand { get; set; }
 
         public ObservableCollection<Group> GroupList
         {
@@ -99,7 +100,8 @@ namespace Messenger_Client.ViewModels
             ShowAddGroupViewCommand = new RelayCommand(ShowAddGroupView);
             OpenFilePickerCommand = new RelayCommand(OpenFilePicker);
             ExportMessageCommand = new RelayCommand<object>(ExportMessage);
-            
+            LogoutCommand = new RelayCommand(Logout);
+
             this.GroupList = new ObservableCollection<Group>();
             this.TypedText = "";
         }
@@ -198,6 +200,12 @@ namespace Messenger_Client.ViewModels
         private void ExportMessage(object obj)
         {
             Client.Instance.ExportMessageToFileAsync();
+        }
+
+        private void Logout()
+        {
+            //TODO: Logout implementation
+            Debug.WriteLine("Logout");
         }
     }
 }
