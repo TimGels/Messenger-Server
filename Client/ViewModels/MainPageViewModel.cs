@@ -28,6 +28,7 @@ namespace Messenger_Client.ViewModels
         public ICommand SignUpCommand { get; set; }
         public ICommand ShowAddGroupViewCommand { get; set; }
         public ICommand ShowGroupsToJoinCommand { get; set; }
+        public ICommand ExportMessageCommand { get; set; }
         public ICommand OpenFilePickerCommand { get; set; }
 
         public ObservableCollection<Group> GroupList
@@ -97,7 +98,8 @@ namespace Messenger_Client.ViewModels
             ShowGroupsToJoinCommand = new RelayCommand(ShowGroupsToJoin);
             ShowAddGroupViewCommand = new RelayCommand(ShowAddGroupView);
             OpenFilePickerCommand = new RelayCommand(OpenFilePicker);
-
+            ExportMessageCommand = new RelayCommand<object>(ExportMessage);
+            
             this.GroupList = new ObservableCollection<Group>();
             this.TypedText = "";
         }
@@ -193,6 +195,11 @@ namespace Messenger_Client.ViewModels
         private void OpenSignUpView()
         {
             Debug.WriteLine("OpenSignUpView");
+        }
+
+        private void ExportMessage(object obj)
+        {
+            Client.Instance.ExportMessageToFileAsync();
         }
     }
 }

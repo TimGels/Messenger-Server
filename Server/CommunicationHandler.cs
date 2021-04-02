@@ -64,7 +64,8 @@ namespace Messenger_Server
             string password = message.RegisterInfo.Login.Password;
             string userName = message.RegisterInfo.Username;
 
-            int id = Server.Instance.CreateAndAddClient(userName, email, password);
+            string hashedPassword = Helper.HashPassword(password);
+            int id = Server.Instance.CreateAndAddClient(userName, email, hashedPassword);
 
             connection.SendData(new Message()
             {
@@ -226,6 +227,8 @@ namespace Messenger_Server
         /// <param name="message">The message containing the chatmessage.</param>
         private static void HandleChatMessage(Connection connection, Message message)
         {
+            //add message to database
+            DatabaseHandler.AddMessage(message);
             // Relay the chatMessage to all other clients in the group.
             Server.Instance.GetGroup(message.GroupID).SendMessageToClients(message);
         }
