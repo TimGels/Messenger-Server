@@ -130,6 +130,11 @@ namespace Messenger_Client.ViewModels
 
         private void ConstructImageMessage(string imageBase64String)
         {
+            //if (this.SelectedGroupChat == null)
+            //{
+            //    return;
+            //}
+
             Message message = new Message()
             {
                 MessageType = MessageType.ChatMessage,
