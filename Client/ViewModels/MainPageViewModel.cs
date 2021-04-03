@@ -103,6 +103,11 @@ namespace Messenger_Client.ViewModels
 
         private async void OpenFilePicker()
         {
+            if (this.SelectedGroupChat == null)
+            {
+                return;
+            }
+
             var picker = new Windows.Storage.Pickers.FileOpenPicker();
             picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
             picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
@@ -127,6 +132,11 @@ namespace Messenger_Client.ViewModels
 
         private void ConstructImageMessage(string imageBase64String)
         {
+            if (this.SelectedGroupChat == null)
+            {
+                return;
+            }
+
             Message message = new Message()
             {
                 MessageType = MessageType.ChatMessage,
