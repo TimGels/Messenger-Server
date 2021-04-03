@@ -134,7 +134,7 @@ namespace Messenger_Client.ViewModels
                 GroupID = SelectedGroupChat.Id,
                 DateTime = DateTime.Now,
                 PayloadType = "image",
-                ClientName = Client.Instance.ClientName,
+                ClientName = Client.Instance.Name,
                 PayloadData = imageBase64String
             };
             SendMessage(message);
@@ -154,7 +154,7 @@ namespace Messenger_Client.ViewModels
                 GroupID = SelectedGroupChat.Id,
                 DateTime = DateTime.Now,
                 PayloadType = "text",
-                ClientName = Client.Instance.ClientName,
+                ClientName = Client.Instance.Name,
                 PayloadData = this.TypedText
             };
             SendMessage(message);
