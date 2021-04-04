@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Net.Sockets;
 using System.Text;
 
@@ -7,6 +6,17 @@ namespace Shared
 {
     public abstract class Connection
     {
+        /// <summary>
+        /// Indicates if the current connection has been closed already.
+        /// </summary>
+        protected bool closed = false;
+
+        /// <summary>
+        /// Since Close() can be called from the Read() thread or the CommuncationHandler
+        /// thread, this lock is used to make sure the Close() only executes once.
+        /// </summary>
+        protected readonly object closedLock = new object();
+
         /// <summary>
         /// The client for which to send and receive data.
         /// </summary>

@@ -1,7 +1,6 @@
 ﻿using Shared;
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
@@ -12,11 +11,42 @@ namespace Messenger_Client.Models
 {
     public class Connection : Shared.Connection
     {
-        public Connection(string serverAddress, int port)
-            : base(new TcpClient(serverAddress, port))
+        public Connection()
+            : base(new TcpClient())
         {
-            //start readerThread
-            new Thread(ReadData).Start();
+            this.closed = true;
+        }
+
+        /// <summary>
+        /// Attempts to opens the connection asynchronously. This should only take effect
+        /// once.
+        /// </summary>
+        /// <returns>Task with result of the asynchronous connection attempt: True if
+        /// opening connection succeeded or was already openend, false if connection could
+        /// not be opened.</returns>
+        public async Task<bool> OpenAsync()
+        {
+            // Checking here is faster and more elegant than throwing a SocketException
+            // when already connected.
+            if (client.Connected || !closed)
+            {
+                return true;
+            }
+
+            try
+            {
+                await client.ConnectAsync(Client.Instance.serverAddress, Client.Instance.port);
+                closed = false;
+                new Thread(ReadData).Start();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(String.Format("{0} failed with {1}",
+                    MethodBase.GetCurrentMethod().Name,
+                    e.GetType().FullName));
+            }
+
+            return client.Connected || !closed;
         }
 
         public override void ReadData()

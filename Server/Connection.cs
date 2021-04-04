@@ -12,21 +12,9 @@ namespace Messenger_Server
 {
     public class Connection : Shared.Connection
     {
-        /// <summary>
-        /// Indicates if the current connection has been closed already.
-        /// </summary>
-        private bool closed = false;
-
-        /// <summary>
-        /// Since Close() can be called from the Read() thread or the CommuncationHandler
-        /// thread, this lock is used to make sure the Close() only executes once.
-        /// </summary>
-        private readonly object closedLock = new object();
-
         public Connection(TcpClient client)
             : base(client)
         {
-
         }
 
         /// <summary>
@@ -101,8 +89,6 @@ namespace Messenger_Server
                         Console.WriteLine("Received FIN!");
                         break;
                     }
-
-                    Thread.Sleep(50);
                 }
             }
             catch (Exception e)
@@ -123,7 +109,6 @@ namespace Messenger_Server
 
         public override void SendData(Message message)
         {
-
             // Check connection state.
             if (!client.Connected || closed)
             {
