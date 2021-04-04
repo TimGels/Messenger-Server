@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace Shared
 {
     public abstract class Connection
     {
+        /// <summary>
+        /// Used to cancel the Read() call.
+        /// </summary>
+        protected CancellationTokenSource readerCts;
+
         /// <summary>
         /// Indicates if the current connection has been closed already.
         /// </summary>
@@ -20,7 +26,7 @@ namespace Shared
         /// <summary>
         /// The client for which to send and receive data.
         /// </summary>
-        protected readonly TcpClient client;
+        protected TcpClient client;
 
         /// <summary>
         /// Synchronises access to the Send() buffer.
@@ -31,6 +37,11 @@ namespace Shared
         {
             this.client = client;
         }
+
+        /// <summary>
+        /// Closes the connection. Should only take effect once.
+        /// </summary>
+        public abstract void Close();
 
         /// <summary>
         /// Continuously try to read data from the stream. Any incoming message is

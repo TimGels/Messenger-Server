@@ -5,23 +5,22 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
-using Timer = System.Timers.Timer;
 
 namespace Messenger_Server
 {
     public class Connection : Shared.Connection
     {
-        public Connection(TcpClient client)
+        public Connection(TcpClient client, CancellationTokenSource cts)
             : base(client)
         {
+            this.readerCts = cts;
         }
 
         /// <summary>
         /// Remove the client / connection association and close the TCP connection from
         /// the server side. This should result in an IOException when reading is performed.
         /// </summary>
-        public void Close()
+        public override void Close()
         {
             lock (closedLock)
             {
@@ -33,25 +32,32 @@ namespace Messenger_Server
                     Server.Instance.DeleteConnection(this);
 
                     // Close the connection.
+                    readerCts.Cancel();
+
+                    client.Client.Shutdown(SocketShutdown.Both);
+                    client.Client.Disconnect(false);
                     client.Close();
                     client.Dispose();
+                    readerCts.Dispose();
                 }
             }
         }
 
-        public override void ReadData()
+        public override async void ReadData()
         {
             try
             {
-                // Don't lock closed since it is not crucial to keep going once more.
-                while (client.Connected && !closed)
+                while (true)
                 {
                     // Buffer to hold the size of the message.
                     Byte[] sizeBuffer = new Byte[sizeof(Int32)];
 
                     // Read size of message into sizeBuffer. Blocks untill data is
                     // available. FIN will read 0 bytes, RST will throw.
-                    if (client.GetStream().Read(sizeBuffer, 0, sizeof(Int32)) > 0)
+                    if (await client.GetStream().ReadAsync(
+                        sizeBuffer.AsMemory(0, sizeof(Int32)),
+                        readerCts.Token)
+                        > 0)
                     {
                         // Convert the bytes into the size of the actual data, set
                         // ReceiveBufferSize and allocate enough spae to hold the data.
@@ -78,7 +84,7 @@ namespace Messenger_Server
                             read += client.GetStream().Read(buffer, read, sizeToRead);
                         }
 
-                        Task.Run(() =>
+                        _ = Task.Run(() =>
                         {
                             string json = Encoding.ASCII.GetString(buffer);
                             CommunicationHandler.HandleMessage(this, new Message(json));
@@ -109,14 +115,13 @@ namespace Messenger_Server
 
         public override void SendData(Message message)
         {
-            // Check connection state.
-            if (!client.Connected || closed)
-            {
-                return;
-            }
-
             try
             {
+                if (!client.Connected || closed)
+                {
+                    return;
+                }
+
                 base.SendData(message);
             }
             catch (Exception e)

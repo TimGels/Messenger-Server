@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Shared;
+using System;
 using System.Collections.Generic;
-using Shared;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 
 namespace Messenger_Client.Models
 {
-    class CommunicationHandler
+    public static class CommunicationHandler
     {
         #region events
 
