@@ -1,16 +1,12 @@
 ﻿using Shared;
 using System.Linq;
 using System;
+using System.Collections.Generic;
 
 namespace Messenger_Server
 {
     public static class CommunicationHandler
     {
-        /// <summary>
-        /// Invoked when a client sends a keepalive message in response to the server.
-        /// </summary>
-        public static event EventHandler KeepAliveReceived;
-
         /// <summary>
         /// This method is called by the ReadData method in Client.
         /// It handles all incoming messages from clients.
@@ -34,7 +30,7 @@ namespace Messenger_Server
                     HandleRegisterGroup(connection, message);
                     break;
                 case MessageType.RequestGroups:
-                    HandleRequestGroups(connection);
+                    HandleRequestGroups(connection, message);
                     break;
                 case MessageType.JoinGroup:
                     HandleJoinGroup(connection, message);
@@ -44,9 +40,6 @@ namespace Messenger_Server
                     break;
                 case MessageType.ChatMessage:
                     HandleChatMessage(connection, message);
-                    break;
-                case MessageType.KeepAlive:
-                    KeepAliveReceived.Invoke(null, null);
                     break;
             }
         }
@@ -64,7 +57,8 @@ namespace Messenger_Server
             string password = message.RegisterInfo.Login.Password;
             string userName = message.RegisterInfo.Username;
 
-            int id = Server.Instance.CreateAndAddClient(userName, email, password);
+            string hashedPassword = Helper.HashPassword(password);
+            int id = Server.Instance.CreateAndAddClient(userName, email, hashedPassword);
 
             connection.SendData(new Message()
             {
@@ -167,12 +161,21 @@ namespace Messenger_Server
         /// encoded as a string with Id's and names together.
         /// </summary>
         /// <param name="connection">The connection from which the request was sent.</param>
-        private static void HandleRequestGroups(Connection connection)
+        private static void HandleRequestGroups(Connection connection, Message message)
         {
+
+            List<Group> groups = new List<Group>();
+            foreach(Group group in Server.Instance.GetGroups())
+            {
+                if (!group.ContainsClient(message.ClientId))
+                {
+                    groups.Add(group);
+                }
+            }
             connection.SendData(new Message()
             {
                 MessageType = MessageType.RequestGroupsResponse,
-                GroupList = Server.Instance.GetGroups().Cast<Shared.Group>().ToList()
+                GroupList = groups.Cast<Shared.Group>().ToList()
             });
         }
 
@@ -226,6 +229,8 @@ namespace Messenger_Server
         /// <param name="message">The message containing the chatmessage.</param>
         private static void HandleChatMessage(Connection connection, Message message)
         {
+            //add message to database
+            DatabaseHandler.AddMessage(message);
             // Relay the chatMessage to all other clients in the group.
             Server.Instance.GetGroup(message.GroupID).SendMessageToClients(message);
         }
