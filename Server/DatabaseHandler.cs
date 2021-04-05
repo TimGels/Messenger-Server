@@ -409,7 +409,7 @@ namespace Messenger_Server
         /// </summary>
         /// <param name="groupID"></param>
         /// <param name="userID"></param>
-        /// <returns></returns>
+        /// <returns>the number of affected rows</returns>
         public static int DeleteGroupParticipant(int groupID, int userID)
         {
             using(SqliteConnection connection = new SqliteConnection(connectionString))
@@ -417,6 +417,25 @@ namespace Messenger_Server
                 SqliteCommand command = connection.CreateCommand();
                 command.CommandText = "DELETE from `GroupParticipants` WHERE userid == @userid AND groupid == @groupid";
                 command.Parameters.AddWithValue("@userid", userID);
+                command.Parameters.AddWithValue("@groupid", groupID);
+
+                connection.Open();
+
+                return command.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// removes a group from the database.
+        /// </summary>
+        /// <param name="groupID"></param>
+        /// <returns>the number of affected rows</returns>
+        public static int RemoveGroup(int groupID)
+        {
+            using (SqliteConnection connection = new SqliteConnection(connectionString))
+            {
+                SqliteCommand command = connection.CreateCommand();
+                command.CommandText = "DELETE from `Group` WHERE id == @groupid";
                 command.Parameters.AddWithValue("@groupid", groupID);
 
                 connection.Open();

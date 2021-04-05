@@ -1,4 +1,5 @@
 ﻿using Shared;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -76,6 +77,24 @@ namespace Messenger_Server
             finally
             {
                 clientsLock.ExitWriteLock();
+            }
+            Server.Instance.RemoveGroup(this);
+        }
+
+        /// <summary>
+        /// return the count of groupmembers, thread save.
+        /// </summary>
+        /// <returns></returns>
+        public int getGroupParticipants()
+        {
+            clientsLock.EnterReadLock();
+            try
+            {
+                return this.clients.Count;
+            }
+            finally
+            {
+                clientsLock.ExitReadLock();
             }
         }
 
