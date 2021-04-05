@@ -207,6 +207,7 @@ namespace Shared
         /// <summary>
         /// Construct a message with a type.
         /// </summary>
+        /// <param name="type">The type of message to create.</param>
         public Message(MessageType type)
         {
             // First, construct JSON representation.
