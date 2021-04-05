@@ -104,8 +104,6 @@ namespace Messenger_Client.ViewModels
             ShowAddGroupViewCommand = new RelayCommand(ShowAddGroupView);
             OpenFilePickerCommand = new RelayCommand(OpenFilePicker);
             ExportMessageCommand = new RelayCommand(ExportMessage);
-            
-            ExportMessageCommand = new RelayCommand<object>(ExportMessage);
             LeaveGroupCommand = new RelayCommand<object>(LeaveGroup);
 
             this.GroupList = new ObservableCollection<Group>();
