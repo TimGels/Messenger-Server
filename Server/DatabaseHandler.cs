@@ -235,7 +235,6 @@ namespace Messenger_Server
             }
             catch (Exception e) //TODO: create better catch for uniqueness error!!
             {
-                Console.WriteLine(e.Message);
                 return -1;
             }
         }
