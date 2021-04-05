@@ -1,16 +1,32 @@
 ﻿using System;
-using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace Shared
 {
     public abstract class Connection
     {
         /// <summary>
+        /// Used to cancel the Read() call.
+        /// </summary>
+        protected CancellationTokenSource readerCts;
+
+        /// <summary>
+        /// Indicates if the current connection has been closed already.
+        /// </summary>
+        protected bool closed = false;
+
+        /// <summary>
+        /// Since Close() can be called from the Read() thread or the CommuncationHandler
+        /// thread, this lock is used to make sure the Close() only executes once.
+        /// </summary>
+        protected readonly object closedLock = new object();
+
+        /// <summary>
         /// The client for which to send and receive data.
         /// </summary>
-        protected readonly TcpClient client;
+        protected TcpClient client;
 
         /// <summary>
         /// Synchronises access to the Send() buffer.
@@ -21,6 +37,11 @@ namespace Shared
         {
             this.client = client;
         }
+
+        /// <summary>
+        /// Closes the connection. Should only take effect once.
+        /// </summary>
+        public abstract void Close();
 
         /// <summary>
         /// Continuously try to read data from the stream. Any incoming message is

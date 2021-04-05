@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Messenger_Client.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage.Pickers;
-using Connection = Messenger_Client.Models.Connection;
-using Group = Messenger_Client.Models.Group;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 
@@ -22,14 +21,14 @@ namespace Messenger_Client
         /// <summary>
         /// Port number to send to.
         /// </summary>
-        private readonly int port = 5000; //TODO: make configurable?
+        public readonly int port = 5000; //TODO: make configurable?
 
         /// <summary>
         /// ipAdress of the server.
         /// TODO: make configurable.
         /// TODO: save ip in the appropiate ipaddress class?
         /// </summary>
-        private readonly string serverAddress = "127.0.0.1";
+        public readonly string serverAddress = "127.0.0.1";
 
         /// <summary>
         /// The read-write lock for the grouplist.
@@ -46,7 +45,7 @@ namespace Messenger_Client
         private Client()
         {
             this.Groups = new ObservableCollection<Group>();
-            this.Connection = new Connection(serverAddress, port);
+            this.Connection = new Connection();
             this.Name = "ClientNameNeedsToBeSet";
         }
 

@@ -43,16 +43,16 @@ namespace Messenger_Client.ViewModels
 
         public SignUpPageViewModel()
         {
-            RegisterButtonCommand = new RelayCommand(() => registerButtonClicked());
-            GoToLoginButtonCommand = new RelayCommand(() => goToLoginButtonClicked());
+            RegisterButtonCommand = new RelayCommand(() => RegisterButtonClicked());
+            GoToLoginButtonCommand = new RelayCommand(() => GoToLoginButtonClicked());
         }
 
-        private void goToLoginButtonClicked()
+        private void GoToLoginButtonClicked()
         {
             (Window.Current.Content as Frame).Navigate(typeof(LoginPage));
         }
 
-        private void registerButtonClicked()
+        private async void RegisterButtonClicked()
         {
             if (Name == null || Name.Equals(""))
             {
@@ -81,6 +81,12 @@ namespace Messenger_Client.ViewModels
             if (!Password.Equals(RepeatPassword))
             {
                 SignUpErrorMessage = "Your password has to be the same";
+                return;
+            }
+
+            if (await Client.Instance.Connection.OpenAsync() == false)
+            {
+                SignUpErrorMessage = "Could not connect to the server!";
                 return;
             }
 

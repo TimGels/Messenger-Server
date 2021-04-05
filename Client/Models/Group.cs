@@ -51,28 +51,6 @@ namespace Messenger_Client.Models
             {
                 this.messsageLocker.ExitWriteLock();
             }
-
-        }
-
-        public void SendMessage(string payload)
-        {
-            //TODO: I think this method should be responsible for constructing a new message OR for adding the id and the name of the group to the message.
-            // from here a call to the connection object is made which actually sends the message to the server.
-
-            //create message and set the payload.
-            //add group id and name?
-            Message message = new Message()
-            {
-                GroupID = this.Id,
-                ClientId = Client.Instance.Id,
-                ClientName = Client.Instance.Name,
-                PayloadData = payload,
-                PayloadType = "text",
-                MessageType = MessageType.ChatMessage
-            };
-            //call send method which actually sends this message to the server.
-            Task.Run(() => Client.Instance.Connection.SendData(message));
-
         }
 
         /// <summary>

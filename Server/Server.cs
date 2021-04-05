@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -293,7 +292,7 @@ namespace Messenger_Server
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message);
+                Console.WriteLine(e.Message);
             }
             finally
             {
@@ -376,7 +375,7 @@ namespace Messenger_Server
         /// <param name="obj">TcpClient object which is passed as a generic object.</param>
         public void DoClientWork(object obj)
         {
-            new Connection(obj as TcpClient).ReadData();
+            new Connection(obj as TcpClient, new CancellationTokenSource()).ReadData();
         }
     }
 }
