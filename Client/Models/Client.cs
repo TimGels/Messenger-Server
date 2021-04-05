@@ -36,8 +36,8 @@ namespace Messenger_Client
         private readonly ReaderWriterLockSlim groupLocker = new ReaderWriterLockSlim();
 
         public static Client Instance { get { return lazy.Value; } }
-        public string ClientName { get; set; }
         public int Id { get; set; }
+        public string Name { get; set; }
         public ObservableCollection<Group> Groups { get; set; }
         public Connection Connection { get; set; }
 
@@ -46,7 +46,7 @@ namespace Messenger_Client
         {
             this.Groups = new ObservableCollection<Group>();
             this.Connection = new Connection();
-            this.ClientName = "ClientNameNeedsToBeSet";
+            this.Name = "ClientNameNeedsToBeSet";
         }
 
         /// <summary>

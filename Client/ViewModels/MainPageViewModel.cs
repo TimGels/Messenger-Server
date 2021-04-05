@@ -103,6 +103,11 @@ namespace Messenger_Client.ViewModels
 
         private async void OpenFilePicker()
         {
+            if (this.SelectedGroupChat == null)
+            {
+                return;
+            }
+
             var picker = new Windows.Storage.Pickers.FileOpenPicker();
             picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
             picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
@@ -127,6 +132,11 @@ namespace Messenger_Client.ViewModels
 
         private void ConstructImageMessage(string imageBase64String)
         {
+            if (this.SelectedGroupChat == null)
+            {
+                return;
+            }
+
             Message message = new Message()
             {
                 MessageType = MessageType.ChatMessage,
@@ -134,7 +144,7 @@ namespace Messenger_Client.ViewModels
                 GroupID = SelectedGroupChat.Id,
                 DateTime = DateTime.Now,
                 PayloadType = "image",
-                ClientName = Client.Instance.ClientName,
+                ClientName = Client.Instance.Name,
                 PayloadData = imageBase64String
             };
             SendMessage(message);
@@ -154,7 +164,7 @@ namespace Messenger_Client.ViewModels
                 GroupID = SelectedGroupChat.Id,
                 DateTime = DateTime.Now,
                 PayloadType = "text",
-                ClientName = Client.Instance.ClientName,
+                ClientName = Client.Instance.Name,
                 PayloadData = this.TypedText
             };
             SendMessage(message);
