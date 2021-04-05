@@ -419,6 +419,8 @@ namespace Messenger_Server
                 command.Parameters.AddWithValue("@userid", userID);
                 command.Parameters.AddWithValue("@groupid", groupID);
 
+                connection.Open();
+
                 return command.ExecuteNonQuery();
             }
         }
