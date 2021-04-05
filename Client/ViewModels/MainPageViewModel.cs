@@ -137,9 +137,8 @@ namespace Messenger_Client.ViewModels
                 return;
             }
 
-            Message message = new Message()
+            Message message = new Message(MessageType.ChatMessage)
             {
-                MessageType = MessageType.ChatMessage,
                 ClientId = Client.Instance.Id,
                 GroupID = SelectedGroupChat.Id,
                 DateTime = DateTime.Now,
@@ -157,9 +156,8 @@ namespace Messenger_Client.ViewModels
                 return;
             }
 
-            Message message = new Message()
+            Message message = new Message(MessageType.ChatMessage)
             {
-                MessageType = MessageType.ChatMessage,
                 ClientId = Client.Instance.Id,
                 GroupID = SelectedGroupChat.Id,
                 DateTime = DateTime.Now,

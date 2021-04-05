@@ -205,11 +205,15 @@ namespace Shared
         }
 
         /// <summary>
-        /// Construct a blank message.
+        /// Construct a message with a type.
         /// </summary>
-        public Message()
+        public Message(MessageType type)
         {
+            // First, construct JSON representation.
             this.jsonMessage = new JsonMessage();
+
+            // Set message type.
+            MessageType = type;
         }
 
         /// <summary>
