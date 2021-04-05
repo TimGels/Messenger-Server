@@ -51,7 +51,13 @@ namespace Messenger_Client.ViewModels
             if (keyargs.Key == Windows.System.VirtualKey.Enter)
             {
                 AddNewGroup();
+                navigateToMain();
             }
+        }
+
+        private void navigateToMain()
+        {
+            (Window.Current.Content as Frame).Navigate(typeof(MainPage));
         }
 
         private void AddNewGroup()
@@ -59,7 +65,7 @@ namespace Messenger_Client.ViewModels
             if (this.NewGroupName != null && !this.NewGroupName.Equals(""))
             {
                 CommunicationHandler.SendRegisterGroupMessage(this.NewGroupName);
-                CommunicationHandler.RegisterGroupResponse += CommunicationHandler_RegisterGroupResponse;
+                CommunicationHandler.RegisterGroupResponse += OnRegisterGroupResponseReceived;
             }
             else
             {
@@ -67,7 +73,7 @@ namespace Messenger_Client.ViewModels
             }
         }
 
-        private async void CommunicationHandler_RegisterGroupResponse(object sender, CommunicationHandler.ResponseStateEventArgs e)
+        private async void OnRegisterGroupResponseReceived(object sender, CommunicationHandler.ResponseStateEventArgs e)
         {
             switch (e.State)
             {

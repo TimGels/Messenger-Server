@@ -1,15 +1,14 @@
 ﻿using Messenger_Client.Models;
 using Messenger_Client.Views;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using System;
-using System.Diagnostics;
 using System.Windows.Input;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace Messenger_Client.ViewModels
 {
@@ -62,28 +61,32 @@ namespace Messenger_Client.ViewModels
             HandleLoginAction();
         }
 
-        private void HandleLoginAction()
+        private async void HandleLoginAction()
         {
-            if (!Email.Equals("") && !Password.Equals(""))
+            if (Email.Equals("") || Password.Equals(""))
             {
+                LoginErrorMessage = "Please enter both an email and password!";
+                return;
+            }
 
-                CommunicationHandler.SendLoginMessage(Email, Password);
-                CommunicationHandler.LoggedInResponse += CommunicationHandler_LoggedInResponse;
-            }
-            else
+            if (await Client.Instance.Connection.OpenAsync() == false)
             {
-                LoginErrorMessage = "E-mail of wachtwoord is niet ingevuld!";
+                LoginErrorMessage = "Could not connect to the server!";
+                return;
             }
+
+            CommunicationHandler.SendLoginMessage(Email, Password);
+            CommunicationHandler.LogInResponse += OnLoginInResponseReceived;
         }
 
-        private async void CommunicationHandler_LoggedInResponse(object sender, CommunicationHandler.ResponseStateEventArgs e)
+        private async void OnLoginInResponseReceived(object sender, CommunicationHandler.ResponseStateEventArgs e)
         {
             switch (e.State)
             {
                 case -1:
                     await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
-                        LoginErrorMessage = "E-mail of wachtwoord verkeerd!";
+                        LoginErrorMessage = "E-mail of wachtwoord verkeerd of account bestaat niet!";
                     });
                     break;
                 case -2:
