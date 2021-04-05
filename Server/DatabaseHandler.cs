@@ -403,5 +403,24 @@ namespace Messenger_Server
                 return groupParticipants;
             }
         }
+
+        /// <summary>
+        /// Deletes a client from a group in the database
+        /// </summary>
+        /// <param name="groupID"></param>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        public static int DeleteGroupParticipant(int groupID, int userID)
+        {
+            using(SqliteConnection connection = new SqliteConnection(connectionString))
+            {
+                SqliteCommand command = connection.CreateCommand();
+                command.CommandText = "DELETE from `GroupParticipants` WHERE userid == @userid AND groupid == @groupid";
+                command.Parameters.AddWithValue("@userid", userID);
+                command.Parameters.AddWithValue("@groupid", groupID);
+
+                return command.ExecuteNonQuery();
+            }
+        }
     }
 }

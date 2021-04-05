@@ -63,7 +63,6 @@ namespace Messenger_Server
 
         /// <summary>
         /// Remove a client from the group. This method is thread-safe.
-        /// TODO: add database handling.
         /// </summary>
         /// <param name="client">The client to remove.</param>
         public void RemoveClient(Client client)
@@ -72,6 +71,7 @@ namespace Messenger_Server
             try
             {
                 this.clients.Remove(client);
+                DatabaseHandler.DeleteGroupParticipant(this.Id, client.Id);
             }
             finally
             {
