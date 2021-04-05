@@ -1,4 +1,5 @@
-﻿using Messenger_Client.Services;
+﻿using Messenger_Client.Models;
+using Messenger_Client.Services;
 using Messenger_Client.Views;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
@@ -112,8 +113,14 @@ namespace Messenger_Client.ViewModels
 
         private void LeaveGroup(object obj)
         {
+            if(obj is null)
+            {
+                return;
+            }
+
             Group group = (Group)obj;
             Client.Instance.RemoveGroup(group);
+            CommunicationHandler.SendLeaveGroupMessage(group.Id);
 
         }
 
