@@ -80,6 +80,19 @@ namespace Messenger_Client
                 groupLocker.ExitReadLock();
             }
         }
+
+        public void RemoveGroup(Group group)
+        {
+            groupLocker.EnterWriteLock();
+            try
+            {
+                this.Groups.Remove(group);
+            }
+            finally
+            {
+                groupLocker.ExitWriteLock();
+            }
+        }
         /// <summary>
         /// This method opens a file picker screen. In this way a client can choose where to store the csv
         /// then it will loop throug all groups to get a csv string of all messages in that group.

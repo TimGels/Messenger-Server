@@ -50,11 +50,12 @@
 
         <Grid Grid.Row="1"
               Background="#F2F2F2">
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="400"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-
+            
             <Grid Grid.Column="0"
                   Background="White">
                 <Grid.RowDefinitions>
@@ -62,20 +63,27 @@
                     <RowDefinition Height="70"/>
                 </Grid.RowDefinitions>
 
-                <ListView ItemContainerStyle="{StaticResource ListViewGroupListContainerStyle}" x:Name="itemListView"
+                <ListView ItemContainerStyle="{StaticResource ListViewGroupListContainerStyle}" x:Name="GroupListView"
                             Grid.Row="0"
                             Margin="0,0,0,0"
                             ItemsSource="{Binding GroupList}"
                             SelectedItem="{Binding SelectedGroupChat, Mode=TwoWay}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Grid Height="80" Margin="6">
-                                <StackPanel VerticalAlignment="Top" Margin="10,0,0,0">
-                                    <TextBlock Text="{Binding Name}" Style="{StaticResource BaseTextBlockStyle}" FontSize="20" TextWrapping="NoWrap"/>
-                                </StackPanel>
-                            </Grid>
+                            <ListViewItem RightTapped="Grid_RightTapped">
+                                <Grid Height="80" Margin="6" >
+                                    <StackPanel VerticalAlignment="Top" Margin="10,0,0,0">
+                                        <TextBlock Text="{Binding Name}" Style="{StaticResource BaseTextBlockStyle}" FontSize="20" TextWrapping="NoWrap"/>
+                                    </StackPanel>
+                                </Grid>
+                            </ListViewItem>
                         </DataTemplate>
                     </ListView.ItemTemplate>
+                    <ListView.Resources>
+                        <MenuFlyout x:Name="MenuFlyoutContext" x:Key="FlyoutBaseKey">
+                            <MenuFlyoutItem x:Name="LeaveGroupSubMenu" Text="Leave chat" Click="LeaveGroupSubMenu_Click"/>
+                        </MenuFlyout>
+                    </ListView.Resources>
                 </ListView>
             </Grid>
 
@@ -139,7 +147,6 @@
                         <FontIcon FontSize="50"  FontFamily="Segoe MDL2 Assets" Glyph="&#xE724;" Foreground="#79E5DB"/>
                     </Button>
                 </Grid>
-
             </Grid>
         </Grid>
     </Grid>
