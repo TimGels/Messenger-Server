@@ -40,6 +40,21 @@ namespace Shared
             }
         }
 
+        public string TextMessage
+        {
+            get
+            {
+                if (PayloadType != null && PayloadType.Equals("text"))
+                {
+                    return jsonMessage.Payload.Data;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
         public string ImageString
         {
             get
@@ -59,11 +74,7 @@ namespace Shared
         {
             get
             {
-                if (ImageString == null)
-                {
-                    return jsonMessage.Payload.Data;
-                }
-                return null;
+                return jsonMessage.Payload.Data;
             }
             set
             {
