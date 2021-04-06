@@ -14,9 +14,9 @@ namespace Messenger_Client.ViewModels
 {
     class JoinGroupPageViewModel
     {
+        public ICommand LogoutCommand { get; set; }
         public ICommand AboutDialogCommand { get; set; }
         public Group GroupToJoin { get; set; }
-
         public ICommand JoinGroupButtonCommand { get; set; }
         public ICommand CancelButtonCommand { get; set; }
         public ObservableCollection<Group> GroupList { get; set; }
@@ -27,6 +27,7 @@ namespace Messenger_Client.ViewModels
             JoinGroupButtonCommand = new RelayCommand(SendJoinGroupMessage);
             CancelButtonCommand = new RelayCommand(navigateToMain);
             GroupList = new ObservableCollection<Group>();
+            LogoutCommand = new RelayCommand(Logout);
 
             CommunicationHandler.ObtainedRequestedGroups += obtainedRequestedGroups;
             CommunicationHandler.SendRequestGroupMessages();
@@ -66,6 +67,16 @@ namespace Messenger_Client.ViewModels
         private async void DisplayAboutDialog()
         {
             await Helper.AboutDialog().ShowAsync();
+        }
+
+        private void Logout()
+        {
+            Client.Instance.Connection.Close();
+
+            Frame rootFrame = Window.Current.Content as Frame;
+            rootFrame.Navigate(typeof(LoginPage));
+
+            Debug.WriteLine("Logout");
         }
     }
 }
