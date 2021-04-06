@@ -2,6 +2,7 @@
 using Messenger_Client.Views;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -21,6 +22,8 @@ namespace Messenger_Client
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+
+            SetDefaultSettings();
         }
 
         /// <summary>
@@ -86,6 +89,25 @@ namespace Messenger_Client
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Save application state and stop any background activity
             deferral.Complete();
+        }
+
+        /// <summary>
+        /// Set the default settings for the client, such as the IP address and port number
+        /// to connect to.
+        /// </summary>
+        private void SetDefaultSettings()
+        {
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+            if (localSettings.Values["IPAddress"] == null)
+            {
+                localSettings.Values["IPAddress"] = "127.0.0.1";
+            }
+
+            if (localSettings.Values["PortNumber"] == null)
+            {
+                localSettings.Values["PortNumber"] = "5000";
+            }
         }
     }
 }

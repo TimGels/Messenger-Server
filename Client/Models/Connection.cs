@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace Messenger_Client.Models
 {
@@ -38,8 +39,12 @@ namespace Messenger_Client.Models
                     client = new TcpClient();
                 }
 
+                ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+                string serverAddress = localSettings.Values["IPAddress"].ToString();
+                int portNumber = Int32.Parse(localSettings.Values["PortNumber"].ToString());
+
                 // Throws when already connected.
-                await client.ConnectAsync(Client.Instance.serverAddress, Client.Instance.port);
+                await client.ConnectAsync(serverAddress, portNumber);
 
                 // If control enters here, connecting succeeded and read thread is started.
                 closed = false;
@@ -51,6 +56,20 @@ namespace Messenger_Client.Models
                 Debug.WriteLine(String.Format("{0} failed with {1}",
                     MethodBase.GetCurrentMethod().Name,
                     e.GetType().FullName));
+            }
+
+            return client.Connected || !closed;
+        }
+
+        /// <summary>
+        /// Is the client connected to a remote host?
+        /// </summary>
+        /// <returns>True if connected, false if not.</returns>
+        public bool IsConnected()
+        {
+            if (client is null)
+            {
+                return false;
             }
 
             return client.Connected || !closed;

@@ -1,6 +1,6 @@
 ﻿using Messenger_Client.Views;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
-using System;
 using System.Windows.Input;
 using Windows.Storage;
 using Windows.UI.Xaml;
@@ -8,59 +8,55 @@ using Windows.UI.Xaml.Controls;
 
 namespace Messenger_Client.ViewModels
 {
-    class SettingsPageViewModel
+    public class SettingsPageViewModel : ObservableRecipient
     {
-        ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+        /// <summary>
+        /// Convenience field to store the local appdata container.
+        /// </summary>
+        private readonly ApplicationDataContainer settings = ApplicationData.Current.LocalSettings;
 
         public string IPAddress
         {
             get
             {
-                if (this.localSettings.Values["IPAddress"] != null)
-                {
-                    return this.localSettings.Values["IPAddress"].ToString();
-                }
-                else
-                {
-                    return "";
-                }
+                return this.settings.Values["IPAddress"].ToString();
             }
             set
             {
-                IPAddress = value;
-                this.localSettings.Values["IPAddress"] = value;
+                this.settings.Values["IPAddress"] = value;
+                OnPropertyChanged();
             }
         }
+
         public string PortNumber
         {
             get
             {
-                if (this.localSettings.Values["PortNumber"] != null)
-                {
-                    return this.localSettings.Values["PortNumber"].ToString();
-                }
-                else
-                {
-                    return "";
-                }
+                return this.settings.Values["PortNumber"].ToString();
             }
             set
             {
-                PortNumber = value;
-                this.localSettings.Values["PortNumber"] = value;
+                this.settings.Values["PortNumber"] = value;
+                OnPropertyChanged();
             }
         }
-        public bool IsTextBoxEnabled { get; set; }
-        public ICommand BackButtonCommand { get; set; }
 
+        public bool IsTextBoxEnabled
+        {
+            get
+            {
+                return !Client.Instance.Connection.IsConnected();
+            }
+        }
+
+        public ICommand BackButtonCommand { get; set; }
 
         public SettingsPageViewModel()
         {
-            IsTextBoxEnabled = true;
-            BackButtonCommand = new RelayCommand(backToLogin);
+            BackButtonCommand = new RelayCommand(BackToLogin);
         }
 
-        private void backToLogin()
+        private void BackToLogin()
         {
             (Window.Current.Content as Frame).Navigate(typeof(LoginPage));
         }

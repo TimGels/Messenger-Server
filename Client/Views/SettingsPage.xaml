@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Messenger_Client.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="using:Messenger_Client.ViewModels"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -26,8 +26,8 @@
         <Grid Grid.Row="1" Grid.Column="1">
             <StackPanel Background="White" Padding="50">
                 <TextBlock Style="{ThemeResource LoginHeading}" Text="Settings" Margin="0,0,0,30"/>
-                <TextBox IsEnabled="{Binding IsTextBoxEnabled}" Text="{Binding IPAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="IP address" Style="{ThemeResource LoginName}"/>
-                <TextBox IsEnabled="{Binding IsTextBoxEnabled}" Text="{Binding PortNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Port number" Style="{ThemeResource LoginName}"/>
+                <TextBox IsEnabled="{Binding IsTextBoxEnabled}" Text="{Binding IPAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{ThemeResource LoginName}"/>
+                <TextBox IsEnabled="{Binding IsTextBoxEnabled}" Text="{Binding PortNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{ThemeResource LoginName}"/>
                 <Button Style="{ThemeResource CancelButton}" Content="Back" Margin="10" Command="{Binding BackButtonCommand}"/>
             </StackPanel>
         </Grid>
