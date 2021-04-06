@@ -29,7 +29,6 @@ namespace Messenger_Client.ViewModels
             GroupList = new ObservableCollection<Group>();
             LogoutCommand = new RelayCommand(Logout);
 
-            //Client.Instance.Connection.ConnectionLost += OnConnectionLost;
             CommunicationHandler.ObtainedRequestedGroups += obtainedRequestedGroups;
             CommunicationHandler.SendRequestGroupMessages();
         }
@@ -79,18 +78,6 @@ namespace Messenger_Client.ViewModels
 
             Debug.WriteLine("Logout");
         }
-
-        //private async void OnConnectionLost(object sender, EventArgs e)
-        //{
-        //    Debug.WriteLine("Lost connection to server!");
-        //    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-        //    {
-        //        Helper.ConnectionLostDialog().ShowAsync();
-
-        //        Frame rootFrame = Window.Current.Content as Frame;
-        //        rootFrame.Navigate(typeof(LoginPage));
-        //    });
-        //}
     }
 }
 

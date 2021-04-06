@@ -105,7 +105,6 @@ namespace Messenger_Client.ViewModels
             LogoutCommand = new RelayCommand(Logout);
             ExportMessageCommand = new RelayCommand(ExportMessage);
             AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
-            Client.Instance.Connection.ConnectionLost += OnConnectionLost;
 
             this.GroupList = new ObservableCollection<Group>();
             this.TypedText = "";
@@ -232,18 +231,6 @@ namespace Messenger_Client.ViewModels
             rootFrame.Navigate(typeof(LoginPage));
 
             Debug.WriteLine("Logout");
-        }
-
-        private async void OnConnectionLost(object sender, EventArgs e)
-        {
-            Debug.WriteLine("Lost connection to server!");
-            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                Helper.ConnectionLostDialog().ShowAsync();
-
-                Frame rootFrame = Window.Current.Content as Frame;
-                rootFrame.Navigate(typeof(LoginPage));
-            });
         }
     }
 }
