@@ -59,13 +59,13 @@ namespace Messenger_Client.Models
                     break;
             }
         }
+
         #region send message methods
 
         public static void SendLeaveGroupMessage(int groupId)
         {
-            Client.Instance.Connection.SendData(new Message()
+            Client.Instance.Connection.SendData(new Message(MessageType.LeaveGroup)
             {
-                MessageType = MessageType.LeaveGroup,
                 GroupID = groupId,
                 ClientId = Client.Instance.Id
             });
@@ -123,6 +123,7 @@ namespace Messenger_Client.Models
                 PayloadData = name
             });
         }
+
         #endregion
 
         #region handle incoming messages
