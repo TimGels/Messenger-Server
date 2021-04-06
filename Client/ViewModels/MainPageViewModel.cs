@@ -8,9 +8,11 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
+using Windows.ApplicationModel.Core;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -103,6 +105,7 @@ namespace Messenger_Client.ViewModels
             LogoutCommand = new RelayCommand(Logout);
             ExportMessageCommand = new RelayCommand(ExportMessage);
             AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
+            Client.Instance.Connection.ConnectionLost += OnConnectionLost;
 
             this.GroupList = new ObservableCollection<Group>();
             this.TypedText = "";
@@ -227,8 +230,20 @@ namespace Messenger_Client.ViewModels
 
             Frame rootFrame = Window.Current.Content as Frame;
             rootFrame.Navigate(typeof(LoginPage));
-            
+
             Debug.WriteLine("Logout");
+        }
+
+        private async void OnConnectionLost(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Lost connection to server!");
+            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                Helper.ConnectionLostDialog().ShowAsync();
+
+                Frame rootFrame = Window.Current.Content as Frame;
+                rootFrame.Navigate(typeof(LoginPage));
+            });
         }
     }
 }

@@ -45,6 +45,7 @@ namespace Messenger_Client.ViewModels
             CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
             LogoutCommand = new RelayCommand(Logout);
             AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
+            //Client.Instance.Connection.ConnectionLost += OnConnectionLost;
         }
 
         private void CheckEnterPressed(object obj)
@@ -116,5 +117,17 @@ namespace Messenger_Client.ViewModels
         {
             await Helper.AboutDialog().ShowAsync();
         }
+
+        //private async void OnConnectionLost(object sender, EventArgs e)
+        //{
+        //    Debug.WriteLine("Lost connection to server!");
+        //    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+        //    {
+        //        Helper.ConnectionLostDialog().ShowAsync();
+
+        //        Frame rootFrame = Window.Current.Content as Frame;
+        //        rootFrame.Navigate(typeof(LoginPage));
+        //    });
+        //}
     }
 }
