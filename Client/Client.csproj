@@ -120,6 +120,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Client.cs" />
+    <Compile Include="Models\Helper.cs" />
     <Compile Include="Services\Converters\Base64ToImageConverter.cs" />
     <Compile Include="Services\Converters\DateTimeToTimeConverter.cs" />
     <Compile Include="Services\Utilities\MessageDataTemplateSelector.cs" />

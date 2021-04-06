@@ -1,8 +1,8 @@
 ﻿using Messenger_Client.Models;
 using Messenger_Client.Views;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using System;
-using System.Diagnostics;
 using System.Windows.Input;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
@@ -12,10 +12,26 @@ using Windows.UI.Xaml.Input;
 
 namespace Messenger_Client.ViewModels
 {
-    class LoginPageViewModel
+    public class LoginPageViewModel : ObservableRecipient
     {
         public string Email { get; set; }
         public string Password { get; set; }
+
+        private string loginErrorMessage = "";
+
+        public string LoginErrorMessage
+        {
+            get
+            {
+                return loginErrorMessage;
+            }
+            set
+            {
+                loginErrorMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ICommand RegisterButtonCommand { get; set; }
         public ICommand LoginButtonCommand { get; set; }
         public ICommand CheckEnterCommand { get; set; }
@@ -45,27 +61,47 @@ namespace Messenger_Client.ViewModels
             HandleLoginAction();
         }
 
-        private void HandleLoginAction()
+        private async void HandleLoginAction()
         {
-            if (!Email.Equals("") && !Password.Equals(""))
+            if (Email.Equals("") || Password.Equals(""))
             {
+                LoginErrorMessage = "Please enter both an email and password!";
+                return;
+            }
 
-                CommunicationHandler.SendLoginMessage(Email, Password);
-                CommunicationHandler.LoggedInSuccesfully += communicationHandler_LoggedInSuccesfully;
-            }
-            else
+            if (await Client.Instance.Connection.OpenAsync() == false)
             {
-                //TODO create pop up or something
-                Debug.WriteLine("email of password is empty!");
+                LoginErrorMessage = "Could not connect to the server!";
+                return;
             }
+
+            CommunicationHandler.SendLoginMessage(Email, Password);
+            CommunicationHandler.LogInResponse += OnLoginInResponseReceived;
         }
 
-        private async void communicationHandler_LoggedInSuccesfully(object sender, EventArgs e)
+        private async void OnLoginInResponseReceived(object sender, CommunicationHandler.ResponseStateEventArgs e)
         {
-            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+            switch (e.State)
             {
-                (Window.Current.Content as Frame).Navigate(typeof(MainPage));
-            });
+                case -1:
+                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        LoginErrorMessage = "E-mail of wachtwoord verkeerd of account bestaat niet!";
+                    });
+                    break;
+                case -2:
+                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        LoginErrorMessage = "Je bent al ingelogd!";
+                    });
+                    break;
+                default:
+                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        (Window.Current.Content as Frame).Navigate(typeof(MainPage));
+                    });
+                break;
+            }
         }
 
         private void RegisterButtonClicked()

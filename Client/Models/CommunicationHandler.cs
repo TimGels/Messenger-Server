@@ -1,14 +1,39 @@
-﻿using System;
+﻿using Shared;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using Shared;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 
 namespace Messenger_Client.Models
 {
-    class CommunicationHandler
+    public static class CommunicationHandler
     {
+        #region events
+
+        public static event EventHandler<GroupListEventArgs> ObtainedRequestedGroups;
+        public static event EventHandler JoinedGroup;
+        public static event EventHandler<ResponseStateEventArgs> LogInResponse;
+        public static event EventHandler<ResponseStateEventArgs> SignUpResponse;
+        public static event EventHandler<ResponseStateEventArgs> RegisterGroupResponse;
+
+        public class ResponseStateEventArgs : EventArgs
+        {
+            public int State { get; set; }
+            public ResponseStateEventArgs(int state)
+            {
+                this.State = state;
+            }
+        }
+
+        public class GroupListEventArgs : EventArgs
+        {
+            public List<Group> Groups { get; set; }
+            public GroupListEventArgs(List<Group> groups)
+            {
+                Groups = groups;
+            }
+        }
+        #endregion
 
         public static void HandleMessage(Message message)
         {
@@ -32,13 +57,28 @@ namespace Messenger_Client.Models
                 case MessageType.ChatMessage:
                     HandleChatMessage(message);
                     break;
-                case MessageType.KeepAlive:
-                    HandleKeepAliveMessage(message);
-                    break;
             }
         }
+        #region send message methods
 
-        public static event EventHandler LoggedInSuccesfully;
+        public static void SendJoinGroupMessage(int groupId)
+        {
+            Client.Instance.Connection.SendData(new Message()
+            {
+                MessageType = MessageType.JoinGroup,
+                GroupID = groupId,
+                ClientId = Client.Instance.Id
+            });
+        }
+
+        public static void SendRequestGroupMessages()
+        {
+            Client.Instance.Connection.SendData(new Message()
+            {
+                MessageType = MessageType.RequestGroups,
+                ClientId = Client.Instance.Id
+            });
+        }
 
         public static void SendLoginMessage(string email, string password)
         {
@@ -53,7 +93,7 @@ namespace Messenger_Client.Models
             });
         }
 
-        internal static void SendRegisterMessage(string mail, string name, string password)
+        public static void SendRegisterMessage(string mail, string name, string password)
         {
             Client.Instance.Connection.SendData(new Message()
             {
@@ -78,76 +118,42 @@ namespace Messenger_Client.Models
                 PayloadData = name
             });
         }
-        
+        #endregion
+
+        #region handle incoming messages
 
         private static void HandleRegisterClientResponse(Message message)
         {
-            switch (message.ClientId)
-            {
-                case -1:
-                    Debug.WriteLine("e-mail al in gebruik");
-                    //TODO: geef melding dat e-mail al in gebruik is.
-                    break;
-                default:
-                    //TODO mooie pop up ofso
-                    Debug.WriteLine("Account aangemaakt!");
-                    Debug.WriteLine("ClientID: " + message.ClientId);
-
-                    break;
-            }
+            SignUpResponse?.Invoke(null, new ResponseStateEventArgs(message.ClientId));
         }
-
 
         private static void HandleSignInClientResponse(Message message)
         {
-            switch (message.ClientId)
+            if (message.ClientId >= 0)
             {
-                case -1:
-                    Debug.WriteLine("E-mail of wachtwoord verkeerd!");
-                    //TODO: geef melding dat de combinatie van e-mail en wachtwoord verkeerd is
-                    break;
-                case -2:
-                    Debug.WriteLine("Already ingelogd!");
-                    //TODO: geef melding dat het account al ergens anders is ingelogd
-                    break;
-                default:
-                    Debug.WriteLine("Gefeliciteerd!");
-                    Client.Instance.Id = message.ClientId;
-                    // AddGroup throwns no COMException since no ViewModel with
-                    // ObservableList<Group> has been constructed at this point.
-                    // Could be problematic on Logout->Login.
-                    message.GroupList.ForEach(group => Client.Instance.AddGroup(new Group(group)));
-                    LoggedInSuccesfully?.Invoke(null, null);
-                    break;
+                Client.Instance.Id = message.ClientId;
+                Client.Instance.Name = message.ClientName;
+                message.GroupList.ForEach(group => Client.Instance.AddGroup(new Group(group)));
             }
+            LogInResponse?.Invoke(null, new ResponseStateEventArgs(message.ClientId));
         }
 
         private static void HandleRegisterGroupResponse(Message message)
         {
-            switch (message.GroupID)
+            if(message.GroupID > 0)
             {
-                case -1:
-                    Debug.WriteLine("failed to create group");
-                    //TODO: geef melding dat het aanmaken van een group mislukt is
-                    break;
-                default:
-                    // Run on UI thread to prevent COMException.
-                    _ = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
-                    {
-                        Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
-                    });
-                    Console.WriteLine("Group aangemaakt!");
-                    break;
+                Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
             }
+            RegisterGroupResponse?.Invoke(null, new ResponseStateEventArgs(message.ClientId));
         }
         
         private static void HandleRequestGroupsResponse(Message message)
         {
-            List<Group> list = new List<Group>();
+            List<Group> groups = new List<Group>();
             // Convert Messenger_Client.Group to Shared.Group.
-            message.GroupList.ForEach(group => list.Add(new Group(group)));
+            message.GroupList.ForEach(group => groups.Add(new Group(group)));
 
-            // TODO: assign to some viewmodel list (with writelock?).
+            ObtainedRequestedGroups?.Invoke(null, new GroupListEventArgs(groups));
         }
 
         private static void HandleJoinGroupResponse(Message message)
@@ -155,16 +161,11 @@ namespace Messenger_Client.Models
             switch (message.GroupID)
             {
                 case -1:
-                    Console.WriteLine("something went wrong!");
                     //TODO: create pop up
                     break;
                 default:
-                    // Run on UI thread to prevent COMException.
-                    _ = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
-                    {
-                        Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
-                    });
-                    Console.WriteLine("joined a group");
+                    Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
+                    JoinedGroup?.Invoke(null, null);
                     break;
             }
         }
@@ -186,13 +187,7 @@ namespace Messenger_Client.Models
             }
         }
 
-        /// <summary>
-        /// Bounce the keepalive message back to the server.
-        /// </summary>
-        /// <param name="message"></param>
-        private static void HandleKeepAliveMessage(Message message)
-        {
-            Client.Instance.Connection.SendData(message);
-        }
+        #endregion
+
     }
 }

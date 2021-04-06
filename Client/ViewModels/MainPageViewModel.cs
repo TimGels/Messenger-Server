@@ -1,20 +1,20 @@
-﻿using Messenger_Client.Services;
+﻿using Messenger_Client.Models;
+using Messenger_Client.Services;
 using Messenger_Client.Views;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Shared;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Group = Messenger_Client.Models.Group;
 
 
@@ -28,7 +28,9 @@ namespace Messenger_Client.ViewModels
         public ICommand SignUpCommand { get; set; }
         public ICommand ShowAddGroupViewCommand { get; set; }
         public ICommand ShowGroupsToJoinCommand { get; set; }
+        public ICommand ExportMessageCommand { get; set; }
         public ICommand OpenFilePickerCommand { get; set; }
+        public ICommand AboutDialogCommand { get; set; }
 
         public ObservableCollection<Group> GroupList
         {
@@ -97,13 +99,20 @@ namespace Messenger_Client.ViewModels
             ShowGroupsToJoinCommand = new RelayCommand(ShowGroupsToJoin);
             ShowAddGroupViewCommand = new RelayCommand(ShowAddGroupView);
             OpenFilePickerCommand = new RelayCommand(OpenFilePicker);
-
+            ExportMessageCommand = new RelayCommand(ExportMessage);
+            AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
+            
             this.GroupList = new ObservableCollection<Group>();
             this.TypedText = "";
         }
 
         private async void OpenFilePicker()
         {
+            if (this.SelectedGroupChat == null)
+            {
+                return;
+            }
+
             var picker = new Windows.Storage.Pickers.FileOpenPicker();
             picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
             picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
@@ -128,6 +137,11 @@ namespace Messenger_Client.ViewModels
 
         private void ConstructImageMessage(string imageBase64String)
         {
+            if (this.SelectedGroupChat == null)
+            {
+                return;
+            }
+
             Message message = new Message()
             {
                 MessageType = MessageType.ChatMessage,
@@ -135,6 +149,7 @@ namespace Messenger_Client.ViewModels
                 GroupID = SelectedGroupChat.Id,
                 DateTime = DateTime.Now,
                 PayloadType = "image",
+                ClientName = Client.Instance.Name,
                 PayloadData = imageBase64String
             };
             SendMessage(message);
@@ -154,6 +169,7 @@ namespace Messenger_Client.ViewModels
                 GroupID = SelectedGroupChat.Id,
                 DateTime = DateTime.Now,
                 PayloadType = "text",
+                ClientName = Client.Instance.Name,
                 PayloadData = this.TypedText
             };
             SendMessage(message);
@@ -172,16 +188,7 @@ namespace Messenger_Client.ViewModels
             KeyRoutedEventArgs keyargs = (KeyRoutedEventArgs)args;
             if (keyargs.Key == Windows.System.VirtualKey.Enter)
             {
-                Message message = new Message()
-                {
-                    MessageType = MessageType.ChatMessage,
-                    ClientId = Client.Instance.Id,
-                    GroupID = SelectedGroupChat.Id,
-                    DateTime = DateTime.Now,
-                    PayloadData = this.TypedText
-                };
-
-                SendMessage(message);
+                ConstructTextMessage();
             }
         }
 
@@ -200,6 +207,16 @@ namespace Messenger_Client.ViewModels
         private void OpenSignUpView()
         {
             Debug.WriteLine("OpenSignUpView");
+        }
+
+        private async void ExportMessage()
+        {
+            await Client.Instance.ExportMessageToFileAsync();
+        }
+
+        private async void DisplayAboutDialog()
+        {
+            await Helper.AboutDialog().ShowAsync();
         }
     }
 }

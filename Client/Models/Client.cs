@@ -6,9 +6,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage.Pickers;
-using Connection = Messenger_Client.Models.Connection;
-using Group = Messenger_Client.Models.Group;
-using Windows.Storage;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 
 namespace Messenger_Client
 {
@@ -22,14 +21,14 @@ namespace Messenger_Client
         /// <summary>
         /// Port number to send to.
         /// </summary>
-        private readonly int port = 5000; //TODO: make configurable?
+        public readonly int port = 5000; //TODO: make configurable?
 
         /// <summary>
         /// ipAdress of the server.
         /// TODO: make configurable.
         /// TODO: save ip in the appropiate ipaddress class?
         /// </summary>
-        private readonly string serverAddress = "127.0.0.1";
+        public readonly string serverAddress = "127.0.0.1";
 
         /// <summary>
         /// The read-write lock for the grouplist.
@@ -37,8 +36,8 @@ namespace Messenger_Client
         private readonly ReaderWriterLockSlim groupLocker = new ReaderWriterLockSlim();
 
         public static Client Instance { get { return lazy.Value; } }
-        public string ClientName { get; set; }
         public int Id { get; set; }
+        public string Name { get; set; }
         public ObservableCollection<Group> Groups { get; set; }
         public Connection Connection { get; set; }
 
@@ -46,8 +45,8 @@ namespace Messenger_Client
         private Client()
         {
             this.Groups = new ObservableCollection<Group>();
-            this.Connection = new Connection(serverAddress, port);
-            this.ClientName = "clientName";
+            this.Connection = new Connection();
+            this.Name = "ClientNameNeedsToBeSet";
         }
 
         /// <summary>
@@ -61,7 +60,10 @@ namespace Messenger_Client
             groupLocker.EnterWriteLock();
             try
             {
-                this.Groups.Add(group);
+                CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+                {
+                    this.Groups.Add(group);
+                }).AsTask();
             }
             finally
             {
@@ -95,6 +97,11 @@ namespace Messenger_Client
             // Default file name if the user does not type one in or select a file to replace
             savePicker.SuggestedFileName = "New Document";
             Windows.Storage.StorageFile file = await savePicker.PickSaveFileAsync();
+
+            if (file is null)
+            {
+                return;
+            }
 
             //enter read lock of groups
             this.groupLocker.EnterReadLock();
