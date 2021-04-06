@@ -233,7 +233,7 @@ namespace Messenger_Server
                     return id;
                 }
             }
-            catch (Exception e) //TODO: create better catch for uniqueness error!!
+            catch (Exception) //TODO: create better catch for uniqueness error!!
             {
                 return -1;
             }
