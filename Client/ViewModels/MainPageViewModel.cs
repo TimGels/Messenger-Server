@@ -10,9 +10,11 @@ using System.Diagnostics;
 using System.Windows.Input;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Group = Messenger_Client.Models.Group;
 
 
@@ -29,6 +31,8 @@ namespace Messenger_Client.ViewModels
         public ICommand ExportMessageCommand { get; set; }
         public ICommand OpenFilePickerCommand { get; set; }
         public ICommand LeaveGroupCommand { get; set; }
+        public ICommand LogoutCommand { get; set; }
+        public ICommand AboutDialogCommand { get; set; }
 
         public ObservableCollection<Group> GroupList
         {
@@ -104,8 +108,10 @@ namespace Messenger_Client.ViewModels
             ShowGroupsToJoinCommand = new RelayCommand(ShowGroupsToJoin);
             ShowAddGroupViewCommand = new RelayCommand(ShowAddGroupView);
             OpenFilePickerCommand = new RelayCommand(OpenFilePicker);
+            LogoutCommand = new RelayCommand(Logout);
             ExportMessageCommand = new RelayCommand(ExportMessage);
             LeaveGroupCommand = new RelayCommand<object>(LeaveGroup);
+            AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
 
             this.GroupList = new ObservableCollection<Group>();
             this.TypedText = "";
@@ -230,6 +236,21 @@ namespace Messenger_Client.ViewModels
         private async void ExportMessage()
         {
             await Client.Instance.ExportMessageToFileAsync();
+        }
+
+        private async void DisplayAboutDialog()
+        {
+            await Helper.AboutDialog().ShowAsync();
+        }
+
+        private void Logout()
+        {
+            Client.Instance.Connection.Close();
+
+            Frame rootFrame = Window.Current.Content as Frame;
+            rootFrame.Navigate(typeof(LoginPage));
+            
+            Debug.WriteLine("Logout");
         }
     }
 }
