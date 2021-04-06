@@ -77,13 +77,40 @@ namespace Messenger_Client
 
             try
             {
-                return Groups.Where(group => group.Id == id).FirstOrDefault();
+                //TODO: Add if statement for local settings
+               return GetGroupInLINQ(id);
+                GetGroupInPLINQ(id);
+                GetGroupInLoop(id);
             }
             finally
             {
                 groupLocker.ExitReadLock();
             }
         }
+
+
+        private Group GetGroupInLINQ(int id)
+        {
+            return Groups.Where(group => group.Id == id).FirstOrDefault();
+        }      
+        
+        private Group GetGroupInPLINQ(int id)
+        {
+            return Groups.AsParallel().Where(group => group.Id == id).FirstOrDefault();
+        }
+
+        private Group GetGroupInLoop(int id)
+        {
+            foreach (Group group in Groups)
+            {
+                if (group.Id == id)
+                {
+                    return group;
+                }
+            }
+            return null;
+        }
+
         /// <summary>
         /// This method opens a file picker screen. In this way a client can choose where to store the csv
         /// then it will loop throug all groups to get a csv string of all messages in that group.
@@ -112,7 +139,8 @@ namespace Messenger_Client
                 foreach (Group group in this.Groups)
                 {
                     //get csv string of all messages in the group
-                    csvString += group.GetMessageCsv();
+                    //TODO: Add if statement for local settings
+                    csvString += group.GetMessageCsvInLoop();
                 }
             }
             finally

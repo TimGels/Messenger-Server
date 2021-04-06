@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -57,7 +58,7 @@ namespace Messenger_Client.Models
         /// returns a csv string wich respresents all the message in the group.
         /// </summary>
         /// <returns></returns>
-        public string GetMessageCsv()
+        public string GetMessageCsvInLoop()
         {
             //enter read lock of messages
             this.messsageLocker.EnterReadLock();
@@ -69,6 +70,31 @@ namespace Messenger_Client.Models
                     //get the csv representation of each message and add it to the string.
                     csvMessages += message.GetCsvString();
                 }
+
+                return csvMessages;
+            }
+            finally
+            {
+                //exit readlock of all messages
+                this.messsageLocker.ExitReadLock();
+            }
+        }    
+        
+        /// <summary>
+        /// returns a csv string wich respresents all the message in the group.
+        /// </summary>
+        /// <returns></returns>
+        public string GetMessageCsvInParallel()
+        {
+            //enter read lock of messages
+            this.messsageLocker.EnterReadLock();
+            string csvMessages = "";
+            try
+            {
+                Parallel.ForEach(this.Messages, message =>
+                {
+                    csvMessages += message.GetCsvString();
+                });
 
                 return csvMessages;
             }
