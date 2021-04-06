@@ -10,11 +10,6 @@ namespace Messenger_Server
     public sealed class Server
     {
         /// <summary>
-        /// Port number to listen on.
-        /// </summary>
-        private readonly int port = 5000; //TODO: make configurable?
-
-        /// <summary>
         /// The listener which listens for new connections
         /// </summary>
         private TcpListener server;
@@ -57,6 +52,19 @@ namespace Messenger_Server
             get { return lazy.Value; }
         }
 
+        /// <summary>
+        /// Gets the port from the configuration. 
+        /// If the value wasn't set or if the value couldn't be parsed: default fallback of 5000.
+        /// </summary>
+        /// <returns>Portnumber based on the configuration</returns>
+        private int GetPort()
+        {
+            if (!int.TryParse(Configuration.GetSetting("port"), out int port))
+            {
+                port = 5000;
+            }
+            return port;
+        }
         
 
         private Server()
@@ -123,10 +131,11 @@ namespace Messenger_Server
         {
             try
             {
+                int port = GetPort();
                 // Listen on both loopback and normal network adapters.
                 server = new TcpListener(IPAddress.Any, port);
                 server.Start();
-                Console.WriteLine("Waiting for incoming connections... ");
+                Console.WriteLine(String.Format("Server listening on port: {0}.\nWaiting for incoming connections... ", port));
 
                 // Enter the listening loop.
                 while (true)
