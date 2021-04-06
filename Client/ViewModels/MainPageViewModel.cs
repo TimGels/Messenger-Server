@@ -30,6 +30,7 @@ namespace Messenger_Client.ViewModels
         public ICommand ShowGroupsToJoinCommand { get; set; }
         public ICommand ExportMessageCommand { get; set; }
         public ICommand OpenFilePickerCommand { get; set; }
+        public ICommand LeaveGroupCommand { get; set; }
         public ICommand LogoutCommand { get; set; }
         public ICommand AboutDialogCommand { get; set; }
 
@@ -74,7 +75,14 @@ namespace Messenger_Client.ViewModels
             set
             {
                 selectedGroupChat = value;
-                MessagesList = value.Messages;
+                if(value != null)
+                {
+                    MessagesList = value.Messages;
+                }
+                else
+                {
+                    MessagesList = null;
+                }
             }
         }
 
@@ -102,10 +110,24 @@ namespace Messenger_Client.ViewModels
             OpenFilePickerCommand = new RelayCommand(OpenFilePicker);
             LogoutCommand = new RelayCommand(Logout);
             ExportMessageCommand = new RelayCommand(ExportMessage);
+            LeaveGroupCommand = new RelayCommand<object>(LeaveGroup);
             AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
 
             this.GroupList = new ObservableCollection<Group>();
             this.TypedText = "";
+        }
+
+        private void LeaveGroup(object obj)
+        {
+            if(obj is null)
+            {
+                return;
+            }
+
+            Group group = (Group)obj;
+            Client.Instance.RemoveGroup(group);
+            CommunicationHandler.SendLeaveGroupMessage(group.Id);
+
         }
 
         private async void OpenFilePicker()
