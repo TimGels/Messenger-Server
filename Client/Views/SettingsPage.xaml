@@ -31,7 +31,5 @@
                 <Button Style="{ThemeResource CancelButton}" Content="Back" Margin="10" Command="{Binding BackButtonCommand}"/>
             </StackPanel>
         </Grid>
-         
-        
     </Grid>
 </Page>
