@@ -233,9 +233,8 @@ namespace Messenger_Server
                     return id;
                 }
             }
-            catch (Exception e) //TODO: create better catch for uniqueness error!!
+            catch (Exception) //TODO: create better catch for uniqueness error!!
             {
-                Console.WriteLine(e.Message);
                 return -1;
             }
         }
@@ -401,6 +400,46 @@ namespace Messenger_Server
                 }
                 connection.Close();
                 return groupParticipants;
+            }
+        }
+
+        /// <summary>
+        /// Deletes a client from a group in the database
+        /// </summary>
+        /// <param name="groupID"></param>
+        /// <param name="userID"></param>
+        /// <returns>the number of affected rows</returns>
+        public static int DeleteGroupParticipant(int groupID, int userID)
+        {
+            using(SqliteConnection connection = new SqliteConnection(connectionString))
+            {
+                SqliteCommand command = connection.CreateCommand();
+                command.CommandText = "DELETE from `GroupParticipants` WHERE userid == @userid AND groupid == @groupid";
+                command.Parameters.AddWithValue("@userid", userID);
+                command.Parameters.AddWithValue("@groupid", groupID);
+
+                connection.Open();
+
+                return command.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// removes a group from the database.
+        /// </summary>
+        /// <param name="groupID"></param>
+        /// <returns>the number of affected rows</returns>
+        public static int RemoveGroup(int groupID)
+        {
+            using (SqliteConnection connection = new SqliteConnection(connectionString))
+            {
+                SqliteCommand command = connection.CreateCommand();
+                command.CommandText = "DELETE from `Group` WHERE id == @groupid";
+                command.Parameters.AddWithValue("@groupid", groupID);
+
+                connection.Open();
+
+                return command.ExecuteNonQuery();
             }
         }
     }

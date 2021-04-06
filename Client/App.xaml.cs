@@ -1,8 +1,12 @@
-﻿using System;
+﻿using Messenger_Client.Models;
 using Messenger_Client.Views;
+using System;
+using System.Diagnostics;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
 using Windows.Storage;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -22,6 +26,8 @@ namespace Messenger_Client
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+
+            Client.Instance.Connection.ConnectionLost += OnConnectionLost;
 
             SetDefaultSettings();
         }
@@ -108,6 +114,22 @@ namespace Messenger_Client
             {
                 localSettings.Values["PortNumber"] = "5000";
             }
+        }
+
+        /// <summary>
+        /// Invoked when connection to the server has been lost.
+        /// </summary>
+        private async void OnConnectionLost(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Lost connection to server!");
+
+            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            {
+                await Helper.ConnectionLostDialog().ShowAsync();
+
+                Frame rootFrame = Window.Current.Content as Frame;
+                rootFrame.Navigate(typeof(LoginPage));
+            });
         }
     }
 }

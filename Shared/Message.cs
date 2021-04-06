@@ -40,6 +40,21 @@ namespace Shared
             }
         }
 
+        public string TextMessage
+        {
+            get
+            {
+                if (PayloadType != null && PayloadType.Equals("text"))
+                {
+                    return jsonMessage.Payload.Data;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
         public string ImageString
         {
             get
@@ -59,11 +74,7 @@ namespace Shared
         {
             get
             {
-                if (ImageString == null)
-                {
-                    return jsonMessage.Payload.Data;
-                }
-                return null;
+                return jsonMessage.Payload.Data;
             }
             set
             {
@@ -194,11 +205,16 @@ namespace Shared
         }
 
         /// <summary>
-        /// Construct a blank message.
+        /// Construct a message with a type.
         /// </summary>
-        public Message()
+        /// <param name="type">The type of message to create.</param>
+        public Message(MessageType type)
         {
+            // First, construct JSON representation.
             this.jsonMessage = new JsonMessage();
+
+            // Set message type.
+            MessageType = type;
         }
 
         /// <summary>
