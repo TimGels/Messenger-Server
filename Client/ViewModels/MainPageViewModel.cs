@@ -1,4 +1,5 @@
-﻿using Messenger_Client.Services;
+﻿using Messenger_Client.Models;
+using Messenger_Client.Services;
 using Messenger_Client.Views;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
@@ -9,9 +10,11 @@ using System.Diagnostics;
 using System.Windows.Input;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Group = Messenger_Client.Models.Group;
 
 
@@ -27,6 +30,7 @@ namespace Messenger_Client.ViewModels
         public ICommand ShowGroupsToJoinCommand { get; set; }
         public ICommand ExportMessageCommand { get; set; }
         public ICommand OpenFilePickerCommand { get; set; }
+        public ICommand AboutDialogCommand { get; set; }
 
         public ObservableCollection<Group> GroupList
         {
@@ -96,6 +100,7 @@ namespace Messenger_Client.ViewModels
             ShowAddGroupViewCommand = new RelayCommand(ShowAddGroupView);
             OpenFilePickerCommand = new RelayCommand(OpenFilePicker);
             ExportMessageCommand = new RelayCommand(ExportMessage);
+            AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
             
             this.GroupList = new ObservableCollection<Group>();
             this.TypedText = "";
@@ -207,6 +212,11 @@ namespace Messenger_Client.ViewModels
         private async void ExportMessage()
         {
             await Client.Instance.ExportMessageToFileAsync();
+        }
+
+        private async void DisplayAboutDialog()
+        {
+            await Helper.AboutDialog().ShowAsync();
         }
     }
 }

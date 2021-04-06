@@ -9,26 +9,27 @@ using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Group = Messenger_Client.Models.Group;
 
 namespace Messenger_Client.ViewModels
 {
     class JoinGroupPageViewModel
     {
+        public ICommand AboutDialogCommand { get; set; }
         public Group GroupToJoin { get; set; }
 
         public ICommand JoinGroupButtonCommand { get; set; }
         public ICommand CancelButtonCommand { get; set; }
         public ObservableCollection<Group> GroupList { get; set; }
 
-
         public JoinGroupPageViewModel()
         {
-            GroupList = new ObservableCollection<Group>();
-            CommunicationHandler.SendRequestGroupMessages();
-            CommunicationHandler.ObtainedRequestedGroups += obtainedRequestedGroups;
+            AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
             JoinGroupButtonCommand = new RelayCommand(SendJoinGroupMessage);
             CancelButtonCommand = new RelayCommand(navigateToMain);
+            GroupList = new ObservableCollection<Group>();
+
+            CommunicationHandler.ObtainedRequestedGroups += obtainedRequestedGroups;
+            CommunicationHandler.SendRequestGroupMessages();
         }
 
         private void SendJoinGroupMessage()
@@ -60,6 +61,11 @@ namespace Messenger_Client.ViewModels
             {
                 groups.Groups.ForEach(group => GroupList.Add(group));
             });
+        }
+
+        private async void DisplayAboutDialog()
+        {
+            await Helper.AboutDialog().ShowAsync();
         }
     }
 }
