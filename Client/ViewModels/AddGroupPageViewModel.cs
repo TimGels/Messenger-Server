@@ -19,6 +19,7 @@ namespace Messenger_Client.ViewModels
         public ICommand AddGroupCommand { get; set; }
         public ICommand CheckEnterCommand { get; set; }
         public ICommand LogoutCommand { get; set; }
+        public ICommand AboutDialogCommand { get; set; }
 
         public string NewGroupName { get; set; }
 
@@ -43,6 +44,7 @@ namespace Messenger_Client.ViewModels
             AddGroupCommand = new RelayCommand(AddNewGroup);
             CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
             LogoutCommand = new RelayCommand(Logout);
+            AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
         }
 
         private void CheckEnterPressed(object obj)
@@ -51,7 +53,13 @@ namespace Messenger_Client.ViewModels
             if (keyargs.Key == Windows.System.VirtualKey.Enter)
             {
                 AddNewGroup();
+                navigateToMain();
             }
+        }
+
+        private void navigateToMain()
+        {
+            (Window.Current.Content as Frame).Navigate(typeof(MainPage));
         }
 
         private void AddNewGroup()
@@ -59,7 +67,7 @@ namespace Messenger_Client.ViewModels
             if (this.NewGroupName != null && !this.NewGroupName.Equals(""))
             {
                 CommunicationHandler.SendRegisterGroupMessage(this.NewGroupName);
-                CommunicationHandler.RegisterGroupResponse += CommunicationHandler_RegisterGroupResponse;
+                CommunicationHandler.RegisterGroupResponse += OnRegisterGroupResponseReceived;
             }
             else
             {
@@ -67,7 +75,7 @@ namespace Messenger_Client.ViewModels
             }
         }
 
-        private async void CommunicationHandler_RegisterGroupResponse(object sender, CommunicationHandler.ResponseStateEventArgs e)
+        private async void OnRegisterGroupResponseReceived(object sender, CommunicationHandler.ResponseStateEventArgs e)
         {
             switch (e.State)
             {
@@ -96,13 +104,17 @@ namespace Messenger_Client.ViewModels
 
         private void Logout()
         {
-            //TODO: Logout implementation
-            //Client.Instance.Connection.Close();
+            Client.Instance.Connection.Close();
 
             Frame rootFrame = Window.Current.Content as Frame;
             rootFrame.Navigate(typeof(LoginPage));
 
             Debug.WriteLine("Logout");
+        }
+
+        private async void DisplayAboutDialog()
+        {
+            await Helper.AboutDialog().ShowAsync();
         }
     }
 }

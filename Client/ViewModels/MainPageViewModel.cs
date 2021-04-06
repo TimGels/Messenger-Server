@@ -1,20 +1,20 @@
-﻿using Messenger_Client.Services;
+﻿using Messenger_Client.Models;
+using Messenger_Client.Services;
 using Messenger_Client.Views;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Shared;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Group = Messenger_Client.Models.Group;
 
 
@@ -31,6 +31,7 @@ namespace Messenger_Client.ViewModels
         public ICommand ExportMessageCommand { get; set; }
         public ICommand OpenFilePickerCommand { get; set; }
         public ICommand LogoutCommand { get; set; }
+        public ICommand AboutDialogCommand { get; set; }
 
         public ObservableCollection<Group> GroupList
         {
@@ -99,8 +100,9 @@ namespace Messenger_Client.ViewModels
             ShowGroupsToJoinCommand = new RelayCommand(ShowGroupsToJoin);
             ShowAddGroupViewCommand = new RelayCommand(ShowAddGroupView);
             OpenFilePickerCommand = new RelayCommand(OpenFilePicker);
-            ExportMessageCommand = new RelayCommand<object>(ExportMessage);
             LogoutCommand = new RelayCommand(Logout);
+            ExportMessageCommand = new RelayCommand(ExportMessage);
+            AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
 
             this.GroupList = new ObservableCollection<Group>();
             this.TypedText = "";
@@ -108,6 +110,11 @@ namespace Messenger_Client.ViewModels
 
         private async void OpenFilePicker()
         {
+            if (this.SelectedGroupChat == null)
+            {
+                return;
+            }
+
             var picker = new Windows.Storage.Pickers.FileOpenPicker();
             picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
             picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
@@ -132,6 +139,11 @@ namespace Messenger_Client.ViewModels
 
         private void ConstructImageMessage(string imageBase64String)
         {
+            if (this.SelectedGroupChat == null)
+            {
+                return;
+            }
+
             Message message = new Message()
             {
                 MessageType = MessageType.ChatMessage,
@@ -139,6 +151,7 @@ namespace Messenger_Client.ViewModels
                 GroupID = SelectedGroupChat.Id,
                 DateTime = DateTime.Now,
                 PayloadType = "image",
+                ClientName = Client.Instance.Name,
                 PayloadData = imageBase64String
             };
             SendMessage(message);
@@ -158,6 +171,7 @@ namespace Messenger_Client.ViewModels
                 GroupID = SelectedGroupChat.Id,
                 DateTime = DateTime.Now,
                 PayloadType = "text",
+                ClientName = Client.Instance.Name,
                 PayloadData = this.TypedText
             };
             SendMessage(message);
@@ -197,15 +211,19 @@ namespace Messenger_Client.ViewModels
             Debug.WriteLine("OpenSignUpView");
         }
 
-        private void ExportMessage(object obj)
+        private async void ExportMessage()
         {
-            Client.Instance.ExportMessageToFileAsync();
+            await Client.Instance.ExportMessageToFileAsync();
+        }
+
+        private async void DisplayAboutDialog()
+        {
+            await Helper.AboutDialog().ShowAsync();
         }
 
         private void Logout()
         {
-            //TODO: Logout implementation
-            //Client.Instance.Connection.Close();
+            Client.Instance.Connection.Close();
 
             Frame rootFrame = Window.Current.Content as Frame;
             rootFrame.Navigate(typeof(LoginPage));
