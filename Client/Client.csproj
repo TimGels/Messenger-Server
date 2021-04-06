@@ -120,6 +120,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Client.cs" />
+    <Compile Include="Models\Helper.cs" />
     <Compile Include="Services\Converters\Base64ToImageConverter.cs" />
     <Compile Include="Services\Converters\DateTimeToTimeConverter.cs" />
     <Compile Include="Services\Utilities\MessageDataTemplateSelector.cs" />
@@ -156,6 +157,8 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\BadgeLogo.scale-100.png" />
+    <Content Include="Assets\Square150x150Logo.scale-400.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />

@@ -61,6 +61,16 @@ namespace Messenger_Client.Models
         }
         #region send message methods
 
+        public static void SendLeaveGroupMessage(int groupId)
+        {
+            Client.Instance.Connection.SendData(new Message()
+            {
+                MessageType = MessageType.LeaveGroup,
+                GroupID = groupId,
+                ClientId = Client.Instance.Id
+            });
+        }
+
         public static void SendJoinGroupMessage(int groupId)
         {
             Client.Instance.Connection.SendData(new Message(MessageType.JoinGroup)

@@ -92,6 +92,29 @@ namespace Messenger_Server
         }
 
         /// <summary>
+        /// Removes the group from the server and from the database.
+        /// Thread-safe.
+        /// </summary>
+        /// <param name="group"></param>
+        public void RemoveGroup(Group group)
+        {
+            if(group.getGroupParticipants() > 0)
+            {
+                return;
+            }
+
+            groupLocker.EnterWriteLock();
+            try
+            {
+                this.groups.Remove(group);
+                DatabaseHandler.RemoveGroup(group.Id);
+            } finally
+            {
+                groupLocker.ExitWriteLock();
+            }
+        }
+
+        /// <summary>
         /// Continuously listen for incoming client connections. Upon a new
         /// connection, hand the associated client to a dedicated listener
         /// thread on the threadpool.

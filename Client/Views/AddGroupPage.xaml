@@ -25,6 +25,9 @@
 
 
             <MenuBar Style="{ThemeResource MenuBar}">
+                <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Logout">
+                    <MenuFlyoutItem  Text="Logout" Command="{Binding LogoutCommand}" />
+                </MenuBarItem>
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Settings">
                     <MenuFlyoutItem  Text="New group" Command="{Binding AddGroupCommand}" />
                 </MenuBarItem>
@@ -37,7 +40,7 @@
                     </MenuFlyoutSubItem>
                 </MenuBarItem>
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="About">
-                    <MenuFlyoutItem  Text="About" />
+                    <MenuFlyoutItem  Text="About" Command="{Binding AboutDialogCommand}" />
                 </MenuBarItem>
             </MenuBar>          
 
