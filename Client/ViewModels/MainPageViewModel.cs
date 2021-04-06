@@ -8,9 +8,11 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
+using Windows.ApplicationModel.Core;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -247,7 +249,7 @@ namespace Messenger_Client.ViewModels
 
             Frame rootFrame = Window.Current.Content as Frame;
             rootFrame.Navigate(typeof(LoginPage));
-            
+
             Debug.WriteLine("Logout");
         }
     }

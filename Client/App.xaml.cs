@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
+using Messenger_Client.Models;
 using Messenger_Client.Views;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -21,6 +25,7 @@ namespace Messenger_Client
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            Client.Instance.Connection.ConnectionLost += OnConnectionLost;
         }
 
         /// <summary>
@@ -86,6 +91,22 @@ namespace Messenger_Client
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Save application state and stop any background activity
             deferral.Complete();
+        }
+
+        /// <summary>
+        /// Invoked when connection to the server has been lost.
+        /// </summary>
+        private async void OnConnectionLost(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Lost connection to server!");
+
+            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            {
+                await Helper.ConnectionLostDialog().ShowAsync();
+
+                Frame rootFrame = Window.Current.Content as Frame;
+                rootFrame.Navigate(typeof(LoginPage));
+            });
         }
     }
 }
