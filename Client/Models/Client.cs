@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Windows.Storage.Pickers;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
+using Windows.Storage;
 
 namespace Messenger_Client
 {
@@ -37,11 +38,15 @@ namespace Messenger_Client
             this.Name = "ClientNameNeedsToBeSet";
         }
 
+        public static bool IsPlinqEnabled()
+        {
+            _ = bool.TryParse(ApplicationData.Current.LocalSettings.Values["UsePLINQ"].ToString(), out bool plinqEnabled);
+            return plinqEnabled;
+        }
+
         /// <summary>
-        /// TODO: Make GroupID unique.
         /// </summary>
         /// <param name="group"></param>
-
         public void AddGroup(Group group)
         {
             // Lock here since we need the group count for the GroupID.
@@ -65,14 +70,20 @@ namespace Messenger_Client
 
             try
             {
-                return Groups.Where(group => group.Id == id).FirstOrDefault();
+                if (!IsPlinqEnabled())
+                {
+                    return Groups.Where(group => group.Id == id).FirstOrDefault();
+                }
+                else
+                {
+                    return Groups.AsParallel().Where(group => group.Id == id).FirstOrDefault();
+                }
             }
             finally
             {
                 groupLocker.ExitReadLock();
             }
         }
-
         public void RemoveGroup(Group group)
         {
             groupLocker.EnterWriteLock();
@@ -85,6 +96,7 @@ namespace Messenger_Client
                 groupLocker.ExitWriteLock();
             }
         }
+
         /// <summary>
         /// This method opens a file picker screen. In this way a client can choose where to store the csv
         /// then it will loop throug all groups to get a csv string of all messages in that group.
@@ -125,5 +137,18 @@ namespace Messenger_Client
             await Windows.Storage.FileIO.WriteTextAsync(file, csvString);
         }
 
+        public void Logout()
+        {
+            this.Connection.Close();
+            groupLocker.EnterWriteLock();
+            try
+            {
+                this.Groups.Clear();
+            } finally
+            {
+                groupLocker.ExitWriteLock();
+            }
+            
+        }
     }
 }

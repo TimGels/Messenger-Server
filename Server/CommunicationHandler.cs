@@ -101,7 +101,7 @@ namespace Messenger_Server
 
             response.ClientId = client.Id;
             response.ClientName = client.Name;
-            response.GroupList = Server.Instance.getGroupsWithClient(client).Cast<Shared.Group>().ToList();
+            response.GroupList = Server.Instance.GetGroupsWithClient(client).Cast<Shared.Group>().ToList();
 
             connection.SendData(response);
         }

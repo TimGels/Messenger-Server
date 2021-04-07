@@ -1,6 +1,7 @@
 ﻿using Shared;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,7 +36,14 @@ namespace Messenger_Server
 
             try
             {
-                return clients.Find(client => client.Id == clientId) != null;
+                if (!Server.IsPlinqEnabled())
+                {
+                    return clients.Where(client => client.Id == clientId).FirstOrDefault() != null;
+                }
+                else
+                {
+                    return clients.AsParallel().Where(client => client.Id == clientId).FirstOrDefault() != null;
+                }
             }
             finally
             {

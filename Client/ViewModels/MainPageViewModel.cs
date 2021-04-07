@@ -231,8 +231,7 @@ namespace Messenger_Client.ViewModels
 
         private void Logout()
         {
-            Client.Instance.Connection.Close();
-
+            Client.Instance.Logout();
             Helper.NavigateTo(typeof(LoginPage));
 
             Debug.WriteLine("Logout");
