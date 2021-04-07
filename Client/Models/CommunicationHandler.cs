@@ -1,6 +1,7 @@
 ﻿using Shared;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 
@@ -156,7 +157,6 @@ namespace Messenger_Client.Models
         private static void HandleRequestGroupsResponse(Message message)
         {
             List<Group> groups = new List<Group>();
-            // Convert Messenger_Client.Group to Shared.Group.
             message.GroupList.ForEach(group => groups.Add(new Group(group)));
 
             ObtainedRequestedGroups?.Invoke(null, new GroupListEventArgs(groups));

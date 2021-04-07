@@ -7,8 +7,6 @@ using System.Diagnostics;
 using System.Windows.Input;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 
 namespace Messenger_Client.ViewModels
@@ -37,37 +35,34 @@ namespace Messenger_Client.ViewModels
             }
         }
 
-
         public AddGroupPageViewModel()
         {
-            BackToMainPageCommand = new RelayCommand<object>(BackToMain);
+            BackToMainPageCommand = new RelayCommand(NavigateToMain);
             AddGroupCommand = new RelayCommand(AddNewGroup);
-            CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
+            CheckEnterCommand = new RelayCommand<KeyRoutedEventArgs>(CheckEnterPressed);
             LogoutCommand = new RelayCommand(Logout);
             AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
         }
 
-        private void CheckEnterPressed(object obj)
+        private void CheckEnterPressed(KeyRoutedEventArgs keyargs)
         {
-            KeyRoutedEventArgs keyargs = (KeyRoutedEventArgs)obj;
             if (keyargs.Key == Windows.System.VirtualKey.Enter)
             {
                 AddNewGroup();
-                navigateToMain();
             }
         }
 
-        private void navigateToMain()
+        private void NavigateToMain()
         {
-            (Window.Current.Content as Frame).Navigate(typeof(MainPage));
+            Helper.NavigateTo(typeof(MainPage));
         }
 
         private void AddNewGroup()
         {
             if (this.NewGroupName != null && !this.NewGroupName.Equals(""))
             {
-                CommunicationHandler.SendRegisterGroupMessage(this.NewGroupName);
                 CommunicationHandler.RegisterGroupResponse += OnRegisterGroupResponseReceived;
+                CommunicationHandler.SendRegisterGroupMessage(this.NewGroupName);
             }
             else
             {
@@ -77,6 +72,8 @@ namespace Messenger_Client.ViewModels
 
         private async void OnRegisterGroupResponseReceived(object sender, CommunicationHandler.ResponseStateEventArgs e)
         {
+            CommunicationHandler.RegisterGroupResponse -= OnRegisterGroupResponseReceived;
+
             switch (e.State)
             {
                 case -1:
@@ -87,27 +84,16 @@ namespace Messenger_Client.ViewModels
 
                     break;
                 default:
-                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        (Window.Current.Content as Frame).Navigate(typeof(MainPage));
-                    });
-
+                    Helper.NavigateTo(typeof(MainPage));
                     break;
             }
-        }
-
-        private void BackToMain(object obj)
-        {
-            Frame rootFrame = Window.Current.Content as Frame;
-            rootFrame.Navigate(typeof(MainPage));
         }
 
         private void Logout()
         {
             Client.Instance.Connection.Close();
 
-            Frame rootFrame = Window.Current.Content as Frame;
-            rootFrame.Navigate(typeof(LoginPage));
+            Helper.NavigateTo(typeof(LoginPage));
 
             Debug.WriteLine("Logout");
         }

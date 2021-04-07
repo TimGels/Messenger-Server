@@ -8,17 +8,10 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
-using Windows.ApplicationModel.Core;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Windows.UI;
-using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Group = Messenger_Client.Models.Group;
-
 
 namespace Messenger_Client.ViewModels
 {
@@ -218,19 +211,12 @@ namespace Messenger_Client.ViewModels
 
         private void ShowGroupsToJoin()
         {
-            Frame rootFrame = Window.Current.Content as Frame;
-            rootFrame.Navigate(typeof(JoinGroupPage));
+            Helper.NavigateTo(typeof(JoinGroupPage));
         }
 
         private void ShowAddGroupView()
         {
-            Frame rootFrame = Window.Current.Content as Frame;
-            rootFrame.Navigate(typeof(AddGroupPage));
-        }
-
-        private void OpenSignUpView()
-        {
-            Debug.WriteLine("OpenSignUpView");
+            Helper.NavigateTo(typeof(AddGroupPage));
         }
 
         private async void ExportMessage()
@@ -245,10 +231,8 @@ namespace Messenger_Client.ViewModels
 
         private void Logout()
         {
-            Client.Instance.Connection.Close();
-
-            Frame rootFrame = Window.Current.Content as Frame;
-            rootFrame.Navigate(typeof(LoginPage));
+            Client.Instance.Logout();
+            Helper.NavigateTo(typeof(LoginPage));
 
             Debug.WriteLine("Logout");
         }
