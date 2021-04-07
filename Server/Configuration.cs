@@ -50,6 +50,9 @@ namespace Messenger_Server
                 {
                     writer.WriteLine("//databaseCacheShared:true");
                     writer.WriteLine("//walEnabled:true");
+                    writer.WriteLine("//port:5000");
+
+                    writer.Flush();
                 }
                 return new Dictionary<string, string>();
             }

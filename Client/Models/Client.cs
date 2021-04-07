@@ -19,18 +19,6 @@ namespace Messenger_Client
         private static readonly Lazy<Client> lazy = new Lazy<Client>(() => new Client());
 
         /// <summary>
-        /// Port number to send to.
-        /// </summary>
-        public readonly int port = 5000; //TODO: make configurable?
-
-        /// <summary>
-        /// ipAdress of the server.
-        /// TODO: make configurable.
-        /// TODO: save ip in the appropiate ipaddress class?
-        /// </summary>
-        public readonly string serverAddress = "127.0.0.1";
-
-        /// <summary>
         /// The read-write lock for the grouplist.
         /// </summary>
         private readonly ReaderWriterLockSlim groupLocker = new ReaderWriterLockSlim();
@@ -92,6 +80,18 @@ namespace Messenger_Client
                 groupLocker.ExitReadLock();
             }
         }
+        public void RemoveGroup(Group group)
+        {
+            groupLocker.EnterWriteLock();
+            try
+            {
+                this.Groups.Remove(group);
+            }
+            finally
+            {
+                groupLocker.ExitWriteLock();
+            }
+        }
 
         /// <summary>
         /// This method opens a file picker screen. In this way a client can choose where to store the csv
@@ -121,7 +121,7 @@ namespace Messenger_Client
                 foreach (Group group in this.Groups)
                 {
                     //get csv string of all messages in the group
-                    csvString += group.GetMessageCsvInLoop();
+                    csvString += group.GetMessageCsv();
                 }
             }
             finally

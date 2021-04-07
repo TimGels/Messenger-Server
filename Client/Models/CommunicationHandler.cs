@@ -61,13 +61,22 @@ namespace Messenger_Client.Models
                     break;
             }
         }
+
         #region send message methods
+
+        public static void SendLeaveGroupMessage(int groupId)
+        {
+            Client.Instance.Connection.SendData(new Message(MessageType.LeaveGroup)
+            {
+                GroupID = groupId,
+                ClientId = Client.Instance.Id
+            });
+        }
 
         public static void SendJoinGroupMessage(int groupId)
         {
-            Client.Instance.Connection.SendData(new Message()
+            Client.Instance.Connection.SendData(new Message(MessageType.JoinGroup)
             {
-                MessageType = MessageType.JoinGroup,
                 GroupID = groupId,
                 ClientId = Client.Instance.Id
             });
@@ -75,18 +84,16 @@ namespace Messenger_Client.Models
 
         public static void SendRequestGroupMessages()
         {
-            Client.Instance.Connection.SendData(new Message()
+            Client.Instance.Connection.SendData(new Message(MessageType.RequestGroups)
             {
-                MessageType = MessageType.RequestGroups,
                 ClientId = Client.Instance.Id
             });
         }
 
         public static void SendLoginMessage(string email, string password)
         {
-            Client.Instance.Connection.SendData(new Message()
+            Client.Instance.Connection.SendData(new Message(MessageType.SignInClient)
             {
-                MessageType = MessageType.SignInClient,
                 LoginInfo = new LoginStruct()
                 {
                     Email = email,
@@ -97,9 +104,8 @@ namespace Messenger_Client.Models
 
         public static void SendRegisterMessage(string mail, string name, string password)
         {
-            Client.Instance.Connection.SendData(new Message()
+            Client.Instance.Connection.SendData(new Message(MessageType.RegisterClient)
             {
-                MessageType = MessageType.RegisterClient,
                 RegisterInfo = new RegisterStruct()
                 {
                     Username = name,
@@ -113,13 +119,13 @@ namespace Messenger_Client.Models
         }
 
         public static void SendRegisterGroupMessage(string name) {
-            Client.Instance.Connection.SendData(new Message()
+            Client.Instance.Connection.SendData(new Message(MessageType.RegisterGroup)
             {
                 ClientId = Client.Instance.Id,
-                MessageType = MessageType.RegisterGroup,
                 PayloadData = name
             });
         }
+
         #endregion
 
         #region handle incoming messages
