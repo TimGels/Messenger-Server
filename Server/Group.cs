@@ -104,29 +104,33 @@ namespace Messenger_Server
         /// <param name="message"></param>
         public void SendMessageToClients(Message message)
         {
-            // TODO: Add message to this group in the database.
+            // TODO: Add send timeout for each task, as to prevent the connection of an
+            // individual client being locked for too long.
 
-            // Lock the client list for reading, start sending messages and wait
-            // for all tasks to complete before exiting the read lock.
-            List<Task> sendDataTasks = new List<Task>();
             clientsLock.EnterReadLock();
-            foreach (Client client in this.clients)
+
+            try
             {
-                // Don't return the message to the original sender.
-                if (client.Id != message.ClientId)
+                foreach (Client client in this.clients)
                 {
-                    sendDataTasks.Add(Task.Run(() =>
+                    // Don't return the message to the original sender.
+                    if (client.Id != message.ClientId)
                     {
-                        Connection connection = Server.Instance.GetConnection(client.Id);
-                        if (connection != null)
+                        Task.Run(() =>
                         {
-                            connection.SendData(message);
-                        }
-                    }));
+                            Connection connection = Server.Instance.GetConnection(client.Id);
+                            if (connection != null)
+                            {
+                                connection.SendData(message);
+                            }
+                        });
+                    }
                 }
             }
-            Task.WaitAll(sendDataTasks.ToArray());
-            clientsLock.ExitReadLock();
+            finally
+            {
+                clientsLock.ExitReadLock();
+            }
         }
     }
 }
