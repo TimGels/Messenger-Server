@@ -189,7 +189,6 @@ namespace Messenger_Server
 
         /// <summary>
         /// Create a new group with the specified name.
-        /// TODO: Make GroupID unique.
         /// </summary>
         /// <param name="groupName">The requested name of the group.</param>
         /// <returns>The group that was added.</returns>

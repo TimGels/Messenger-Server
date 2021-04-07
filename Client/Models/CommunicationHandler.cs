@@ -50,8 +50,7 @@ namespace Messenger_Client.Models
                     HandleRegisterGroupResponse(message);
                     break;
                 case MessageType.RequestGroupsResponse:
-                    //TODO: Add if statement for local settings.
-                    HandleRequestGroupsResponseInLINQ(message);
+                    HandleRequestGroupsResponse(message);
                     break;
                 case MessageType.JoinGroupResponse:
                     HandleJoinGroupResponse(message);
@@ -155,24 +154,10 @@ namespace Messenger_Client.Models
             RegisterGroupResponse?.Invoke(null, new ResponseStateEventArgs(message.ClientId));
         }
         
-        private static void HandleRequestGroupsResponseInLINQ(Message message)
+        private static void HandleRequestGroupsResponse(Message message)
         {
             List<Group> groups = new List<Group>();
-            // Convert Messenger_Client.Group to Shared.Group.
             message.GroupList.ForEach(group => groups.Add(new Group(group)));
-
-            ObtainedRequestedGroups?.Invoke(null, new GroupListEventArgs(groups));
-        }
-        
-        private static void HandleRequestGroupsResponseInParallel(Message message)
-        {
-            List<Group> groups = new List<Group>();
-
-            // Convert Messenger_Client.Group to Shared.Group.
-            Parallel.ForEach(message.GroupList, group =>
-            {
-                groups.Add(new Group(group));
-            });
 
             ObtainedRequestedGroups?.Invoke(null, new GroupListEventArgs(groups));
         }

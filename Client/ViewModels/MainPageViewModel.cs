@@ -245,8 +245,7 @@ namespace Messenger_Client.ViewModels
 
         private void Logout()
         {
-            Client.Instance.Connection.Close();
-
+            Client.Instance.Logout();
             Frame rootFrame = Window.Current.Content as Frame;
             rootFrame.Navigate(typeof(LoginPage));
 
