@@ -42,8 +42,11 @@
                 <TextBox Style="{ThemeResource TextBox}" PlaceholderText="E-mailaddress" Text="{Binding Mail, Mode=TwoWay}"/>
                 <PasswordBox Style="{ThemeResource LoginPassword}" Password="{Binding Password, Mode=TwoWay}"/>
                 <PasswordBox Style="{ThemeResource LoginPassword}" PlaceholderText="Repeat password" Password="{Binding RepeatPassword, Mode=TwoWay}" />
-                <Button  Style="{ThemeResource Button}" Content="Registreren" Command="{Binding RegisterButtonCommand}"/>
+
+                <Button  Style="{ThemeResource Button}" Content="Register" Command="{Binding RegisterButtonCommand}"/>
                 <Button  Style="{ThemeResource Button}" Content="Go to login screen" Command="{Binding GoToLoginButtonCommand}"/>
+                <Button  Style="{ThemeResource Button}" Content="Settings" Command="{Binding SettingsButtonCommand}"/>
+
                 <TextBlock Foreground="Red" FontWeight="Bold" Text="{Binding SignUpErrorMessage}" Style="{ThemeResource LoginError}"/>
             </StackPanel>
         </Grid>

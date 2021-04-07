@@ -1,5 +1,7 @@
 ﻿using Shared;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,7 +36,14 @@ namespace Messenger_Server
 
             try
             {
-                return clients.Find(client => client.Id == clientId) != null;
+                if (!Server.IsPlinqEnabled())
+                {
+                    return clients.Where(client => client.Id == clientId).FirstOrDefault() != null;
+                }
+                else
+                {
+                    return clients.AsParallel().Where(client => client.Id == clientId).FirstOrDefault() != null;
+                }
             }
             finally
             {
@@ -63,7 +72,6 @@ namespace Messenger_Server
 
         /// <summary>
         /// Remove a client from the group. This method is thread-safe.
-        /// TODO: add database handling.
         /// </summary>
         /// <param name="client">The client to remove.</param>
         public void RemoveClient(Client client)
@@ -72,10 +80,29 @@ namespace Messenger_Server
             try
             {
                 this.clients.Remove(client);
+                DatabaseHandler.DeleteGroupParticipant(this.Id, client.Id);
             }
             finally
             {
                 clientsLock.ExitWriteLock();
+            }
+            Server.Instance.RemoveGroup(this);
+        }
+
+        /// <summary>
+        /// return the count of groupmembers, thread save.
+        /// </summary>
+        /// <returns></returns>
+        public int getGroupParticipants()
+        {
+            clientsLock.EnterReadLock();
+            try
+            {
+                return this.clients.Count;
+            }
+            finally
+            {
+                clientsLock.ExitReadLock();
             }
         }
 
@@ -85,29 +112,33 @@ namespace Messenger_Server
         /// <param name="message"></param>
         public void SendMessageToClients(Message message)
         {
-            // TODO: Add message to this group in the database.
+            // TODO: Add send timeout for each task, as to prevent the connection of an
+            // individual client being locked for too long.
 
-            // Lock the client list for reading, start sending messages and wait
-            // for all tasks to complete before exiting the read lock.
-            List<Task> sendDataTasks = new List<Task>();
             clientsLock.EnterReadLock();
-            foreach (Client client in this.clients)
+
+            try
             {
-                // Don't return the message to the original sender.
-                if (client.Id != message.ClientId)
+                foreach (Client client in this.clients)
                 {
-                    sendDataTasks.Add(Task.Run(() =>
+                    // Don't return the message to the original sender.
+                    if (client.Id != message.ClientId)
                     {
-                        Connection connection = Server.Instance.GetConnection(client.Id);
-                        if (connection != null)
+                        Task.Run(() =>
                         {
-                            connection.SendData(message);
-                        }
-                    }));
+                            Connection connection = Server.Instance.GetConnection(client.Id);
+                            if (connection != null)
+                            {
+                                connection.SendData(message);
+                            }
+                        });
+                    }
                 }
             }
-            Task.WaitAll(sendDataTasks.ToArray());
-            clientsLock.ExitReadLock();
+            finally
+            {
+                clientsLock.ExitReadLock();
+            }
         }
     }
 }

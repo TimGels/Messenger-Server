@@ -10,11 +10,6 @@ namespace Messenger_Server
     public sealed class Server
     {
         /// <summary>
-        /// Port number to listen on.
-        /// </summary>
-        private readonly int port = 5000; //TODO: make configurable?
-
-        /// <summary>
         /// The listener which listens for new connections
         /// </summary>
         private TcpListener server;
@@ -22,7 +17,7 @@ namespace Messenger_Server
         /// <summary>
         /// All registered groups.
         /// </summary>
-        private List<Group> groups;
+        private readonly List<Group> groups;
 
         /// <summary>
         /// The read-write lock for the grouplist.
@@ -57,7 +52,19 @@ namespace Messenger_Server
             get { return lazy.Value; }
         }
 
-        
+        /// <summary>
+        /// Gets the port from the configuration. 
+        /// If the value wasn't set or if the value couldn't be parsed: default fallback of 5000.
+        /// </summary>
+        /// <returns>Portnumber based on the configuration</returns>
+        private int GetPort()
+        {
+            if (!int.TryParse(Configuration.GetSetting("port"), out int port))
+            {
+                port = 5000;
+            }
+            return port;
+        }
 
         private Server()
         {
@@ -92,18 +99,43 @@ namespace Messenger_Server
         }
 
         /// <summary>
+        /// Removes the group from the server and from the database.
+        /// Thread-safe.
+        /// </summary>
+        /// <param name="group"></param>
+        public void RemoveGroup(Group group)
+        {
+            if(group.getGroupParticipants() > 0)
+            {
+                return;
+            }
+
+            groupLocker.EnterWriteLock();
+            try
+            {
+                this.groups.Remove(group);
+                DatabaseHandler.RemoveGroup(group.Id);
+            } finally
+            {
+                groupLocker.ExitWriteLock();
+            }
+        }
+
+        /// <summary>
         /// Continuously listen for incoming client connections. Upon a new
         /// connection, hand the associated client to a dedicated listener
         /// thread on the threadpool.
         /// </summary>
         public void StartListening()
         {
+            Console.WriteLine(String.Format("Server uses {0}", (IsPlinqEnabled() ? "PLINQ" : "LINQ")));
             try
             {
+                int port = GetPort();
                 // Listen on both loopback and normal network adapters.
                 server = new TcpListener(IPAddress.Any, port);
                 server.Start();
-                Console.WriteLine("Waiting for incoming connections... ");
+                Console.WriteLine(String.Format("Server listening on port: {0}.\nWaiting for incoming connections... ", port));
 
                 // Enter the listening loop.
                 while (true)
@@ -139,7 +171,15 @@ namespace Messenger_Server
 
             try
             {
-                return groups.Where(group => group.Id == id).FirstOrDefault();
+                if (!IsPlinqEnabled())
+                {
+                    return groups.Where(group => group.Id == id).FirstOrDefault();
+                }
+                else
+                {
+                    return groups.AsParallel().Where(group => group.Id == id).FirstOrDefault();
+                }
+
             }
             finally
             {
@@ -149,7 +189,6 @@ namespace Messenger_Server
 
         /// <summary>
         /// Create a new group with the specified name.
-        /// TODO: Make GroupID unique.
         /// </summary>
         /// <param name="groupName">The requested name of the group.</param>
         /// <returns>The group that was added.</returns>
@@ -212,7 +251,15 @@ namespace Messenger_Server
 
             try
             {
-                return clients.Keys.Where(client => client.Id == id).FirstOrDefault();
+                if (!IsPlinqEnabled())
+                {
+                    return clients.Keys.Where(client => client.Id == id).FirstOrDefault();
+                }
+                else
+                {
+                    return clients.Keys.AsParallel().Where(client => client.Id == id).FirstOrDefault();
+                }
+
             }
             finally
             {
@@ -231,7 +278,14 @@ namespace Messenger_Server
 
             try
             {
-                return clients.Keys.Where(client => client.Email == email).FirstOrDefault();
+                if (!IsPlinqEnabled())
+                {
+                    return clients.Keys.Where(client => client.Email == email).FirstOrDefault();
+                }
+                else
+                {
+                    return clients.Keys.AsParallel().Where(client => client.Email == email).FirstOrDefault();
+                }
             }
             finally
             {
@@ -246,12 +300,12 @@ namespace Messenger_Server
         /// <param name="connection">The connection to add.</param>
         public void AddConnection(int id, Connection connection)
         {
+            Client client = GetClient(id);
             clientLocker.EnterWriteLock();
 
             try
             {
                 // Don't call GetClient which enters read lock, since we already hold write lock.
-                Client client = clients.Keys.Where(client => client.Id == id).FirstOrDefault();
                 clients[client] = connection;
             }
             finally
@@ -307,20 +361,16 @@ namespace Messenger_Server
         /// <returns>The connection linked tot the client, if found. Null otherwise.</returns>
         public Connection GetConnection(int id)
         {
-            clientLocker.EnterReadLock();
+            Client client = GetClient(id);
+            if (client == null)
+            {
+                return null;
+            }
 
+            clientLocker.EnterReadLock();
             try
             {
-                Client client = clients.Keys.Where(client => client.Id == id).FirstOrDefault();
-
-                if (client == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return clients[client];
-                }
+                return clients[client];
             }
             finally
             {
@@ -343,10 +393,14 @@ namespace Messenger_Server
             {
                 groupLocker.ExitReadLock();
             }
-
         }
 
-        public List<Group> getGroupsWithClient(Client client)
+        /// <summary>
+        /// Gets all the groups with the given client
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns>returns all the groups where the given client is a member</returns>
+        public List<Group> GetGroupsWithClient(Client client)
         {
             List<Group> groupsWithClient = new List<Group>();
             groupLocker.EnterReadLock();
@@ -366,6 +420,12 @@ namespace Messenger_Server
             }
 
             return groupsWithClient;
+        }
+
+        public static bool IsPlinqEnabled()
+        {
+            _ = bool.TryParse(Configuration.GetSetting("plinq"), out bool plinqEnabled);
+            return plinqEnabled;
         }
 
         /// <summary>

@@ -12,15 +12,12 @@ namespace Messenger_Server
 
         public static string GetSetting(string key)
         {
-            string value;
-            if (!Settings.TryGetValue(key, out value))
+            if(key is null)
             {
                 return null;
             }
-            else
-            {
-                return value;
-            }
+            Settings.TryGetValue(key, out string value);
+            return value;
         }
 
         private static Dictionary<string, string> ReadSettings()
@@ -53,6 +50,9 @@ namespace Messenger_Server
                 {
                     writer.WriteLine("//databaseCacheShared:true");
                     writer.WriteLine("//walEnabled:true");
+                    writer.WriteLine("//port:5000");
+
+                    writer.Flush();
                 }
                 return new Dictionary<string, string>();
             }

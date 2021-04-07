@@ -60,10 +60,9 @@ namespace Messenger_Server
             string hashedPassword = Helper.HashPassword(password);
             int id = Server.Instance.CreateAndAddClient(userName, email, hashedPassword);
 
-            connection.SendData(new Message()
+            connection.SendData(new Message(MessageType.RegisterClientResponse)
             {
-                ClientId = id,
-                MessageType = MessageType.RegisterClientResponse
+                ClientId = id
             });
         }
 
@@ -77,10 +76,7 @@ namespace Messenger_Server
         {
             bool authenticated = Helper.ValidatePassword(message.LoginInfo.Email, message.LoginInfo.Password);
 
-            Message response = new Message()
-            {
-                MessageType = MessageType.SignInClientResponse
-            };
+            Message response = new Message(MessageType.SignInClientResponse);
 
             if (!authenticated)
             {
@@ -105,7 +101,7 @@ namespace Messenger_Server
 
             response.ClientId = client.Id;
             response.ClientName = client.Name;
-            response.GroupList = Server.Instance.getGroupsWithClient(client).Cast<Shared.Group>().ToList();
+            response.GroupList = Server.Instance.GetGroupsWithClient(client).Cast<Shared.Group>().ToList();
 
             connection.SendData(response);
         }
@@ -129,10 +125,7 @@ namespace Messenger_Server
         private static void HandleRegisterGroup(Connection connection, Message message)
         {
             // Construct a basic response.
-            Message response = new Message()
-            {
-                MessageType = MessageType.RegisterGroupResponse
-            };
+            Message response = new Message(MessageType.RegisterGroupResponse);
 
             Client client = Server.Instance.GetClient(message.ClientId);
 
@@ -172,9 +165,8 @@ namespace Messenger_Server
                     groups.Add(group);
                 }
             }
-            connection.SendData(new Message()
+            connection.SendData(new Message(MessageType.RequestGroupsResponse)
             {
-                MessageType = MessageType.RequestGroupsResponse,
                 GroupList = groups.Cast<Shared.Group>().ToList()
             });
         }
@@ -200,9 +192,8 @@ namespace Messenger_Server
             }
 
             // TODO: Unsuccesful response.
-            connection.SendData(new Message()
+            connection.SendData(new Message(MessageType.JoinGroupResponse)
             {
-                MessageType = MessageType.JoinGroupResponse,
                 GroupID = groupToJoin.Id,
                 PayloadData = groupToJoin.Name
             });

@@ -10,13 +10,8 @@ using System.Diagnostics;
 using System.Windows.Input;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Group = Messenger_Client.Models.Group;
-
 
 namespace Messenger_Client.ViewModels
 {
@@ -30,6 +25,7 @@ namespace Messenger_Client.ViewModels
         public ICommand ShowGroupsToJoinCommand { get; set; }
         public ICommand ExportMessageCommand { get; set; }
         public ICommand OpenFilePickerCommand { get; set; }
+        public ICommand LeaveGroupCommand { get; set; }
         public ICommand LogoutCommand { get; set; }
         public ICommand AboutDialogCommand { get; set; }
 
@@ -74,7 +70,14 @@ namespace Messenger_Client.ViewModels
             set
             {
                 selectedGroupChat = value;
-                MessagesList = value.Messages;
+                if(value != null)
+                {
+                    MessagesList = value.Messages;
+                }
+                else
+                {
+                    MessagesList = null;
+                }
             }
         }
 
@@ -102,10 +105,24 @@ namespace Messenger_Client.ViewModels
             OpenFilePickerCommand = new RelayCommand(OpenFilePicker);
             LogoutCommand = new RelayCommand(Logout);
             ExportMessageCommand = new RelayCommand(ExportMessage);
+            LeaveGroupCommand = new RelayCommand<object>(LeaveGroup);
             AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
 
             this.GroupList = new ObservableCollection<Group>();
             this.TypedText = "";
+        }
+
+        private void LeaveGroup(object obj)
+        {
+            if(obj is null)
+            {
+                return;
+            }
+
+            Group group = (Group)obj;
+            Client.Instance.RemoveGroup(group);
+            CommunicationHandler.SendLeaveGroupMessage(group.Id);
+
         }
 
         private async void OpenFilePicker()
@@ -144,9 +161,8 @@ namespace Messenger_Client.ViewModels
                 return;
             }
 
-            Message message = new Message()
+            Message message = new Message(MessageType.ChatMessage)
             {
-                MessageType = MessageType.ChatMessage,
                 ClientId = Client.Instance.Id,
                 GroupID = SelectedGroupChat.Id,
                 DateTime = DateTime.Now,
@@ -164,9 +180,8 @@ namespace Messenger_Client.ViewModels
                 return;
             }
 
-            Message message = new Message()
+            Message message = new Message(MessageType.ChatMessage)
             {
-                MessageType = MessageType.ChatMessage,
                 ClientId = Client.Instance.Id,
                 GroupID = SelectedGroupChat.Id,
                 DateTime = DateTime.Now,
@@ -196,19 +211,12 @@ namespace Messenger_Client.ViewModels
 
         private void ShowGroupsToJoin()
         {
-            Frame rootFrame = Window.Current.Content as Frame;
-            rootFrame.Navigate(typeof(JoinGroupPage));
+            Helper.NavigateTo(typeof(JoinGroupPage));
         }
 
         private void ShowAddGroupView()
         {
-            Frame rootFrame = Window.Current.Content as Frame;
-            rootFrame.Navigate(typeof(AddGroupPage));
-        }
-
-        private void OpenSignUpView()
-        {
-            Debug.WriteLine("OpenSignUpView");
+            Helper.NavigateTo(typeof(AddGroupPage));
         }
 
         private async void ExportMessage()
@@ -223,11 +231,9 @@ namespace Messenger_Client.ViewModels
 
         private void Logout()
         {
-            Client.Instance.Connection.Close();
+            Client.Instance.Logout();
+            Helper.NavigateTo(typeof(LoginPage));
 
-            Frame rootFrame = Window.Current.Content as Frame;
-            rootFrame.Navigate(typeof(LoginPage));
-            
             Debug.WriteLine("Logout");
         }
     }

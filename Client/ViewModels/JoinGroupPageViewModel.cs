@@ -7,12 +7,10 @@ using System.Diagnostics;
 using System.Windows.Input;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 
 namespace Messenger_Client.ViewModels
 {
-    class JoinGroupPageViewModel
+    public class JoinGroupPageViewModel
     {
         public ICommand LogoutCommand { get; set; }
         public ICommand AboutDialogCommand { get; set; }
@@ -25,11 +23,12 @@ namespace Messenger_Client.ViewModels
         {
             AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
             JoinGroupButtonCommand = new RelayCommand(SendJoinGroupMessage);
-            CancelButtonCommand = new RelayCommand(navigateToMain);
-            GroupList = new ObservableCollection<Group>();
+            CancelButtonCommand = new RelayCommand(NavigateToMain);
             LogoutCommand = new RelayCommand(Logout);
 
-            CommunicationHandler.ObtainedRequestedGroups += obtainedRequestedGroups;
+            GroupList = new ObservableCollection<Group>();
+
+            CommunicationHandler.ObtainedRequestedGroups += OnObtainedRequestedGroups;
             CommunicationHandler.SendRequestGroupMessages();
         }
 
@@ -38,26 +37,26 @@ namespace Messenger_Client.ViewModels
             if (GroupToJoin != null)
             {
                 Debug.WriteLine(GroupToJoin.Id);
+                CommunicationHandler.JoinedGroup += OnJoinedGroup;
                 CommunicationHandler.SendJoinGroupMessage(GroupToJoin.Id);
-                CommunicationHandler.JoinedGroup += navigateToMainAsync;
             }
         }
 
-        private async void navigateToMainAsync(object sender, EventArgs e)
+        private void OnJoinedGroup(object sender, EventArgs e)
         {
-            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
-            {
-                navigateToMain();
-            });
+            CommunicationHandler.JoinedGroup -= OnJoinedGroup;
+            NavigateToMain();
         }
 
-        private void navigateToMain()
+        private void NavigateToMain()
         {
-            (Window.Current.Content as Frame).Navigate(typeof(MainPage));
+            Helper.NavigateTo(typeof(MainPage));
         }
 
-        private async void obtainedRequestedGroups(object sender, CommunicationHandler.GroupListEventArgs groups)
+        private async void OnObtainedRequestedGroups(object sender, CommunicationHandler.GroupListEventArgs groups)
         {
+            CommunicationHandler.ObtainedRequestedGroups -= OnObtainedRequestedGroups;
+
             await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
             {
                 groups.Groups.ForEach(group => GroupList.Add(group));
@@ -73,8 +72,7 @@ namespace Messenger_Client.ViewModels
         {
             Client.Instance.Connection.Close();
 
-            Frame rootFrame = Window.Current.Content as Frame;
-            rootFrame.Navigate(typeof(LoginPage));
+            Helper.NavigateTo(typeof(LoginPage));
 
             Debug.WriteLine("Logout");
         }
