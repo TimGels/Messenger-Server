@@ -114,6 +114,11 @@ namespace Messenger_Client
             {
                 localSettings.Values["PortNumber"] = "5000";
             }
+
+            if (localSettings.Values["UsePLINQ"] == null)
+            {
+                localSettings.Values["UsePLINQ"] = false;
+            }
         }
 
         /// <summary>
