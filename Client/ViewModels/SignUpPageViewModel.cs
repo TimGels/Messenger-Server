@@ -3,16 +3,9 @@ using Messenger_Client.Views;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 
 namespace Messenger_Client.ViewModels
 {
@@ -44,17 +37,9 @@ namespace Messenger_Client.ViewModels
 
         public SignUpPageViewModel()
         {
-            RegisterButtonCommand = new RelayCommand(() => RegisterButtonClicked());
-            GoToLoginButtonCommand = new RelayCommand(() => GoToLoginButtonClicked());
-            SettingsButtonCommand = new RelayCommand(() =>
-            {
-                (Window.Current.Content as Frame).Navigate(typeof(SettingsPage));
-            });
-        }
-
-        private void GoToLoginButtonClicked()
-        {
-            (Window.Current.Content as Frame).Navigate(typeof(LoginPage));
+            RegisterButtonCommand = new RelayCommand(RegisterButtonClicked);
+            GoToLoginButtonCommand = new RelayCommand(GoToLoginButtonClicked);
+            SettingsButtonCommand = new RelayCommand(SettingsButtonClicked);
         }
 
         private async void RegisterButtonClicked()
@@ -95,12 +80,24 @@ namespace Messenger_Client.ViewModels
                 return;
             }
 
-            CommunicationHandler.SendRegisterMessage(Mail, Name, Password);
             CommunicationHandler.SignUpResponse += OnSignUpResponseReceived;
+            CommunicationHandler.SendRegisterMessage(Mail, Name, Password);
+        }
+
+        private void GoToLoginButtonClicked()
+        {
+            Helper.NavigateTo(typeof(LoginPage));
+        }
+
+        private void SettingsButtonClicked()
+        {
+            Helper.NavigateTo(typeof(SettingsPage));
         }
 
         private async void OnSignUpResponseReceived(object sender, CommunicationHandler.ResponseStateEventArgs e)
         {
+            CommunicationHandler.SignUpResponse -= OnSignUpResponseReceived;
+
             switch (e.State)
             {
                 case -1:
@@ -110,10 +107,7 @@ namespace Messenger_Client.ViewModels
                     });
                     break;
                 default:
-                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        (Window.Current.Content as Frame).Navigate(typeof(LoginPage));
-                    });
+                    Helper.NavigateTo(typeof(LoginPage));
                     break;
             }
         }
