@@ -93,13 +93,13 @@ namespace Messenger_Client.ViewModels
                 case -1:
                     await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
-                        LoginErrorMessage = "E-mail of wachtwoord verkeerd of account bestaat niet!";
+                        LoginErrorMessage = "The combination of this e-mail and password does not exist!";
                     });
                     break;
                 case -2:
                     await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
-                        LoginErrorMessage = "Je bent al ingelogd!";
+                        LoginErrorMessage = "You're already logged in!";
                     });
                     break;
                 default:
