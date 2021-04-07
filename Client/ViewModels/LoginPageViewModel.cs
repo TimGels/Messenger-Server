@@ -32,14 +32,19 @@ namespace Messenger_Client.ViewModels
             }
         }
 
-        public ICommand RegisterButtonCommand { get; set; }
         public ICommand LoginButtonCommand { get; set; }
+        public ICommand RegisterButtonCommand { get; set; }
+        public ICommand SettingsButtonCommand { get; set; }
         public ICommand CheckEnterCommand { get; set; }
 
         public LoginPageViewModel()
         {
-            this.RegisterButtonCommand = new RelayCommand(() => RegisterButtonClicked());
             this.LoginButtonCommand = new RelayCommand(() => LoginButtonClicked());
+            this.RegisterButtonCommand = new RelayCommand(() => RegisterButtonClicked());
+            this.SettingsButtonCommand = new RelayCommand(() =>
+            {
+                (Window.Current.Content as Frame).Navigate(typeof(SettingsPage));
+            });
             this.CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
             this.Email = "";
             this.Password = "";

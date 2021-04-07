@@ -1,4 +1,5 @@
 ﻿using Shared;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -63,7 +64,6 @@ namespace Messenger_Server
 
         /// <summary>
         /// Remove a client from the group. This method is thread-safe.
-        /// TODO: add database handling.
         /// </summary>
         /// <param name="client">The client to remove.</param>
         public void RemoveClient(Client client)
@@ -72,10 +72,29 @@ namespace Messenger_Server
             try
             {
                 this.clients.Remove(client);
+                DatabaseHandler.DeleteGroupParticipant(this.Id, client.Id);
             }
             finally
             {
                 clientsLock.ExitWriteLock();
+            }
+            Server.Instance.RemoveGroup(this);
+        }
+
+        /// <summary>
+        /// return the count of groupmembers, thread save.
+        /// </summary>
+        /// <returns></returns>
+        public int getGroupParticipants()
+        {
+            clientsLock.EnterReadLock();
+            try
+            {
+                return this.clients.Count;
+            }
+            finally
+            {
+                clientsLock.ExitReadLock();
             }
         }
 

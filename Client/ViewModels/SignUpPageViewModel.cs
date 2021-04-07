@@ -20,6 +20,7 @@ namespace Messenger_Client.ViewModels
     {
         public ICommand GoToLoginButtonCommand { get; set; }
         public ICommand RegisterButtonCommand { get; set; }
+        public ICommand SettingsButtonCommand { get; set; }
         public string RepeatPassword { get; set; }
         public string Password { get; set; }
         public string Mail { get; set; }
@@ -45,6 +46,10 @@ namespace Messenger_Client.ViewModels
         {
             RegisterButtonCommand = new RelayCommand(() => RegisterButtonClicked());
             GoToLoginButtonCommand = new RelayCommand(() => GoToLoginButtonClicked());
+            SettingsButtonCommand = new RelayCommand(() =>
+            {
+                (Window.Current.Content as Frame).Navigate(typeof(SettingsPage));
+            });
         }
 
         private void GoToLoginButtonClicked()

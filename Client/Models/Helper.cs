@@ -24,5 +24,19 @@ namespace Messenger_Client.Models
 
             return aboutDialog;
         }
+
+        public static ContentDialog ConnectionLostDialog()
+        {
+            ContentDialog connectionLostDialog = new ContentDialog
+            {
+                Title = "Connection lost",
+                PrimaryButtonText = "Ok",
+                DefaultButton = ContentDialogButton.Primary
+            };
+
+            connectionLostDialog.Content += "The connection to the server has been lost. You'll be redirected to the login page.";
+
+            return connectionLostDialog;
+        }
     }
 }
