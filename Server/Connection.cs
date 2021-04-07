@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace Messenger_Server
 {
+    /// <summary>
+    /// Each client has one connection object associated with it.
+    /// This class hold all the logic to send and read a message from the client.
+    /// </summary>
     public class Connection : Shared.Connection
     {
         public Connection(TcpClient client, CancellationTokenSource cts)
@@ -113,6 +117,10 @@ namespace Messenger_Server
             }
         }
 
+        /// <summary>
+        /// Function for sending a message to the client.
+        /// </summary>
+        /// <param name="message"></param>
         public override void SendData(Message message)
         {
             try

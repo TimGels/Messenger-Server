@@ -103,7 +103,7 @@ namespace Messenger_Client.ViewModels
             ShowGroupsToJoinCommand = new RelayCommand(ShowGroupsToJoin);
             ShowAddGroupViewCommand = new RelayCommand(ShowAddGroupView);
             OpenFilePickerCommand = new RelayCommand(OpenFilePicker);
-            LogoutCommand = new RelayCommand(Logout);
+            LogoutCommand = new RelayCommand(() => Client.Instance.Logout());
             ExportMessageCommand = new RelayCommand(ExportMessage);
             LeaveGroupCommand = new RelayCommand<object>(LeaveGroup);
             AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
@@ -227,14 +227,6 @@ namespace Messenger_Client.ViewModels
         private async void DisplayAboutDialog()
         {
             await Helper.AboutDialog().ShowAsync();
-        }
-
-        private void Logout()
-        {
-            Client.Instance.Logout();
-            Helper.NavigateTo(typeof(LoginPage));
-
-            Debug.WriteLine("Logout");
         }
     }
 }

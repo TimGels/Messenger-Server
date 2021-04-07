@@ -29,7 +29,7 @@ namespace Messenger_Client.ViewModels
             GroupList = new ObservableCollection<Group>();
 
             CommunicationHandler.ObtainedRequestedGroups += OnObtainedRequestedGroups;
-            CommunicationHandler.SendRequestGroupMessages();
+            CommunicationHandler.SendRequestGroupsMessages();
         }
 
         private void SendJoinGroupMessage()

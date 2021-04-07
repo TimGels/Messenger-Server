@@ -1,6 +1,5 @@
 ﻿using Shared;
 using System.Linq;
-using System;
 using System.Collections.Generic;
 
 namespace Messenger_Server
@@ -39,7 +38,7 @@ namespace Messenger_Server
                     HandleLeaveGroup(connection, message);
                     break;
                 case MessageType.ChatMessage:
-                    HandleChatMessage(connection, message);
+                    HandleChatMessage(message);
                     break;
             }
         }
@@ -113,7 +112,6 @@ namespace Messenger_Server
         private static void HandleSignOutClient(Connection connection)
         {
             connection.Close();
-            //TODO: signoutclienResponse sturen.
         }
 
         /// <summary>
@@ -145,7 +143,7 @@ namespace Messenger_Server
             {
                 response.GroupID = -1;
             }
-            
+
             connection.SendData(response);
         }
 
@@ -156,10 +154,13 @@ namespace Messenger_Server
         /// <param name="connection">The connection from which the request was sent.</param>
         private static void HandleRequestGroups(Connection connection, Message message)
         {
-
             List<Group> groups = new List<Group>();
-            foreach(Group group in Server.Instance.GetGroups())
+
+            // We loop though a copy of the group list in the server.
+            // This way we don't have to worry about the groupslock from the server here.
+            foreach (Group group in Server.Instance.GetGroups())
             {
+                //check if the client is not a member of the group already.
                 if (!group.ContainsClient(message.ClientId))
                 {
                     groups.Add(group);
@@ -185,13 +186,16 @@ namespace Messenger_Server
             // Get the group and add the client to it.
             Group groupToJoin = Server.Instance.GetGroup(message.GroupID);
 
-            if(clientToAdd != null && groupToJoin != null)
+            if (clientToAdd != null && groupToJoin != null)
             {
                 DatabaseHandler.AddClientToGroup(groupToJoin, clientToAdd);
                 groupToJoin.AddClient(clientToAdd);
             }
+            else
+            {
+                // TODO: Unsuccesful response.
+            }
 
-            // TODO: Unsuccesful response.
             connection.SendData(new Message(MessageType.JoinGroupResponse)
             {
                 GroupID = groupToJoin.Id,
@@ -208,7 +212,6 @@ namespace Messenger_Server
         private static void HandleLeaveGroup(Connection connection, Message message)
         {
             Client client = Server.Instance.GetClient(message.ClientId);
-
             Server.Instance.GetGroup(message.GroupID).RemoveClient(client);
         }
 
@@ -218,7 +221,7 @@ namespace Messenger_Server
         /// </summary>
         /// <param name="connection">The connection from which the message was sent.</param>
         /// <param name="message">The message containing the chatmessage.</param>
-        private static void HandleChatMessage(Connection connection, Message message)
+        private static void HandleChatMessage(Message message)
         {
             //add message to database
             DatabaseHandler.AddMessage(message);
