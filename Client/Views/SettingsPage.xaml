@@ -28,6 +28,8 @@
                 <TextBlock Style="{ThemeResource LoginHeading}" Text="Settings" Margin="0,0,0,30"/>
                 <TextBox IsEnabled="{Binding IsTextBoxEnabled}" Text="{Binding IPAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{ThemeResource LoginName}"/>
                 <TextBox IsEnabled="{Binding IsTextBoxEnabled}" Text="{Binding PortNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{ThemeResource LoginName}"/>
+                <TextBlock Text="Use PLINQ:"/>
+                <ToggleSwitch IsOn="{Binding UsePLINQ, Mode=TwoWay}"/>
                 <Button Style="{ThemeResource CancelButton}" Content="Back" Margin="10" Command="{Binding BackButtonCommand}"/>
             </StackPanel>
         </Grid>

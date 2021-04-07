@@ -49,6 +49,19 @@ namespace Messenger_Client.ViewModels
             }
         }
 
+        public bool UsePLINQ
+        {
+            get
+            {
+                return bool.Parse(this.settings.Values["UsePLINQ"].ToString());
+            }
+            set
+            {
+                this.settings.Values["UsePLINQ"] = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ICommand BackButtonCommand { get; set; }
 
         public SettingsPageViewModel()
