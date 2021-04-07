@@ -60,6 +60,14 @@
         <Setter Property="Content" Value="Sign up"/>
     </Style>
 
+    <Style TargetType="Button" x:Key="SettingsButton">
+        <Setter Property="MinHeight" Value="60"/>
+        <Setter Property="Width" Value="400"/>
+        <Setter Property="Margin" Value="15"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Content" Value="Settings"/>
+    </Style>
+
     <Style TargetType="TextBlock" x:Key="LoginError">
         <Setter Property="Margin" Value="15"/>
         <Setter Property="Height" Value="Auto"/>
