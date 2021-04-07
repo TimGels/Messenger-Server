@@ -103,7 +103,7 @@ namespace Messenger_Client.ViewModels
                 case -1:
                     await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
-                        SignUpErrorMessage = "E-Mail al in gebruik";
+                        SignUpErrorMessage = "E-Mail already in use";
                     });
                     break;
                 default:
