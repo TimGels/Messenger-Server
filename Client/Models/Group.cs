@@ -58,7 +58,7 @@ namespace Messenger_Client.Models
         /// returns a csv string wich respresents all the message in the group.
         /// </summary>
         /// <returns></returns>
-        public string GetMessageCsvInLoop()
+        public string GetMessageCsv()
         {
             //enter read lock of messages
             this.messsageLocker.EnterReadLock();
