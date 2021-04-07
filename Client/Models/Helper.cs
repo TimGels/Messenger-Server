@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
+using Windows.Foundation;
+using Windows.UI.Core;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Messenger_Client.Models
@@ -37,6 +41,18 @@ namespace Messenger_Client.Models
             connectionLostDialog.Content += "The connection to the server has been lost. You'll be redirected to the login page.";
 
             return connectionLostDialog;
+        }
+
+        /// <summary>
+        /// Navigate to a page. Runs on the UI thread without awaiting the result.
+        /// </summary>
+        /// <param name="pageType">The type of page to navigate to.</param>
+        public static void NavigateTo(Type pageType)
+        {
+            _ = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                (Window.Current.Content as Frame).Navigate(pageType);
+            });
         }
     }
 }

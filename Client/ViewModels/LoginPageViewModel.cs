@@ -80,12 +80,14 @@ namespace Messenger_Client.ViewModels
                 return;
             }
 
-            CommunicationHandler.SendLoginMessage(Email, Password);
             CommunicationHandler.LogInResponse += OnLoginInResponseReceived;
+            CommunicationHandler.SendLoginMessage(Email, Password);
         }
 
         private async void OnLoginInResponseReceived(object sender, CommunicationHandler.ResponseStateEventArgs e)
         {
+            CommunicationHandler.LogInResponse -= OnLoginInResponseReceived;
+
             switch (e.State)
             {
                 case -1:
@@ -101,10 +103,7 @@ namespace Messenger_Client.ViewModels
                     });
                     break;
                 default:
-                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        (Window.Current.Content as Frame).Navigate(typeof(MainPage));
-                    });
+                    Helper.NavigateTo(typeof(MainPage));
                 break;
             }
         }
