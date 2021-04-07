@@ -1,5 +1,4 @@
 ﻿using Shared;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -93,7 +92,7 @@ namespace Messenger_Server
         /// return the count of groupmembers, thread save.
         /// </summary>
         /// <returns></returns>
-        public int getGroupParticipants()
+        public int GetGroupParticipants()
         {
             clientsLock.EnterReadLock();
             try

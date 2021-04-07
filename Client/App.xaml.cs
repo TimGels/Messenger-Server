@@ -132,8 +132,7 @@ namespace Messenger_Client
             {
                 await Helper.ConnectionLostDialog().ShowAsync();
 
-                Frame rootFrame = Window.Current.Content as Frame;
-                rootFrame.Navigate(typeof(LoginPage));
+                Client.Instance.Logout();
             });
         }
     }

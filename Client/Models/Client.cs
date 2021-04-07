@@ -9,6 +9,7 @@ using Windows.Storage.Pickers;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 using Windows.Storage;
+using Messenger_Client.Views;
 
 namespace Messenger_Client
 {
@@ -24,20 +25,49 @@ namespace Messenger_Client
         /// </summary>
         private readonly ReaderWriterLockSlim groupLocker = new ReaderWriterLockSlim();
 
+        /// <summary>
+        /// Singleton Instance.
+        /// </summary>
         public static Client Instance { get { return lazy.Value; } }
+
+        /// <summary>
+        /// ID for this client. Is given by the server.
+        /// </summary>
         public int Id { get; set; }
+
+        /// <summary>
+        /// Name of this client. Is saved in the server and retrieved on logon.
+        /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// This collection is used to store all the groups.
+        /// It's observable because the front-end binds to this property.
+        /// </summary>
         public ObservableCollection<Group> Groups { get; set; }
+
+        /// <summary>
+        /// Object which holds all the Connection logic.
+        /// </summary>
         public Connection Connection { get; set; }
 
-
+        /// <summary>
+        /// Default constructor for this client.
+        /// It's private because this class is a Singleton.
+        /// </summary>
         private Client()
         {
             this.Groups = new ObservableCollection<Group>();
             this.Connection = new Connection();
+
+            //Default name. Is overwritten on logon.
             this.Name = "ClientNameNeedsToBeSet";
         }
 
+        /// <summary>
+        /// Function to find out if plinq is enabled.
+        /// </summary>
+        /// <returns></returns>
         public static bool IsPlinqEnabled()
         {
             _ = bool.TryParse(ApplicationData.Current.LocalSettings.Values["UsePLINQ"].ToString(), out bool plinqEnabled);
@@ -45,6 +75,7 @@ namespace Messenger_Client
         }
 
         /// <summary>
+        /// Add a group to the client.
         /// </summary>
         /// <param name="group"></param>
         public void AddGroup(Group group)
@@ -53,6 +84,7 @@ namespace Messenger_Client
             groupLocker.EnterWriteLock();
             try
             {
+                //TODO Helper method for dispatcher.
                 CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
                 {
                     this.Groups.Add(group);
@@ -64,6 +96,12 @@ namespace Messenger_Client
             }
         }
 
+        /// <summary>
+        /// Function for getting a group by it's id.
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>The group with the given ID or null if not found</returns>
         public Group GetGroup(int id)
         {
             groupLocker.EnterReadLock();
@@ -84,6 +122,11 @@ namespace Messenger_Client
                 groupLocker.ExitReadLock();
             }
         }
+
+        /// <summary>
+        /// Function for removing the given group.
+        /// </summary>
+        /// <param name="group"></param>
         public void RemoveGroup(Group group)
         {
             groupLocker.EnterWriteLock();
@@ -103,13 +146,16 @@ namespace Messenger_Client
         /// </summary>
         public async Task ExportMessageToFileAsync()
         {
-            FileSavePicker savePicker = new FileSavePicker();
-            savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+            FileSavePicker savePicker = new FileSavePicker
+            {
+                SuggestedStartLocation = PickerLocationId.DocumentsLibrary,
+                SuggestedFileName = "New Document"
+            };
+
             // Dropdown of file types the user can save the file as
             savePicker.FileTypeChoices.Add("CSV", new List<string>() { ".csv" });
-            // Default file name if the user does not type one in or select a file to replace
-            savePicker.SuggestedFileName = "New Document";
-            Windows.Storage.StorageFile file = await savePicker.PickSaveFileAsync();
+
+            StorageFile file = await savePicker.PickSaveFileAsync();
 
             if (file is null)
             {
@@ -134,9 +180,12 @@ namespace Messenger_Client
                 this.groupLocker.ExitReadLock();
             }
 
-            await Windows.Storage.FileIO.WriteTextAsync(file, csvString);
+            await FileIO.WriteTextAsync(file, csvString);
         }
 
+        /// <summary>
+        /// Logout function which closes the connection, clears the groups and navigates to the LoginPage.
+        /// </summary>
         public void Logout()
         {
             this.Connection.Close();
@@ -144,11 +193,13 @@ namespace Messenger_Client
             try
             {
                 this.Groups.Clear();
-            } finally
+            }
+            finally
             {
                 groupLocker.ExitWriteLock();
             }
-            
+
+            Helper.NavigateTo(typeof(LoginPage));
         }
     }
 }
