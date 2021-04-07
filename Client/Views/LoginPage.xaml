@@ -40,7 +40,7 @@
                 </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Row="1" Grid.Column="1" Margin="5">
-                <TextBlock Text="Inloggen" Padding="5" Style="{ThemeResource LoginHeading}"/>
+                <TextBlock Text="Sign in" Padding="5" Style="{ThemeResource LoginHeading}"/>
                 <TextBox Style="{ThemeResource LoginMail}" Text="{Binding Email, Mode=TwoWay}" />
                 <PasswordBox Style="{ThemeResource LoginPassword}" Password="{Binding Password, Mode=TwoWay}">
                     <Interactivity:Interaction.Behaviors>
