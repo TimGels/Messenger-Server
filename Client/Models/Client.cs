@@ -78,37 +78,19 @@ namespace Messenger_Client
             try
             {
                 //TODO: Add if statement for local settings
-               return GetGroupInLINQ(id);
-                GetGroupInPLINQ(id);
-                GetGroupInLoop(id);
+                if (true)
+                {
+                    return Groups.Where(group => group.Id == id).FirstOrDefault();
+                }
+                else
+                {
+                    return Groups.AsParallel().Where(group => group.Id == id).FirstOrDefault();
+                }
             }
             finally
             {
                 groupLocker.ExitReadLock();
             }
-        }
-
-
-        private Group GetGroupInLINQ(int id)
-        {
-            return Groups.Where(group => group.Id == id).FirstOrDefault();
-        }      
-        
-        private Group GetGroupInPLINQ(int id)
-        {
-            return Groups.AsParallel().Where(group => group.Id == id).FirstOrDefault();
-        }
-
-        private Group GetGroupInLoop(int id)
-        {
-            foreach (Group group in Groups)
-            {
-                if (group.Id == id)
-                {
-                    return group;
-                }
-            }
-            return null;
         }
 
         /// <summary>
@@ -139,7 +121,6 @@ namespace Messenger_Client
                 foreach (Group group in this.Groups)
                 {
                     //get csv string of all messages in the group
-                    //TODO: Add if statement for local settings
                     csvString += group.GetMessageCsvInLoop();
                 }
             }

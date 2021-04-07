@@ -78,31 +78,6 @@ namespace Messenger_Client.Models
                 //exit readlock of all messages
                 this.messsageLocker.ExitReadLock();
             }
-        }    
-        
-        /// <summary>
-        /// returns a csv string wich respresents all the message in the group.
-        /// </summary>
-        /// <returns></returns>
-        public string GetMessageCsvInParallel()
-        {
-            //enter read lock of messages
-            this.messsageLocker.EnterReadLock();
-            string csvMessages = "";
-            try
-            {
-                Parallel.ForEach(this.Messages, message =>
-                {
-                    csvMessages += message.GetCsvString();
-                });
-
-                return csvMessages;
-            }
-            finally
-            {
-                //exit readlock of all messages
-                this.messsageLocker.ExitReadLock();
-            }
         }
     }
 }
