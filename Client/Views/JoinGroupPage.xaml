@@ -58,7 +58,7 @@
                             <ColumnDefinition Width="50*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Row="1" Grid.Column="1">
-                            <TextBlock Text="Join group" Padding="5" Style="{ThemeResource JoinGroupHeading}"/>
+                            <TextBlock Text="Join group" Padding="5" Style="{ThemeResource Heading}"/>
                             <ListView
                                 MaxHeight="400"
                                 ScrollViewer.VerticalScrollBarVisibility="Visible"
@@ -85,7 +85,7 @@
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
-                            <Button  Style="{ThemeResource JoinGroupButton}" Command="{Binding JoinGroupButtonCommand}"/>
+                            <Button  Style="{ThemeResource Button}" Command="{Binding JoinGroupButtonCommand}"/>
                             <Button  Style="{ThemeResource CancelButton}" Command="{Binding CancelButtonCommand}"/>
                         </StackPanel>
                     </Grid>     

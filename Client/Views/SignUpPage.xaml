@@ -37,13 +37,13 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Row="1" Grid.Column="1" Margin="5">
-                <TextBlock Text="Registreren" Padding="5" Style="{ThemeResource LoginHeading}"/>
-                <TextBox Style="{ThemeResource LoginName}" Text="{Binding Name, Mode=TwoWay}"/>
-                <TextBox Style="{ThemeResource LoginMail}"  Text="{Binding Mail, Mode=TwoWay}"/>
+                <TextBlock Text="Registreren" Padding="5" Style="{ThemeResource Heading}"/>
+                <TextBox Style="{ThemeResource TextBox}" PlaceholderText="Username" Text="{Binding Name, Mode=TwoWay}"/>
+                <TextBox Style="{ThemeResource TextBox}" PlaceholderText="E-mailaddress" Text="{Binding Mail, Mode=TwoWay}"/>
                 <PasswordBox Style="{ThemeResource LoginPassword}" Password="{Binding Password, Mode=TwoWay}"/>
                 <PasswordBox Style="{ThemeResource LoginPassword}" PlaceholderText="Repeat password" Password="{Binding RepeatPassword, Mode=TwoWay}" />
-                <Button  Style="{ThemeResource LoginButton}" Content="Registreren" Command="{Binding RegisterButtonCommand}"/>
-                <Button  Style="{ThemeResource LoginButton}" Content="Go to login screen" Command="{Binding GoToLoginButtonCommand}"/>
+                <Button  Style="{ThemeResource Button}" Content="Registreren" Command="{Binding RegisterButtonCommand}"/>
+                <Button  Style="{ThemeResource Button}" Content="Go to login screen" Command="{Binding GoToLoginButtonCommand}"/>
                 <TextBlock Foreground="Red" FontWeight="Bold" Text="{Binding SignUpErrorMessage}" Style="{ThemeResource LoginError}"/>
             </StackPanel>
         </Grid>
