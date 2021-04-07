@@ -11,6 +11,7 @@
     <Page.DataContext>
         <viewModels:JoinGroupPageViewModel x:Name="ViewModel"/>
     </Page.DataContext>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
@@ -27,7 +28,6 @@
                     <MenuFlyoutItem  Text="Show settings" Command="{Binding ShowSettingsCommand}" />
                 </MenuBarItem>
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Group">
-                    <MenuFlyoutItem  Text="Join group" Command="{Binding ShowGroupsToJoinCommand}" />
                     <MenuFlyoutItem  Text="Add group" Command="{Binding ShowAddGroupViewCommand}"/>
                 </MenuBarItem>
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="About">
@@ -40,7 +40,9 @@
 
         </Grid>
         <Grid Grid.Row="1" Background="Beige">
-            <ScrollViewer>                
+            
+            <ScrollViewer>
+                
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="10"/>
@@ -94,12 +96,10 @@
                             <Button  Style="{ThemeResource Button}" Content="Join group" Command="{Binding JoinGroupButtonCommand}"/>
                             <Button  Style="{ThemeResource CancelButton}" Command="{Binding CancelButtonCommand}"/>
                         </StackPanel>
-                    </Grid>     
+                    </Grid>
                 </Grid>
 
-
             </ScrollViewer>
-
 
         </Grid>
 

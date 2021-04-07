@@ -9,8 +9,7 @@
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core" 
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    >
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.DataContext>
         <viewModels:AddGroupPageViewModel x:Name="ViewModel"/>
     </Page.DataContext>
@@ -23,7 +22,6 @@
 
         <Grid Grid.Row="0">
 
-
             <MenuBar Style="{ThemeResource MenuBar}">
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Logout">
                     <MenuFlyoutItem  Text="Logout" Command="{Binding LogoutCommand}" />
@@ -33,7 +31,6 @@
                 </MenuBarItem>
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Group">
                     <MenuFlyoutItem  Text="Join group" Command="{Binding ShowGroupsToJoinCommand}" />
-                    <MenuFlyoutItem  Text="Add group" Command="{Binding ShowAddGroupViewCommand}"/>
                 </MenuBarItem>
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="About">
                     <MenuFlyoutItem  Text="About" Command="{Binding AboutDialogCommand}" />
@@ -83,9 +80,7 @@
                     </StackPanel>
                 </Grid>
             </Grid>
-            
-            
-            
+
         </Grid>
 
     </Grid>

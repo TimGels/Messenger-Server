@@ -14,26 +14,28 @@ namespace Messenger_Client.ViewModels
     {
         public ICommand LogoutCommand { get; set; }
         public ICommand AboutDialogCommand { get; set; }
-        public Group GroupToJoin { get; set; }
         public ICommand JoinGroupButtonCommand { get; set; }
         public ICommand CancelButtonCommand { get; set; }
         public ICommand ShowSettingsCommand { get; set; }
         public ICommand ShowAddGroupViewCommand { get; set; }
-        public ICommand ShowGroupsToJoinCommand { get; set; }
         public ICommand ExportMessageCommand { get; set; }
+
+        public Group GroupToJoin { get; set; }
 
         public ObservableCollection<Group> GroupList { get; set; }
 
         public JoinGroupPageViewModel()
         {
-            AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
-            JoinGroupButtonCommand = new RelayCommand(SendJoinGroupMessage);
-            CancelButtonCommand = new RelayCommand(NavigateToMain);
+            // Menubar buttons
             LogoutCommand = new RelayCommand(Logout);
             ShowSettingsCommand = new RelayCommand(ShowSettings);
-            ShowGroupsToJoinCommand = new RelayCommand(ShowGroupsToJoin);
             ShowAddGroupViewCommand = new RelayCommand(ShowAddGroupView);
+            AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
             ExportMessageCommand = new RelayCommand(ExportMessage);
+
+            // Page buttons
+            JoinGroupButtonCommand = new RelayCommand(SendJoinGroupMessage);
+            CancelButtonCommand = new RelayCommand(NavigateToMain);
 
             GroupList = new ObservableCollection<Group>();
 
@@ -49,10 +51,6 @@ namespace Messenger_Client.ViewModels
                 CommunicationHandler.JoinedGroup += OnJoinedGroup;
                 CommunicationHandler.SendJoinGroupMessage(GroupToJoin.Id);
             }
-        }
-        private void ShowGroupsToJoin()
-        {
-            Helper.NavigateTo(typeof(JoinGroupPage));
         }
 
         private void ShowAddGroupView()

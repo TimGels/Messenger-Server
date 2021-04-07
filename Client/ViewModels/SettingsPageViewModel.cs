@@ -41,14 +41,6 @@ namespace Messenger_Client.ViewModels
             }
         }
 
-        public bool IsTextBoxEnabled
-        {
-            get
-            {
-                return !Client.Instance.Connection.IsConnected();
-            }
-        }
-
         public bool UsePLINQ
         {
             get
@@ -62,6 +54,17 @@ namespace Messenger_Client.ViewModels
             }
         }
 
+        /// <summary>
+        /// Settings can only be edited when the client is not connected.
+        /// </summary>
+        public bool CanEdit
+        {
+            get
+            {
+                return !Client.Instance.Connection.IsConnected();
+            }
+        }
+
         public ICommand BackButtonCommand { get; set; }
 
         public SettingsPageViewModel()
@@ -71,11 +74,11 @@ namespace Messenger_Client.ViewModels
 
         private void BackButton()
         {
-                Frame rootFrame = Window.Current.Content as Frame;
-                if (rootFrame.CanGoBack)
-                {
-                    rootFrame.GoBack();
-                }
+            Frame rootFrame = Window.Current.Content as Frame;
+            if (rootFrame.CanGoBack)
+            {
+                rootFrame.GoBack();
+            }
         }
     }
 }

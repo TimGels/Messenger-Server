@@ -19,8 +19,6 @@ namespace Messenger_Client.ViewModels
     {
         public ICommand SendMessageCommand { get; set; }
         public ICommand CheckEnterCommand { get; set; }
-        public ICommand AddGroupCommand { get; set; }
-        public ICommand SignUpCommand { get; set; }
         public ICommand ShowAddGroupViewCommand { get; set; }
         public ICommand ShowGroupsToJoinCommand { get; set; }
         public ICommand ExportMessageCommand { get; set; }
@@ -41,6 +39,7 @@ namespace Messenger_Client.ViewModels
 
             }
         }
+
         public ObservableCollection<Message> MessagesList
         {
             get
@@ -124,7 +123,6 @@ namespace Messenger_Client.ViewModels
             Group group = (Group)obj;
             Client.Instance.RemoveGroup(group);
             CommunicationHandler.SendLeaveGroupMessage(group.Id);
-
         }
 
         private async void OpenFilePicker()
@@ -154,7 +152,6 @@ namespace Messenger_Client.ViewModels
                 //this.textBlock.Text = "Operation cancelled.";
             }
         }
-
 
         private void ConstructImageMessage(string imageBase64String)
         {
