@@ -13,6 +13,7 @@ namespace Messenger_Client.ViewModels
     {
         public ICommand GoToLoginButtonCommand { get; set; }
         public ICommand RegisterButtonCommand { get; set; }
+        public ICommand SettingsButtonCommand { get; set; }
         public string RepeatPassword { get; set; }
         public string Password { get; set; }
         public string Mail { get; set; }
@@ -38,11 +39,7 @@ namespace Messenger_Client.ViewModels
         {
             RegisterButtonCommand = new RelayCommand(RegisterButtonClicked);
             GoToLoginButtonCommand = new RelayCommand(GoToLoginButtonClicked);
-        }
-
-        private void GoToLoginButtonClicked()
-        {
-            Helper.NavigateTo(typeof(LoginPage));
+            SettingsButtonCommand = new RelayCommand(SettingsButtonClicked);
         }
 
         private async void RegisterButtonClicked()
@@ -85,6 +82,16 @@ namespace Messenger_Client.ViewModels
 
             CommunicationHandler.SignUpResponse += OnSignUpResponseReceived;
             CommunicationHandler.SendRegisterMessage(Mail, Name, Password);
+        }
+
+        private void GoToLoginButtonClicked()
+        {
+            Helper.NavigateTo(typeof(LoginPage));
+        }
+
+        private void SettingsButtonClicked()
+        {
+            Helper.NavigateTo(typeof(SettingsPage));
         }
 
         private async void OnSignUpResponseReceived(object sender, CommunicationHandler.ResponseStateEventArgs e)
