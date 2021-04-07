@@ -28,8 +28,7 @@
         <Setter Property="MinHeight" Value="60"/>
         <Setter Property="Width" Value="400"/>
         <Setter Property="Margin" Value="15"/>
-        <Setter Property="HorizontalAlignment" Value="Center"/>
-        <Setter Property="Content" Value="Inloggen"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>        
     </Style>   
 
     <Style TargetType="TextBlock" x:Key="LoginError">
@@ -202,7 +201,6 @@
         <Setter Property="Height" Value="50"/>
         <Setter Property="MinHeight" Value="50"/>
         <Setter Property="Margin" Value="15"/>
-        <Setter Property="Foreground" Value="#EEEEEE"/>
         <Setter Property="BorderThickness" Value="0,0,0,1"/>
         <Setter Property="Padding" Value="10,12,6,6"/>
     </Style> 
