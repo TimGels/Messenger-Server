@@ -77,11 +77,7 @@ namespace Messenger_Client.ViewModels
             switch (e.State)
             {
                 case -1:
-                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        CreateGroupErrorMessage = "Group not created";
-                    });
-
+                    Helper.RunOnUI(() => CreateGroupErrorMessage = "Group not created");
                     break;
                 default:
                     Helper.NavigateTo(typeof(MainPage));

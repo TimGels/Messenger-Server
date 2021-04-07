@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -39,15 +40,40 @@ namespace Messenger_Client.Models
         }
 
         /// <summary>
-        /// Navigate to a page. Runs on the UI thread without awaiting the result.
+        /// Navigate to a page. Runs on the UI thread with Normal priority without
+        /// awaiting the result.
         /// </summary>
         /// <param name="pageType">The type of page to navigate to.</param>
         public static void NavigateTo(Type pageType)
         {
+            RunOnUI(() => (Window.Current.Content as Frame).Navigate(pageType));
+        }
+
+        /// <summary>
+        /// Run an action on the UI thread with Normal priority without awaiting the result.
+        /// </summary>
+        /// <param name="action">The action to execute.</param>
+        public static void RunOnUI(Action action)
+        {
             _ = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                (Window.Current.Content as Frame).Navigate(pageType);
+                action();
             });
+        }
+
+        /// <summary>
+        /// Run an action on the UI thread with Normal priority and return the result as a
+        /// Task. NOTE: uses the CoreDispatcher which returns immediatly. See MS Docs under
+        /// "Await a UI task sent from a background thread".
+        /// </summary>
+        /// <param name="action">The action to execute.</param>
+        /// <returns>Task without the result of the asynchronous operation.</returns>
+        public static Task RunOnUIAsync(Action action)
+        {
+            return CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                action();
+            }).AsTask();
         }
     }
 }

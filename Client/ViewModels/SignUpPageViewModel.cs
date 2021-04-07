@@ -94,17 +94,14 @@ namespace Messenger_Client.ViewModels
             Helper.NavigateTo(typeof(SettingsPage));
         }
 
-        private async void OnSignUpResponseReceived(object sender, CommunicationHandler.ResponseStateEventArgs e)
+        private void OnSignUpResponseReceived(object sender, CommunicationHandler.ResponseStateEventArgs e)
         {
             CommunicationHandler.SignUpResponse -= OnSignUpResponseReceived;
 
             switch (e.State)
             {
                 case -1:
-                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        SignUpErrorMessage = "E-Mail already in use";
-                    });
+                    Helper.RunOnUI(() => SignUpErrorMessage = "E-Mail already in use");
                     break;
                 default:
                     Helper.NavigateTo(typeof(LoginPage));
