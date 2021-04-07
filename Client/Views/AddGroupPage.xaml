@@ -29,20 +29,19 @@
                     <MenuFlyoutItem  Text="Logout" Command="{Binding LogoutCommand}" />
                 </MenuBarItem>
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Settings">
-                    <MenuFlyoutItem  Text="New group" Command="{Binding AddGroupCommand}" />
+                    <MenuFlyoutItem  Text="Show settings" Command="{Binding ShowSettingsCommand}" />
                 </MenuBarItem>
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Group">
-                    <MenuFlyoutSubItem  Text="Join group" >
-                        <MenuFlyoutItem>
-
-                        </MenuFlyoutItem>
-
-                    </MenuFlyoutSubItem>
+                    <MenuFlyoutItem  Text="Join group" Command="{Binding ShowGroupsToJoinCommand}" />
+                    <MenuFlyoutItem  Text="Add group" Command="{Binding ShowAddGroupViewCommand}"/>
                 </MenuBarItem>
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="About">
                     <MenuFlyoutItem  Text="About" Command="{Binding AboutDialogCommand}" />
                 </MenuBarItem>
-            </MenuBar>          
+                <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Export">
+                    <MenuFlyoutItem  Text="Export" Command="{Binding ExportMessageCommand}" />
+                </MenuBarItem>
+            </MenuBar>  
 
         </Grid>
         <Grid Grid.Row="1" Background="Beige">

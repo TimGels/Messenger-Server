@@ -18,6 +18,10 @@ namespace Messenger_Client.ViewModels
         public ICommand CheckEnterCommand { get; set; }
         public ICommand LogoutCommand { get; set; }
         public ICommand AboutDialogCommand { get; set; }
+        public ICommand ShowSettingsCommand { get; set; }
+        public ICommand ShowAddGroupViewCommand { get; set; }
+        public ICommand ShowGroupsToJoinCommand { get; set; }
+        public ICommand ExportMessageCommand { get; set; }
 
         public string NewGroupName { get; set; }
 
@@ -40,8 +44,13 @@ namespace Messenger_Client.ViewModels
             BackToMainPageCommand = new RelayCommand(NavigateToMain);
             AddGroupCommand = new RelayCommand(AddNewGroup);
             CheckEnterCommand = new RelayCommand<KeyRoutedEventArgs>(CheckEnterPressed);
+            
             LogoutCommand = new RelayCommand(Logout);
             AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
+            ShowSettingsCommand = new RelayCommand(ShowSettings);
+            ShowGroupsToJoinCommand = new RelayCommand(ShowGroupsToJoin);
+            ShowAddGroupViewCommand = new RelayCommand(ShowAddGroupView);
+            ExportMessageCommand = new RelayCommand(ExportMessage);
         }
 
         private void CheckEnterPressed(KeyRoutedEventArgs keyargs)
@@ -52,9 +61,28 @@ namespace Messenger_Client.ViewModels
             }
         }
 
+        private void ShowGroupsToJoin()
+        {
+            Helper.NavigateTo(typeof(JoinGroupPage));
+        }
+
+        private void ShowAddGroupView()
+        {
+            Helper.NavigateTo(typeof(AddGroupPage));
+        }
+
+        private async void ExportMessage()
+        {
+            await Client.Instance.ExportMessageToFileAsync();
+        }
+
         private void NavigateToMain()
         {
             Helper.NavigateTo(typeof(MainPage));
+        }
+        private void ShowSettings()
+        {
+            Helper.NavigateTo(typeof(SettingsPage));
         }
 
         private void AddNewGroup()

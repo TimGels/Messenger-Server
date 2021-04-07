@@ -66,12 +66,16 @@ namespace Messenger_Client.ViewModels
 
         public SettingsPageViewModel()
         {
-            BackButtonCommand = new RelayCommand(BackToLogin);
+            BackButtonCommand = new RelayCommand(BackButton);
         }
 
-        private void BackToLogin()
+        private void BackButton()
         {
-            (Window.Current.Content as Frame).Navigate(typeof(LoginPage));
+                Frame rootFrame = Window.Current.Content as Frame;
+                if (rootFrame.CanGoBack)
+                {
+                    rootFrame.GoBack();
+                }
         }
     }
 }

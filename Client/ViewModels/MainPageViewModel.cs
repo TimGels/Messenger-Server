@@ -28,6 +28,7 @@ namespace Messenger_Client.ViewModels
         public ICommand LeaveGroupCommand { get; set; }
         public ICommand LogoutCommand { get; set; }
         public ICommand AboutDialogCommand { get; set; }
+        public ICommand ShowSettingsCommand { get; set; }
 
         public ObservableCollection<Group> GroupList
         {
@@ -107,6 +108,7 @@ namespace Messenger_Client.ViewModels
             ExportMessageCommand = new RelayCommand(ExportMessage);
             LeaveGroupCommand = new RelayCommand<object>(LeaveGroup);
             AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
+            ShowSettingsCommand = new RelayCommand(ShowSettings);
 
             this.GroupList = new ObservableCollection<Group>();
             this.TypedText = "";
@@ -207,6 +209,11 @@ namespace Messenger_Client.ViewModels
             {
                 ConstructTextMessage();
             }
+        }
+
+        private void ShowSettings()
+        {
+            Helper.NavigateTo(typeof(SettingsPage));
         }
 
         private void ShowGroupsToJoin()
