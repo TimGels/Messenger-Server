@@ -267,14 +267,12 @@ namespace Messenger_Client.Models
             Group group = Client.Instance.GetGroup(message.GroupID);
             if (group != null)
             {
-                //add the message to the group.
-                //is done with the dispather because the UI list is bound to the message list in group.
+                // Add the message to the group.
+                // Uses the dispather because the list in the viewmodel is bound to the
+                // message list in group. Modifying the list without the dispatcher will
+                // throw a COMException (RPC_E_WRONG_THREAD).
                 //TODO: dispather logic in addmessage method?
-                //TODO helper method with action as parameter??
-                _ = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
-                {
-                    group.AddMessage(message);
-                });
+                Helper.RunOnUI(() => group.AddMessage(message));
             }
         }
 

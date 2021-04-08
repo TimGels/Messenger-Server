@@ -84,11 +84,7 @@ namespace Messenger_Client
             groupLocker.EnterWriteLock();
             try
             {
-                //TODO Helper method for dispatcher.
-                CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
-                {
-                    this.Groups.Add(group);
-                }).AsTask();
+                Helper.RunOnUI(() => this.Groups.Add(group));
             }
             finally
             {

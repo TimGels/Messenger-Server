@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Messenger_Client.Models;
+using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
@@ -15,10 +16,9 @@ namespace Messenger_Client.Services.Converters
         {
             byte[] bytes = System.Convert.FromBase64String((string)value);
             BitmapImage image = null;
-            var dispatcher = Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher;
             try
             {
-                await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
+                await Helper.RunOnUIAsync(async () =>
                 {
                     image = new BitmapImage();
                     InMemoryRandomAccessStream stream = new InMemoryRandomAccessStream();
@@ -30,7 +30,6 @@ namespace Messenger_Client.Services.Converters
             }
             catch (Exception)
             {
-
                 throw;
             }
             return image;

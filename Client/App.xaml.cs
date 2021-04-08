@@ -128,7 +128,7 @@ namespace Messenger_Client
         {
             Debug.WriteLine("Lost connection to server!");
 
-            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            await Helper.RunOnUIAsync(async () =>
             {
                 await Helper.ConnectionLostDialog().ShowAsync();
 
