@@ -14,17 +14,28 @@ namespace Messenger_Client.ViewModels
     {
         public ICommand LogoutCommand { get; set; }
         public ICommand AboutDialogCommand { get; set; }
-        public Group GroupToJoin { get; set; }
         public ICommand JoinGroupButtonCommand { get; set; }
         public ICommand CancelButtonCommand { get; set; }
+        public ICommand ShowSettingsCommand { get; set; }
+        public ICommand ShowAddGroupViewCommand { get; set; }
+        public ICommand ExportMessageCommand { get; set; }
+
+        public Group GroupToJoin { get; set; }
+
         public ObservableCollection<Group> GroupList { get; set; }
 
         public JoinGroupPageViewModel()
         {
+            // Menubar buttons
+            LogoutCommand = new RelayCommand(Logout);
+            ShowSettingsCommand = new RelayCommand(ShowSettings);
+            ShowAddGroupViewCommand = new RelayCommand(ShowAddGroupView);
             AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
+            ExportMessageCommand = new RelayCommand(ExportMessage);
+
+            // Page buttons
             JoinGroupButtonCommand = new RelayCommand(SendJoinGroupMessage);
             CancelButtonCommand = new RelayCommand(NavigateToMain);
-            LogoutCommand = new RelayCommand(Logout);
 
             GroupList = new ObservableCollection<Group>();
 
@@ -41,6 +52,21 @@ namespace Messenger_Client.ViewModels
                 CommunicationHandler.SendJoinGroupMessage(GroupToJoin.Id);
             }
         }
+
+        private void ShowAddGroupView()
+        {
+            Helper.NavigateTo(typeof(AddGroupPage));
+        }
+
+        private async void ExportMessage()
+        {
+            await Client.Instance.ExportMessageToFileAsync();
+        }
+        private void ShowSettings()
+        {
+            Helper.NavigateTo(typeof(SettingsPage));
+        }
+
 
         private void OnJoinedGroup(object sender, EventArgs e)
         {

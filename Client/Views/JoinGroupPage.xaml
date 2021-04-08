@@ -11,6 +11,7 @@
     <Page.DataContext>
         <viewModels:JoinGroupPageViewModel x:Name="ViewModel"/>
     </Page.DataContext>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
@@ -19,22 +20,29 @@
 
         <Grid Grid.Row="0">
 
-
             <MenuBar Style="{ThemeResource MenuBar}">
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Logout">
                     <MenuFlyoutItem  Text="Logout" Command="{Binding LogoutCommand}" />
                 </MenuBarItem>
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Settings">
-                    <MenuFlyoutItem  Text="New group" Command="{Binding AddGroupCommand}" />
-                </MenuBarItem>               
+                    <MenuFlyoutItem  Text="Show settings" Command="{Binding ShowSettingsCommand}" />
+                </MenuBarItem>
+                <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Group">
+                    <MenuFlyoutItem  Text="Add group" Command="{Binding ShowAddGroupViewCommand}"/>
+                </MenuBarItem>
                 <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="About">
                     <MenuFlyoutItem  Text="About" Command="{Binding AboutDialogCommand}" />
+                </MenuBarItem>
+                <MenuBarItem Style="{ThemeResource MenuBarItem}" Title="Export">
+                    <MenuFlyoutItem  Text="Export" Command="{Binding ExportMessageCommand}" />
                 </MenuBarItem>
             </MenuBar>
 
         </Grid>
         <Grid Grid.Row="1" Background="Beige">
-            <ScrollViewer>                
+            
+            <ScrollViewer>
+                
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="10"/>
@@ -88,12 +96,10 @@
                             <Button  Style="{ThemeResource Button}" Content="Join group" Command="{Binding JoinGroupButtonCommand}"/>
                             <Button  Style="{ThemeResource CancelButton}" Command="{Binding CancelButtonCommand}"/>
                         </StackPanel>
-                    </Grid>     
+                    </Grid>
                 </Grid>
 
-
             </ScrollViewer>
-
 
         </Grid>
 
