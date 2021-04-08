@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace Messenger_Client.ViewModels
 {
-    public class JoinGroupPageViewModel : ObservableRecipient
+    public class JoinGroupPageViewModel
     {
         public ICommand LogoutCommand { get; set; }
         public ICommand AboutDialogCommand { get; set; }
