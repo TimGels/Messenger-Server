@@ -16,7 +16,7 @@ namespace Messenger_Client.Services.Converters
         /// <param name="targetType"></param>
         /// <param name="parameter"></param>
         /// <param name="language"></param>
-        /// <returns></returns>
+        /// <returns> <see cref="string"/></returns>
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             DateTime dateTime = (DateTime)value;

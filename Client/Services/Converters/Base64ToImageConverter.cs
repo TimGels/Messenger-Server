@@ -16,7 +16,7 @@ namespace Messenger_Client.Services.Converters
         /// Converting a base64 string to BitmapImage.
         /// </summary>
         /// <param name="value"></param>
-        /// <returns></returns>
+        /// <returns><see cref="Task{BitmapImage}"/></returns>
         public async Task<BitmapImage> Convert(object value)
         {
             byte[] bytes = System.Convert.FromBase64String((string)value);
