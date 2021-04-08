@@ -51,7 +51,7 @@
                 </PasswordBox>
                 <Button  Style="{ThemeResource Button}" Content="Login" Command="{Binding LoginButtonCommand}"/>
                 <Button  Style="{ThemeResource Button}" Content="Register" Command="{Binding RegisterButtonCommand}"/>
-                <Button  Style="{ThemeResource Button}" Command="{Binding SettingsButtonCommand}"/>
+                <Button  Style="{ThemeResource Button}" Content="Settings" Command="{Binding SettingsButtonCommand}"/>
                 <TextBlock Foreground="Red" FontWeight="Bold"  Text="{Binding LoginErrorMessage}" Style="{ThemeResource LoginError}"/>
             </StackPanel>
         </Grid>

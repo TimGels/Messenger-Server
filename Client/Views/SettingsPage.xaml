@@ -25,11 +25,11 @@
 
         <Grid Grid.Row="1" Grid.Column="1">
             <StackPanel Background="White" Padding="50">
-                <TextBlock Style="{ThemeResource LoginHeading}" Text="Settings" Margin="0,0,0,30"/>
-                <TextBox IsEnabled="{Binding IsTextBoxEnabled}" Text="{Binding IPAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{ThemeResource LoginName}"/>
-                <TextBox IsEnabled="{Binding IsTextBoxEnabled}" Text="{Binding PortNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{ThemeResource LoginName}"/>
+                <TextBlock Style="{ThemeResource Heading}" Text="Settings" Margin="0,0,0,30"/>
+                <TextBox IsEnabled="{Binding CanEdit}" Text="{Binding IPAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{ThemeResource TextBox}"/>
+                <TextBox IsEnabled="{Binding CanEdit}" Text="{Binding PortNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{ThemeResource TextBox}"/>
                 <TextBlock Text="Use PLINQ:"/>
-                <ToggleSwitch IsOn="{Binding UsePLINQ, Mode=TwoWay}"/>
+                <ToggleSwitch IsEnabled="{Binding CanEdit}" IsOn="{Binding UsePLINQ, Mode=TwoWay}"/>
                 <Button Style="{ThemeResource CancelButton}" Content="Back" Margin="10" Command="{Binding BackButtonCommand}"/>
             </StackPanel>
         </Grid>

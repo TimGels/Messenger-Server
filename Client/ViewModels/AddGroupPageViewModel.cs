@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Windows.Input;
 using Windows.ApplicationModel.Core;
+using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Input;
 
@@ -18,6 +19,9 @@ namespace Messenger_Client.ViewModels
         public ICommand CheckEnterCommand { get; set; }
         public ICommand LogoutCommand { get; set; }
         public ICommand AboutDialogCommand { get; set; }
+        public ICommand ShowSettingsCommand { get; set; }
+        public ICommand ShowGroupsToJoinCommand { get; set; }
+        public ICommand ExportMessageCommand { get; set; }
 
         public string NewGroupName { get; set; }
 
@@ -37,24 +41,44 @@ namespace Messenger_Client.ViewModels
 
         public AddGroupPageViewModel()
         {
-            BackToMainPageCommand = new RelayCommand(NavigateToMain);
+            // Menubar buttons
+            LogoutCommand = new RelayCommand(Logout);
+            ShowSettingsCommand = new RelayCommand(ShowSettings);
+            ShowGroupsToJoinCommand = new RelayCommand(ShowGroupsToJoin);
+            AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
+            ExportMessageCommand = new RelayCommand(ExportMessage);
+
+            // Page buttons
             AddGroupCommand = new RelayCommand(AddNewGroup);
             CheckEnterCommand = new RelayCommand<KeyRoutedEventArgs>(CheckEnterPressed);
-            LogoutCommand = new RelayCommand(Logout);
-            AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
+            BackToMainPageCommand = new RelayCommand(NavigateToMain);
         }
 
         private void CheckEnterPressed(KeyRoutedEventArgs keyargs)
         {
-            if (keyargs.Key == Windows.System.VirtualKey.Enter)
+            if (keyargs.Key == VirtualKey.Enter)
             {
                 AddNewGroup();
             }
         }
 
+        private void ShowGroupsToJoin()
+        {
+            Helper.NavigateTo(typeof(JoinGroupPage));
+        }
+
+        private async void ExportMessage()
+        {
+            await Client.Instance.ExportMessageToFileAsync();
+        }
+
         private void NavigateToMain()
         {
             Helper.NavigateTo(typeof(MainPage));
+        }
+        private void ShowSettings()
+        {
+            Helper.NavigateTo(typeof(SettingsPage));
         }
 
         private void AddNewGroup()
