@@ -1,12 +1,11 @@
 ﻿using Messenger_Client.Models;
 using Messenger_Client.Views;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
-using Windows.ApplicationModel.Core;
-using Windows.UI.Core;
 
 namespace Messenger_Client.ViewModels
 {
@@ -21,6 +20,39 @@ namespace Messenger_Client.ViewModels
         public ICommand ExportMessageCommand { get; set; }
 
         public Group GroupToJoin { get; set; }
+
+        public string ListViewVisibility
+        {
+            get
+            {
+                if (GroupList.Count == 0)
+                {
+                    return "Collapsed";
+                }
+                else
+                {
+                    return "Visible";
+                }
+            }
+            set
+            { }
+        }
+
+        public string NoGroupsMessageVisibility
+        {
+            get
+            {
+                if (GroupList.Count == 0)
+                {
+                    return "Visible";
+                }
+                else
+                {
+                    return "Collapsed";
+                }
+            }
+            set { }
+        }
 
         public ObservableCollection<Group> GroupList { get; set; }
 
@@ -84,6 +116,11 @@ namespace Messenger_Client.ViewModels
             CommunicationHandler.ObtainedRequestedGroups -= OnObtainedRequestedGroups;
 
             await Helper.RunOnUIAsync(() => e.Groups.ForEach(group => GroupList.Add(group)));
+            Helper.RunOnUI(() =>
+            {
+                OnPropertyChanged("NoGroupsMessageVisibility");
+                OnPropertyChanged("ListViewVisibility");
+            });
         }
 
         private async void DisplayAboutDialog()
@@ -101,4 +138,3 @@ namespace Messenger_Client.ViewModels
         }
     }
 }
-
