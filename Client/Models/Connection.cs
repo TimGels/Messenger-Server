@@ -185,6 +185,10 @@ namespace Messenger_Client.Models
             }
         }
 
+        /// <summary>
+        /// Method for sending a message to the server.
+        /// </summary>
+        /// <param name="message"></param>
         public override void SendData(Message message)
         {
             try
@@ -195,6 +199,7 @@ namespace Messenger_Client.Models
                     return;
                 }
 
+                //use base implementation.
                 base.SendData(message);
             }
             catch (Exception e)

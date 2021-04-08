@@ -14,14 +14,23 @@ namespace Messenger_Server
         /// </summary>
         private static readonly string databaseFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "messenger.db");
 
+        //The connectionString which will be used for all connections.
         private static readonly string connectionString = CreateConnectionString();
 
+        /// <summary>
+        /// Initiaze will call the create database method. 
+        /// It will also call the method which sets the journalmode of the database based on the config.
+        /// </summary>
         public static void Initialize()
         {
             CreateDatabase();
             SetJournalModeDatabase();
         }
 
+        /// <summary>
+        /// This method will create the connection string which will be used by all connections.
+        /// </summary>
+        /// <returns>The connection string based on the config.</returns>
         private static string CreateConnectionString()
         {
             // Create new connection string builder and set the dataSource to the databaseFilePath.
@@ -30,6 +39,7 @@ namespace Messenger_Server
                 DataSource = databaseFilePath
             };
 
+            //check if all connections have to use Shared cache
             if (IsDatabaseSharedCacheEnabled())
             {
                 Console.WriteLine("Datbaseconnections will be created with Shared Cache!");
@@ -39,37 +49,33 @@ namespace Messenger_Server
             return connectionStringBuilder.ToString();
         }
 
+        #region database config related methods.
+        /// <summary>
+        /// This method will set the journalMode of the database to WAL or delete
+        /// based on the config.
+        /// Delete is the default following the docs of SQLite and therefore the default fallback.
+        /// </summary>
         private static void SetJournalModeDatabase()
         {
-            string walEnabledSetting = Configuration.GetSetting("walEnabled");
-            bool enableWal = false;
-
-            if (walEnabledSetting != null)
-            {
-                if (bool.Parse(walEnabledSetting))
-                {
-                    enableWal = true;
-                }
-            }
+            _ = bool.TryParse(Configuration.GetSetting("walEnabled"), out bool enableWal);
 
             ExecuteJournalModeQuery(enableWal);
         }
 
+        /// <summary>
+        /// Method for getting the databaseSharedCasheProperty.
+        /// </summary>
+        /// <returns>true if enabled, false if not enabled or not set</returns>
         private static bool IsDatabaseSharedCacheEnabled()
         {
-            string valueFromSetting = Configuration.GetSetting("databaseCacheShared");
-            if(valueFromSetting == null)
-            {
-                return false;
-            } else
-            {
-                return bool.Parse(valueFromSetting);
-            }
+            _ = bool.TryParse(Configuration.GetSetting("databaseCacheShared"), out bool isShared);
+            return isShared;
         }
 
         private static void ExecuteJournalModeQuery(bool enabled)
         {
             string status = "";
+            // Because this is a multi-threaded application, it is not possible to use WAL without Shared Cache.
             if (enabled && !IsDatabaseSharedCacheEnabled())
             {
                 status = "Shared Cache is not enabled! WAL isn't possible.\n";
@@ -79,21 +85,17 @@ namespace Messenger_Server
             {
                 // Enable or disable write-ahead logging
                 SqliteCommand command = connection.CreateCommand();
-                if (enabled)
-                {
-                    command.CommandText = @"PRAGMA journal_mode = 'wal'";
-                } else
-                {
-                    command.CommandText = @"PRAGMA journal_mode = 'delete'";
-                }
-                
+                command.CommandText = String.Format(@"PRAGMA journal_mode = '{0}'", enabled ? "wal" : "delete").ToString();
+
                 connection.Open();
                 status += "Database journal mode was set to: " + (string)command.ExecuteScalar();
             }
 
             Console.WriteLine(status);
         }
+        #endregion
 
+        #region create database methods
         /// <summary>
         /// Method for creating the database. This method will call several createTable methods.
         /// When calling this methods, the database file will be created if it not exists.
@@ -174,6 +176,9 @@ namespace Messenger_Server
                 connection.Close();
             }
         }
+        #endregion
+
+        #region add to database methods
 
         /// <summary>
         /// Insert a message into the database.
@@ -183,7 +188,7 @@ namespace Messenger_Server
         {
             try
             {
-                using(SqliteConnection connection = new SqliteConnection(connectionString))
+                using (SqliteConnection connection = new SqliteConnection(connectionString))
                 {
                     SqliteCommand command = connection.CreateCommand();
                     command.CommandText = "insert into `Message` (payload, messageType, senderid, groupid, timesent) values (@payload, @messageType, @senderid, @groupid, @timesent)";
@@ -295,6 +300,9 @@ namespace Messenger_Server
                 return -1;
             }
         }
+        #endregion
+
+        #region get from database methods
 
         /// <summary>
         /// Get the password from the client based on the email of the client.
@@ -402,6 +410,9 @@ namespace Messenger_Server
                 return groupParticipants;
             }
         }
+        #endregion
+
+        #region delete from database methods
 
         /// <summary>
         /// Deletes a client from a group in the database
@@ -411,7 +422,7 @@ namespace Messenger_Server
         /// <returns>the number of affected rows</returns>
         public static int DeleteGroupParticipant(int groupID, int userID)
         {
-            using(SqliteConnection connection = new SqliteConnection(connectionString))
+            using (SqliteConnection connection = new SqliteConnection(connectionString))
             {
                 SqliteCommand command = connection.CreateCommand();
                 command.CommandText = "DELETE from `GroupParticipants` WHERE userid == @userid AND groupid == @groupid";
@@ -442,5 +453,6 @@ namespace Messenger_Server
                 return command.ExecuteNonQuery();
             }
         }
+        #endregion
     }
 }

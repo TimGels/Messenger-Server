@@ -57,7 +57,7 @@ namespace Messenger_Server
         /// If the value wasn't set or if the value couldn't be parsed: default fallback of 5000.
         /// </summary>
         /// <returns>Portnumber based on the configuration</returns>
-        private int GetPort()
+        private static int GetPort()
         {
             if (!int.TryParse(Configuration.GetSetting("port"), out int port))
             {
@@ -105,7 +105,8 @@ namespace Messenger_Server
         /// <param name="group"></param>
         public void RemoveGroup(Group group)
         {
-            if(group.getGroupParticipants() > 0)
+            // if the group contains group participants, the group will not be removed.
+            if(group.GetGroupParticipants() > 0)
             {
                 return;
             }
@@ -114,11 +115,11 @@ namespace Messenger_Server
             try
             {
                 this.groups.Remove(group);
-                DatabaseHandler.RemoveGroup(group.Id);
             } finally
             {
                 groupLocker.ExitWriteLock();
             }
+            DatabaseHandler.RemoveGroup(group.Id);
         }
 
         /// <summary>
@@ -128,7 +129,7 @@ namespace Messenger_Server
         /// </summary>
         public void StartListening()
         {
-            Console.WriteLine(String.Format("Server uses {0}", (IsPlinqEnabled() ? "PLINQ" : "LINQ")));
+            Console.WriteLine(String.Format("Server uses {0}", IsPlinqEnabled() ? "PLINQ" : "LINQ"));
             try
             {
                 int port = GetPort();
@@ -179,7 +180,6 @@ namespace Messenger_Server
                 {
                     return groups.AsParallel().Where(group => group.Id == id).FirstOrDefault();
                 }
-
             }
             finally
             {
@@ -197,7 +197,6 @@ namespace Messenger_Server
             int groupID = DatabaseHandler.AddGroup(groupName);
             Group group = new Group(groupID, groupName);
 
-
             groupLocker.EnterWriteLock();
             try
             {
@@ -211,7 +210,8 @@ namespace Messenger_Server
         }
 
         /// <summary>
-        /// Add a client to the server
+        /// Add a client to the server.
+        /// Also adds the client to the database.
         /// </summary>
         /// <param name="client"></param>
         /// <returns>The id of the just created client</returns>
@@ -300,12 +300,12 @@ namespace Messenger_Server
         /// <param name="connection">The connection to add.</param>
         public void AddConnection(int id, Connection connection)
         {
+            // Get the client on id before entering the writelock because getClients holds a readLock.
             Client client = GetClient(id);
-            clientLocker.EnterWriteLock();
 
+            clientLocker.EnterWriteLock();
             try
             {
-                // Don't call GetClient which enters read lock, since we already hold write lock.
                 clients[client] = connection;
             }
             finally
@@ -326,8 +326,6 @@ namespace Messenger_Server
 
             try
             {
-                // HACK: Only works when values (connections) in Server.clients are unique
-
                 // Find client with the specified connection which we need to delete.
                 var keyValuePairs = clients.Where(pair => connection.Equals(pair.Value));
 
@@ -422,6 +420,10 @@ namespace Messenger_Server
             return groupsWithClient;
         }
 
+        /// <summary>
+        /// method for checking if plinq is enabled based on the config.
+        /// </summary>
+        /// <returns>true id enabled, false if disabled or not set.</returns>
         public static bool IsPlinqEnabled()
         {
             _ = bool.TryParse(Configuration.GetSetting("plinq"), out bool plinqEnabled);

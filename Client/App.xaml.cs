@@ -128,12 +128,11 @@ namespace Messenger_Client
         {
             Debug.WriteLine("Lost connection to server!");
 
-            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            await Helper.RunOnUIAsync(async () =>
             {
                 await Helper.ConnectionLostDialog().ShowAsync();
 
-                Frame rootFrame = Window.Current.Content as Frame;
-                rootFrame.Navigate(typeof(LoginPage));
+                Client.Instance.Logout();
             });
         }
     }

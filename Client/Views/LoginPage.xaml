@@ -40,8 +40,8 @@
                 </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Row="1" Grid.Column="1" Margin="5">
-                <TextBlock Text="Inloggen" Padding="5" Style="{ThemeResource LoginHeading}"/>
-                <TextBox Style="{ThemeResource LoginMail}" Text="{Binding Email, Mode=TwoWay}" />
+                <TextBlock Text="Inloggen" Padding="5" Style="{ThemeResource Heading}"/>
+                <TextBox Style="{ThemeResource TextBox}" PlaceholderText="E-mail address" Text="{Binding Email, Mode=TwoWay}" />
                 <PasswordBox Style="{ThemeResource LoginPassword}" Password="{Binding Password, Mode=TwoWay}">
                     <Interactivity:Interaction.Behaviors>
                         <Core:EventTriggerBehavior EventName="KeyDown" >
@@ -49,9 +49,9 @@
                         </Core:EventTriggerBehavior>
                     </Interactivity:Interaction.Behaviors>
                 </PasswordBox>
-                <Button  Style="{ThemeResource LoginButton}" Command="{Binding LoginButtonCommand}"/>
-                <Button  Style="{ThemeResource RegisterButton}" Command="{Binding RegisterButtonCommand}"/>
-                <Button  Style="{ThemeResource SettingsButton}" Command="{Binding SettingsButtonCommand}"/>
+                <Button  Style="{ThemeResource Button}" Content="Login" Command="{Binding LoginButtonCommand}"/>
+                <Button  Style="{ThemeResource Button}" Content="Register" Command="{Binding RegisterButtonCommand}"/>
+                <Button  Style="{ThemeResource Button}" Command="{Binding SettingsButtonCommand}"/>
                 <TextBlock Foreground="Red" FontWeight="Bold"  Text="{Binding LoginErrorMessage}" Style="{ThemeResource LoginError}"/>
             </StackPanel>
         </Grid>

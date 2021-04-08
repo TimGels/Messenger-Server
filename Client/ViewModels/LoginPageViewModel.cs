@@ -84,27 +84,21 @@ namespace Messenger_Client.ViewModels
             CommunicationHandler.SendLoginMessage(Email, Password);
         }
 
-        private async void OnLoginInResponseReceived(object sender, CommunicationHandler.ResponseStateEventArgs e)
+        private void OnLoginInResponseReceived(object sender, CommunicationHandler.ResponseStateEventArgs e)
         {
             CommunicationHandler.LogInResponse -= OnLoginInResponseReceived;
 
             switch (e.State)
             {
                 case -1:
-                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        LoginErrorMessage = "E-mail of wachtwoord verkeerd of account bestaat niet!";
-                    });
+                    Helper.RunOnUI(() => LoginErrorMessage = "The combination of this e-mail and password does not exist!");
                     break;
                 case -2:
-                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        LoginErrorMessage = "Je bent al ingelogd!";
-                    });
+                    Helper.RunOnUI(() => LoginErrorMessage = "You're already logged in!");
                     break;
                 default:
                     Helper.NavigateTo(typeof(MainPage));
-                break;
+                    break;
             }
         }
 

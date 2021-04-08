@@ -29,7 +29,7 @@ namespace Messenger_Client.ViewModels
             GroupList = new ObservableCollection<Group>();
 
             CommunicationHandler.ObtainedRequestedGroups += OnObtainedRequestedGroups;
-            CommunicationHandler.SendRequestGroupMessages();
+            CommunicationHandler.SendRequestGroupsMessages();
         }
 
         private void SendJoinGroupMessage()
@@ -53,14 +53,11 @@ namespace Messenger_Client.ViewModels
             Helper.NavigateTo(typeof(MainPage));
         }
 
-        private async void OnObtainedRequestedGroups(object sender, CommunicationHandler.GroupListEventArgs groups)
+        private async void OnObtainedRequestedGroups(object sender, CommunicationHandler.GroupListEventArgs e)
         {
             CommunicationHandler.ObtainedRequestedGroups -= OnObtainedRequestedGroups;
 
-            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
-            {
-                groups.Groups.ForEach(group => GroupList.Add(group));
-            });
+            await Helper.RunOnUIAsync(() => e.Groups.ForEach(group => GroupList.Add(group)));
         }
 
         private async void DisplayAboutDialog()

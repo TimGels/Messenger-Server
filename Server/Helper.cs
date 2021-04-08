@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Messenger_Server
+﻿namespace Messenger_Server
 {
     public static class Helper
     {
@@ -30,6 +23,11 @@ namespace Messenger_Server
             }
         }
 
+        /// <summary>
+        /// Method for hasing a given password
+        /// </summary>
+        /// <param name="passwordToHash">Hashed password</param>
+        /// <returns></returns>
         public static string HashPassword(string passwordToHash)
         {
             return BCrypt.Net.BCrypt.HashPassword(passwordToHash);

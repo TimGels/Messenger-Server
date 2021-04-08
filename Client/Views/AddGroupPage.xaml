@@ -70,15 +70,15 @@
                         <ColumnDefinition Width="50*"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Row="1" Grid.Column="1">
-                        <TextBlock Text="Add new group" Padding="5" Style="{ThemeResource AddGroupHeading}"/>
-                        <TextBox Grid.Column="1" Style="{ThemeResource GroupNameTextBox}" Margin="10" BorderThickness="0.5" Text="{Binding NewGroupName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBlock Text="Add new group" Padding="5" Style="{ThemeResource Heading}"/>
+                        <TextBox Grid.Column="1" Style="{ThemeResource TextBox}" PlaceholderText="Group name" Margin="10" BorderThickness="0.5" Text="{Binding NewGroupName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <Interactivity:Interaction.Behaviors>
                                 <Core:EventTriggerBehavior EventName="KeyDown" >
                                     <Core:InvokeCommandAction Command="{Binding CheckEnterCommand}"/>
                                 </Core:EventTriggerBehavior>
                             </Interactivity:Interaction.Behaviors>
                         </TextBox>
-                        <Button  Style="{ThemeResource AddGroupButton}" Command="{Binding AddGroupCommand}"/>
+                        <Button  Style="{ThemeResource Button}" Content="Add group" Command="{Binding AddGroupCommand}"/>
                         <Button  Style="{ThemeResource CancelButton}" Command="{Binding BackToMainPageCommand}"/>
                         <TextBlock Foreground="Red" FontWeight="Bold"  Text="{Binding CreateGroupErrorMessage}" Style="{ThemeResource LoginError}"/>
                     </StackPanel>
