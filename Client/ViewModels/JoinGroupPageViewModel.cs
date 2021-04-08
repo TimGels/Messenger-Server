@@ -77,7 +77,8 @@ namespace Messenger_Client.ViewModels
             //Create empty group list
             GroupList = new ObservableCollection<Group>();
 
-            // Get the groups
+            // Subscribe on event, this event will be raised when the requested groups are obtained. 
+            // Then send the actual message which request the groups from the server.
             CommunicationHandler.ObtainedRequestedGroups += OnObtainedRequestedGroups;
             CommunicationHandler.SendRequestGroupsMessages();
         }
