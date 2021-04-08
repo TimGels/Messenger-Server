@@ -9,18 +9,24 @@ namespace Messenger_Client.Services.Utilities
         public Style StyleOwnMessageContainer { get; set; }
         public Style StyleOtherMessageContainer { get; set; }
 
-        protected override Style SelectStyleCore(object item, DependencyObject container)
-        {
-            var message = (Message)item;
+        /// <summary>
+        /// Apply a custom style on message based on being sent by other or self.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="container"></param>
+        /// <returns></returns>
+        //protected override Style SelectStyleCore(object item, DependencyObject container)
+        //{
+        //    var message = (Message)item;
 
-            if (message.ClientId == Client.Instance.Id)
-            {
-                return StyleOwnMessageContainer;
-            }
-            else
-            {
-                return StyleOtherMessageContainer;
-            }
-        }
+        //    if (message.ClientId == Client.Instance.Id)
+        //    {
+        //        return StyleOwnMessageContainer;
+        //    }
+        //    else
+        //    {
+        //        return StyleOtherMessageContainer;
+        //    }
+        //}
     }
 }

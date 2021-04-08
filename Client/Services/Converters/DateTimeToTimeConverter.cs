@@ -9,6 +9,14 @@ namespace Messenger_Client.Services.Converters
 {
     class DateTimeToTimeConverter :IValueConverter
     {
+        /// <summary>
+        /// Convert DateTime object to a time string.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="language"></param>
+        /// <returns></returns>
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             DateTime dateTime = (DateTime)value;

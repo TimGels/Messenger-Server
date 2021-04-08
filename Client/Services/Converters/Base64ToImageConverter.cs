@@ -12,6 +12,11 @@ namespace Messenger_Client.Services.Converters
 {
     class Base64ToImageConverter : IValueConverter
     {
+        /// <summary>
+        /// Converting a base64 string to BitmapImage.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public async Task<BitmapImage> Convert(object value)
         {
             byte[] bytes = System.Convert.FromBase64String((string)value);
@@ -47,6 +52,10 @@ namespace Messenger_Client.Services.Converters
         }
     }
 
+    /// <summary>
+    /// Notifies the caller that the task is complete.
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
     public sealed class TaskCompletionNotifier<TResult> : INotifyPropertyChanged
     {
         public TaskCompletionNotifier(Task<TResult> task)
