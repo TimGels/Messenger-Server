@@ -127,7 +127,6 @@
     <Compile Include="ViewModels\AddGroupPageViewModel.cs" />
     <Compile Include="ViewModels\JoinGroupPageViewModel.cs" />
     <Compile Include="ViewModels\LoginPageViewModel.cs" />
-    <Compile Include="Services\Utilities\CustomItemContainerSelector.cs" />
     <Compile Include="Services\Utilities\ImageUtilityService.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\SettingsPageViewModel.cs" />

@@ -13,6 +13,11 @@ namespace Messenger_Client.Services
 {
     public static class ImageUtilityService
     {
+        /// <summary>
+        /// Converts a <see cref="IRandomAccessStream"> stream</see> to a <see cref="byte">byte</see> array.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
         public static async Task<byte[]> ConvertStreamToByteArray(IRandomAccessStream s)
         {
             var dr = new DataReader(s.GetInputStreamAt(0));

@@ -14,6 +14,11 @@ namespace Messenger_Client.Services.Utilities
         public DataTemplate OwnMessageDataTemplate { get; set; }
         public DataTemplate SomeoneElseMessageDataTemplate { get; set; }
 
+        /// <summary>
+        /// Selects a message style based on who is sender (client ID). This is used in XAML to apply styles based on logic.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         protected override DataTemplate SelectTemplateCore(object item)
         {
             if (typeof(Message) != item.GetType())
