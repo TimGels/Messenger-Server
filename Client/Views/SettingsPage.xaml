@@ -26,10 +26,12 @@
         <Grid Grid.Row="1" Grid.Column="1">
             <StackPanel Background="White" Padding="50">
                 <TextBlock Style="{ThemeResource Heading}" Text="Settings" Margin="0,0,0,30"/>
+                <TextBlock Text="IP Address" Margin="15,0,0,0" />
                 <TextBox IsEnabled="{Binding CanEdit}" Text="{Binding IPAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{ThemeResource TextBox}"/>
+                <TextBlock Text="Port number" Margin="15,0,0,0" />
                 <TextBox IsEnabled="{Binding CanEdit}" Text="{Binding PortNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{ThemeResource TextBox}"/>
-                <TextBlock Text="Use PLINQ:"/>
-                <ToggleSwitch IsEnabled="{Binding CanEdit}" IsOn="{Binding UsePLINQ, Mode=TwoWay}"/>
+                <TextBlock Margin="15,0,0,0" Text="Use PLINQ:"/>
+                <ToggleSwitch Margin="15,0,0,10" IsEnabled="{Binding CanEdit}" IsOn="{Binding UsePLINQ, Mode=TwoWay}"/>
                 <Button Style="{ThemeResource CancelButton}" Content="Back" Margin="10" Command="{Binding BackButtonCommand}"/>
             </StackPanel>
         </Grid>
