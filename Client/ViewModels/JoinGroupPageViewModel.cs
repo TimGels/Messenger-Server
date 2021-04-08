@@ -28,7 +28,6 @@ namespace Messenger_Client.ViewModels
                 if (GroupList.Count == 0)
                 {
                     return "Collapsed";
-
                 }
                 else
                 {
@@ -37,8 +36,6 @@ namespace Messenger_Client.ViewModels
             }
             set
             { }
-
-
         }
 
         public string NoGroupsMessageVisibility
@@ -48,7 +45,6 @@ namespace Messenger_Client.ViewModels
                 if (GroupList.Count == 0)
                 {
                     return "Visible";
-
                 }
                 else
                 {
@@ -142,4 +138,3 @@ namespace Messenger_Client.ViewModels
         }
     }
 }
-
