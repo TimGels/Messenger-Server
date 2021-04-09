@@ -33,6 +33,10 @@ namespace Shared
         /// </summary>
         private readonly object writeLock = new object();
 
+        /// <summary>
+        /// Base connection constructor.
+        /// </summary>
+        /// <param name="client">The TcpClient to instantiate this connection with.</param>
         public Connection(TcpClient client)
         {
             this.client = client;

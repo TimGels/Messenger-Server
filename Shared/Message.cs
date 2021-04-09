@@ -1,7 +1,6 @@
 ﻿using Shared.Json;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Text.Json;
 
 namespace Shared
@@ -17,6 +16,9 @@ namespace Shared
         /// </summary>
         internal readonly JsonMessage jsonMessage;
 
+        /// <summary>
+        /// <see cref="Shared.MessageType"/>
+        /// </summary>
         public MessageType MessageType
         {
             get
@@ -28,6 +30,10 @@ namespace Shared
                 jsonMessage.MessageType = value;
             }
         }
+
+        /// <summary>
+        /// The Id of the group, when applicable.
+        /// </summary>
         public int GroupID
         {
             get
@@ -40,6 +46,9 @@ namespace Shared
             }
         }
 
+        /// <summary>
+        /// Used to bind XAML to text messages.
+        /// </summary>
         public string TextMessage
         {
             get
@@ -55,6 +64,9 @@ namespace Shared
             }
         }
 
+        /// <summary>
+        /// Used to bind XAML to base64-encoded images.
+        /// </summary>
         public string ImageString
         {
             get
@@ -70,6 +82,10 @@ namespace Shared
             }
         }
 
+        /// <summary>
+        /// Gives access to the raw payloaddata. Its content is used to carry different data
+        /// depending on the <see cref="MessageType"/> and/or the <see cref="PayloadType"/>.
+        /// </summary>
         public string PayloadData
         {
             get
@@ -82,6 +98,10 @@ namespace Shared
             }
         }
 
+        /// <summary>
+        /// Used to indicate the type of chatmessage, null otherwise. Possible values
+        /// include "text" and "image".
+        /// </summary>
         public string PayloadType
         {
             get
@@ -93,6 +113,11 @@ namespace Shared
                 jsonMessage.Payload.Type = value;
             }
         }
+
+        /// <summary>
+        /// The id of the client, when applicable. Uniquely identifies the client on the
+        /// server-side.
+        /// </summary>
         public int ClientId
         {
             get
@@ -105,6 +130,10 @@ namespace Shared
             }
         }
 
+        /// <summary>
+        /// The name of the client, when applicable. Used to convey the clientname to other
+        /// clients.
+        /// </summary>
         public string ClientName
         {
             get
@@ -117,6 +146,10 @@ namespace Shared
             }
         }
 
+        /// <summary>
+        /// Encodes a <see cref="LoginStruct"/> to a base64 string and the other way around.
+        /// Is used to convey login data.
+        /// </summary>
         public LoginStruct LoginInfo
         {
             get
@@ -136,6 +169,10 @@ namespace Shared
             }
         }
 
+        /// <summary>
+        /// Encodes a <see cref="RegisterStruct"/> to a base64 string and the other way
+        /// around. Is used to convey registration data.
+        /// </summary>
         public RegisterStruct RegisterInfo
         {
             get
@@ -153,6 +190,10 @@ namespace Shared
             }
         }
 
+        /// <summary>
+        /// Encodes a List{Group} to a base64 string and the other way around.
+        /// Is used to convey a list of groups upon login or joining a group.
+        /// </summary>
         public List<Group> GroupList
         {
             get
@@ -183,6 +224,9 @@ namespace Shared
             }
         }
 
+        /// <summary>
+        /// The datetime of the message.
+        /// </summary>
         public DateTime DateTime
         {
             get
