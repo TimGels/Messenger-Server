@@ -10,6 +10,9 @@ using Windows.Storage;
 
 namespace Messenger_Client.Models
 {
+    /// <summary>
+    /// Clientside implementation of the connection.
+    /// </summary>
     public class Connection : Shared.Connection
     {
         /// <summary>
@@ -17,6 +20,9 @@ namespace Messenger_Client.Models
         /// </summary>
         public event EventHandler ConnectionLost;
 
+        /// <summary>
+        /// Construct a new Connection. Will create an empty TcpClient.
+        /// </summary>
         public Connection()
             : base(new TcpClient())
         {
@@ -164,16 +170,14 @@ namespace Messenger_Client.Models
                     }
                     else
                     {
-                        Debug.WriteLine("Received FIN!");
+                        // Received FIN.
                         break;
                     }
                 }
             }
-            catch (Exception e)
+            catch
             {
-                Debug.WriteLine(String.Format("{0} failed with {1}",
-                    MethodBase.GetCurrentMethod().Name,
-                    e.GetType().FullName));
+                // Received RST.
             }
             finally
             {
@@ -203,10 +207,6 @@ namespace Messenger_Client.Models
             }
             catch (Exception e)
             {
-                Debug.WriteLine(String.Format("{0} failed with {1}",
-                    MethodBase.GetCurrentMethod().Name,
-                    e.GetType().FullName));
-
                 CloseInternal(true);
             }
         }
