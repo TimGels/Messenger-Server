@@ -205,7 +205,7 @@ namespace Messenger_Client.Models
                 //use base implementation.
                 base.SendData(message);
             }
-            catch (Exception e)
+            catch
             {
                 CloseInternal(true);
             }

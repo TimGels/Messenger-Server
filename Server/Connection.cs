@@ -107,7 +107,7 @@ namespace Messenger_Server
                     }
                 }
             }
-            catch (Exception e)
+            catch
             {
                 // Received RST.
             }
