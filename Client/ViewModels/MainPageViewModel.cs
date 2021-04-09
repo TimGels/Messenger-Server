@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Windows.Input;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.System;
 using Windows.UI.Xaml.Input;
 using Group = Messenger_Client.Models.Group;
 
@@ -98,16 +99,19 @@ namespace Messenger_Client.ViewModels
 
         public MainPageViewModel()
         {
-            SendMessageCommand = new RelayCommand(ConstructTextMessage);
-            CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
+            // Buttons in menubar
+            LogoutCommand = new RelayCommand(() => Client.Instance.Logout());
+            ShowSettingsCommand = new RelayCommand(ShowSettings);
             ShowGroupsToJoinCommand = new RelayCommand(ShowGroupsToJoin);
             ShowAddGroupViewCommand = new RelayCommand(ShowAddGroupView);
-            OpenFilePickerCommand = new RelayCommand(OpenFilePicker);
-            LogoutCommand = new RelayCommand(() => Client.Instance.Logout());
             ExportMessageCommand = new RelayCommand(ExportMessage);
-            LeaveGroupCommand = new RelayCommand<object>(LeaveGroup);
             AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
-            ShowSettingsCommand = new RelayCommand(ShowSettings);
+
+            // Page buttons
+            LeaveGroupCommand = new RelayCommand<object>(LeaveGroup);
+            OpenFilePickerCommand = new RelayCommand(OpenFilePicker);
+            SendMessageCommand = new RelayCommand(ConstructTextMessage);
+            CheckEnterCommand = new RelayCommand<KeyRoutedEventArgs>(CheckEnterPressed);
 
             this.GroupList = new ObservableCollection<Group>();
             this.TypedText = "";
@@ -199,10 +203,9 @@ namespace Messenger_Client.ViewModels
             this.TypedText = "";
         }
 
-        private void CheckEnterPressed(object args)
+        private void CheckEnterPressed(KeyRoutedEventArgs keyargs)
         {
-            KeyRoutedEventArgs keyargs = (KeyRoutedEventArgs)args;
-            if (keyargs.Key == Windows.System.VirtualKey.Enter)
+            if (keyargs.Key == VirtualKey.Enter)
             {
                 ConstructTextMessage();
             }

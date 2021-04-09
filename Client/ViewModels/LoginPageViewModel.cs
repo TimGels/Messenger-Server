@@ -5,6 +5,7 @@ using Microsoft.Toolkit.Mvvm.Input;
 using System;
 using System.Windows.Input;
 using Windows.ApplicationModel.Core;
+using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -39,23 +40,22 @@ namespace Messenger_Client.ViewModels
 
         public LoginPageViewModel()
         {
-            this.LoginButtonCommand = new RelayCommand(() => LoginButtonClicked());
-            this.RegisterButtonCommand = new RelayCommand(() => RegisterButtonClicked());
-            this.SettingsButtonCommand = new RelayCommand(() =>
-            {
-                (Window.Current.Content as Frame).Navigate(typeof(SettingsPage));
-            });
-            this.CheckEnterCommand = new RelayCommand<object>(CheckEnterPressed);
+            // Page buttons
+            this.LoginButtonCommand = new RelayCommand(LoginButtonClicked);
+            this.RegisterButtonCommand = new RelayCommand(RegisterButtonClicked);
+            this.SettingsButtonCommand = new RelayCommand(SettingsButtonClicked);
+            this.CheckEnterCommand = new RelayCommand<KeyRoutedEventArgs>(CheckEnterPressed);
+
             this.Email = "";
             this.Password = "";
+
             //to be sure the client is reading when logging in..
             Client client = Client.Instance;
         }
 
-        public void CheckEnterPressed(object args)
+        public void CheckEnterPressed(KeyRoutedEventArgs keyargs)
         {
-            KeyRoutedEventArgs keyargs = (KeyRoutedEventArgs)args;
-            if (keyargs.Key == Windows.System.VirtualKey.Enter)
+            if (keyargs.Key == VirtualKey.Enter)
             {
                 HandleLoginAction();
             }
@@ -104,7 +104,12 @@ namespace Messenger_Client.ViewModels
 
         private void RegisterButtonClicked()
         {
-            (Window.Current.Content as Frame).Navigate(typeof(SignUpPage));
+            Helper.NavigateTo(typeof(SignUpPage));
+        }
+
+        private void SettingsButtonClicked()
+        {
+            Helper.NavigateTo(typeof(SettingsPage));
         }
     }
 }
