@@ -92,24 +92,34 @@ namespace Messenger_Client.Services.Converters
             }
         }
 
-        // Gets the task being watched. This property never changes and is never <c>null</c>.
+        /// <summary>
+        /// Gets the task being watched. This property never changes and is never <c>null</c>.
+        /// </summary>
         public Task<TResult> Task { get; private set; }
 
-
-
-        // Gets the result of the task. Returns the default value of TResult if the task has not completed successfully.
+        /// <summary>
+        /// Gets the result of the task. Returns the default value of TResult if the task has not completed successfully.
+        /// </summary>
         public TResult Result { get { return (Task.Status == TaskStatus.RanToCompletion) ? Task.Result : default(TResult); } }
 
-        // Gets whether the task has completed.
+        /// <summary>
+        /// Gets whether the task has completed.
+        /// </summary>
         public bool IsCompleted { get { return Task.IsCompleted; } }
 
-        // Gets whether the task has completed successfully.
+        /// <summary>
+        /// Gets whether the task has completed successfully.
+        /// </summary>
         public bool IsSuccessfullyCompleted { get { return Task.Status == TaskStatus.RanToCompletion; } }
 
-        // Gets whether the task has been canceled.
+        /// <summary>
+        /// Gets whether the task has been canceled.
+        /// </summary>
         public bool IsCanceled { get { return Task.IsCanceled; } }
 
-        // Gets whether the task has faulted.
+        /// <summary>
+        /// Gets whether the task has faulted.
+        /// </summary>
         public bool IsFaulted { get { return Task.IsFaulted; } }
 
 

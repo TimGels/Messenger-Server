@@ -238,7 +238,9 @@ namespace Messenger_Server
                     return id;
                 }
             }
-            catch (Exception) //TODO: create better catch for uniqueness error!!
+            //catch only SQLLITE_CONSTRAINT exception 
+            //uniqueness error when registering with an email that already exists.
+            catch (SqliteException e) when (e.ErrorCode == 19)
             {
                 return -1;
             }

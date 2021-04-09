@@ -9,6 +9,10 @@ namespace Messenger_Client.Models
 {
     public static class Helper
     {
+        /// <summary>
+        /// Creates the about dialog.
+        /// </summary>
+        /// <returns></returns>
         public static ContentDialog AboutDialog()
         {
             ContentDialog aboutDialog = new ContentDialog
@@ -18,6 +22,7 @@ namespace Messenger_Client.Models
                 DefaultButton = ContentDialogButton.Primary
             };
 
+            // Add some informal text to the content of the viewmodel.
             aboutDialog.Content += "Application: Messenger Vision\n";
             aboutDialog.Content += "Version: 1.0\n";
             aboutDialog.Content += "Developers: Jochem Brans, Johannes Kauffmann, Sietze Koonstra, Tim Gels, Rik van Rijn, Ruben Kuilder\n";
@@ -25,6 +30,11 @@ namespace Messenger_Client.Models
             return aboutDialog;
         }
 
+        /// <summary>
+        /// This method will return a contentdialog.
+        /// This dialog is used when the connection with the server is lost.
+        /// </summary>
+        /// <returns>The contentdialog with the connection lost info.</returns>
         public static ContentDialog ConnectionLostDialog()
         {
             ContentDialog connectionLostDialog = new ContentDialog
