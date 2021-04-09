@@ -161,8 +161,6 @@ namespace Messenger_Client.Models
                             string json = Encoding.ASCII.GetString(buffer);
                             CommunicationHandler.HandleMessage(new Message(json));
                         });
-
-                        Thread.Sleep(50);
                     }
                     else
                     {
