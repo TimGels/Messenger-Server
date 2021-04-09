@@ -1,5 +1,4 @@
-﻿using Messenger_Client.Views;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using System.Windows.Input;
 using Windows.Storage;
