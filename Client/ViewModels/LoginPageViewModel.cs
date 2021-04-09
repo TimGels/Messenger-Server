@@ -2,22 +2,19 @@
 using Messenger_Client.Views;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
-using System;
 using System.Windows.Input;
-using Windows.ApplicationModel.Core;
 using Windows.System;
-using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 
 namespace Messenger_Client.ViewModels
 {
     public class LoginPageViewModel : ObservableRecipient
     {
+        //values that need to be filled in when logging in
         public string Email { get; set; }
         public string Password { get; set; }
 
+        //string for the errormessage
         private string loginErrorMessage = "";
 
         public string LoginErrorMessage
@@ -33,15 +30,21 @@ namespace Messenger_Client.ViewModels
             }
         }
 
+        /// <summary>
+        /// check which button on the view has been pressed
+        /// </summary>
         public ICommand LoginButtonCommand { get; set; }
         public ICommand RegisterButtonCommand { get; set; }
         public ICommand SettingsButtonCommand { get; set; }
+        /// <summary>
+        /// check if the enter key has been pressed
+        /// </summary>
         public ICommand CheckEnterCommand { get; set; }
 
         public LoginPageViewModel()
         {
             // Page buttons
-            this.LoginButtonCommand = new RelayCommand(LoginButtonClicked);
+            this.LoginButtonCommand = new RelayCommand(HandleLoginAction);
             this.RegisterButtonCommand = new RelayCommand(RegisterButtonClicked);
             this.SettingsButtonCommand = new RelayCommand(SettingsButtonClicked);
             this.CheckEnterCommand = new RelayCommand<KeyRoutedEventArgs>(CheckEnterPressed);
@@ -53,6 +56,11 @@ namespace Messenger_Client.ViewModels
             Client client = Client.Instance;
         }
 
+        /// <summary>
+        /// executes when enter key has been pressed
+        /// calls handlelogin function
+        /// </summary>
+        /// <param name="args"></param>
         public void CheckEnterPressed(KeyRoutedEventArgs keyargs)
         {
             if (keyargs.Key == VirtualKey.Enter)
@@ -61,11 +69,9 @@ namespace Messenger_Client.ViewModels
             }
         }
 
-        private void LoginButtonClicked()
-        {
-            HandleLoginAction();
-        }
-
+        /// <summary>
+        /// function gets called when someone tries to log in. 
+        /// </summary>
         private async void HandleLoginAction()
         {
             if (Email.Equals("") || Password.Equals(""))
@@ -83,7 +89,11 @@ namespace Messenger_Client.ViewModels
             CommunicationHandler.LogInResponse += OnLoginInResponseReceived;
             CommunicationHandler.SendLoginMessage(Email, Password);
         }
-
+        /// <summary>
+        /// Executes when recieving a loginresponse from the server
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnLoginInResponseReceived(object sender, CommunicationHandler.ResponseStateEventArgs e)
         {
             CommunicationHandler.LogInResponse -= OnLoginInResponseReceived;
@@ -102,6 +112,9 @@ namespace Messenger_Client.ViewModels
             }
         }
 
+        /// <summary>
+        /// makes sure you get send to the signUpPage after pressing the signUpButton
+        /// </summary>
         private void RegisterButtonClicked()
         {
             Helper.NavigateTo(typeof(SignUpPage));

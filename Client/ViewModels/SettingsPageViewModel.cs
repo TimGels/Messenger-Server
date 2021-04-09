@@ -1,5 +1,4 @@
-﻿using Messenger_Client.Views;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using System.Windows.Input;
 using Windows.Storage;
@@ -11,10 +10,18 @@ namespace Messenger_Client.ViewModels
     public class SettingsPageViewModel : ObservableRecipient
     {
         /// <summary>
+        /// Command for the back button.
+        /// </summary>
+        public ICommand BackButtonCommand { get; set; }
+
+        /// <summary>
         /// Convenience field to store the local appdata container.
         /// </summary>
         private readonly ApplicationDataContainer settings = ApplicationData.Current.LocalSettings;
 
+        /// <summary>
+        /// The IP address settings input.
+        /// </summary>
         public string IPAddress
         {
             get
@@ -28,6 +35,9 @@ namespace Messenger_Client.ViewModels
             }
         }
 
+        /// <summary>
+        /// The port number settings input.
+        /// </summary>
         public string PortNumber
         {
             get
@@ -41,6 +51,9 @@ namespace Messenger_Client.ViewModels
             }
         }
 
+        /// <summary>
+        /// Handles the switch button to turn PLinq on or off.
+        /// </summary>
         public bool UsePLINQ
         {
             get
@@ -55,6 +68,7 @@ namespace Messenger_Client.ViewModels
         }
 
         /// <summary>
+        /// Returns if settings can be edited.
         /// Settings can only be edited when the client is not connected.
         /// </summary>
         public bool CanEdit
@@ -65,13 +79,15 @@ namespace Messenger_Client.ViewModels
             }
         }
 
-        public ICommand BackButtonCommand { get; set; }
-
         public SettingsPageViewModel()
         {
             BackButtonCommand = new RelayCommand(BackButton);
         }
 
+        /// <summary>
+        /// Functionality for the back button command.
+        /// Navigates back to the previous page if it can.
+        /// </summary>
         private void BackButton()
         {
             Frame rootFrame = Window.Current.Content as Frame;
