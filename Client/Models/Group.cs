@@ -6,6 +6,10 @@ namespace Messenger_Client.Models
 {
     public class Group : Shared.Group
     {
+        /// <summary>
+        /// Holds all the message that are sended.
+        /// It's an observable collection because the front end binds to it.
+        /// </summary>
         public ObservableCollection<Message> Messages { get; set; }
 
         /// <summary>
@@ -16,7 +20,7 @@ namespace Messenger_Client.Models
         /// <summary>
         /// Create a new group from a base group.
         /// </summary>
-        /// <param name="group"></param>
+        /// <param name="group">The base group</param>
         public Group(Shared.Group group) : this(group.Id, group.Name)
         {
 
@@ -42,7 +46,10 @@ namespace Messenger_Client.Models
             this.messsageLocker.EnterWriteLock();
             try
             {
-                this.Messages.Add(message);
+                // Uses the dispather because the list in the viewmodel is bound to the
+                // message list in group. Modifying the list without the dispatcher will
+                // throw a COMException (RPC_E_WRONG_THREAD).
+                Helper.RunOnUI(() => this.Messages.Add(message));
             }
             finally
             {
@@ -53,7 +60,7 @@ namespace Messenger_Client.Models
         /// <summary>
         /// returns a csv string wich respresents all the message in the group.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The generated csv</returns>
         public string GetMessageCsv()
         {
             //enter read lock of messages

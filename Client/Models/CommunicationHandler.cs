@@ -220,7 +220,6 @@ namespace Messenger_Client.Models
             //if obtained groupID > 0 then the registering was succefully: create new group and add it to the groups.
             if (message.GroupID > 0)
             {
-                //TODO moet dit niet met de dispatcher??
                 Client.Instance.AddGroup(new Group(message.GroupID, message.PayloadData));
             }
             RegisterGroupResponse?.Invoke(null, new ResponseStateEventArgs(message.ClientId));
@@ -268,14 +267,9 @@ namespace Messenger_Client.Models
             if (group != null)
             {
                 // Add the message to the group.
-                // Uses the dispather because the list in the viewmodel is bound to the
-                // message list in group. Modifying the list without the dispatcher will
-                // throw a COMException (RPC_E_WRONG_THREAD).
-                //TODO: dispather logic in addmessage method?
-                Helper.RunOnUI(() => group.AddMessage(message));
+                group.AddMessage(message);
             }
         }
-
         #endregion
 
     }
