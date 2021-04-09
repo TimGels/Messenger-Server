@@ -64,7 +64,7 @@ namespace Messenger_Client.ViewModels
         public JoinGroupPageViewModel()
         {
             // Menubar buttons
-            LogoutCommand = new RelayCommand(Logout);
+            LogoutCommand = new RelayCommand(Client.Instance.Logout);
             ShowSettingsCommand = new RelayCommand(ShowSettings);
             ShowAddGroupViewCommand = new RelayCommand(ShowAddGroupView);
             AboutDialogCommand = new RelayCommand(DisplayAboutDialog);
@@ -161,15 +161,6 @@ namespace Messenger_Client.ViewModels
         private async void DisplayAboutDialog()
         {
             await Helper.AboutDialog().ShowAsync();
-        }
-
-        /// <summary>
-        /// Log out the client
-        /// </summary>
-        private void Logout()
-        {
-            Client.Instance.Connection.Close();
-            Helper.NavigateTo(typeof(LoginPage));
         }
     }
 }
