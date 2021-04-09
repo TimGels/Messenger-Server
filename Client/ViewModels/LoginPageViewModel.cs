@@ -2,10 +2,7 @@
 using Messenger_Client.Views;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
-using System;
 using System.Windows.Input;
-using Windows.ApplicationModel.Core;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -14,11 +11,11 @@ namespace Messenger_Client.ViewModels
 {
     public class LoginPageViewModel : ObservableRecipient
     {
-        //values die ingevuld moeten worden
+        //values that need to be filled in when logging in
         public string Email { get; set; }
         public string Password { get; set; }
 
-        //de errormessage die gedisplayed kan worden
+        //string for the errormessage
         private string loginErrorMessage = "";
 
         public string LoginErrorMessage
@@ -35,13 +32,13 @@ namespace Messenger_Client.ViewModels
         }
 
         /// <summary>
-        /// check voor welke knop ingedrukt word in de view
+        /// check which button on the view has been pressed
         /// </summary>
         public ICommand LoginButtonCommand { get; set; }
         public ICommand RegisterButtonCommand { get; set; }
         public ICommand SettingsButtonCommand { get; set; }
         /// <summary>
-        /// checken of de enter knop word ingedrukt
+        /// check if the enter key has been pressed
         /// </summary>
         public ICommand CheckEnterCommand { get; set; }
 
@@ -61,8 +58,8 @@ namespace Messenger_Client.ViewModels
         }
 
         /// <summary>
-        /// word aangeroepen wanneer er op enter word gedrukt.
-        /// roept de HandleLoginAction aan
+        /// executes when enter key has been pressed
+        /// calls handlelogin function
         /// </summary>
         /// <param name="args"></param>
         public void CheckEnterPressed(object args)
@@ -75,7 +72,7 @@ namespace Messenger_Client.ViewModels
         }
 
         /// <summary>
-        /// word aangeroepen wanneer er op ingelogd
+        /// function gets called when someone tries to log in. 
         /// </summary>
         private async void HandleLoginAction()
         {
@@ -118,7 +115,7 @@ namespace Messenger_Client.ViewModels
         }
 
         /// <summary>
-        /// zorgt er voor dat je word doorgestuurd naar de signUpPage na het indrukken van de knop
+        /// makes sure you get send to the signUpPage after pressing the signUpButton
         /// </summary>
         private void RegisterButtonClicked()
         {
