@@ -140,7 +140,7 @@ namespace Messenger_Client.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void OnRegisterGroupResponseReceived(object sender, CommunicationHandler.ResponseStateEventArgs e)
+        private void OnRegisterGroupResponseReceived(object sender, CommunicationHandler.ResponseStateEventArgs e)
         {
             CommunicationHandler.RegisterGroupResponse -= OnRegisterGroupResponseReceived;
 

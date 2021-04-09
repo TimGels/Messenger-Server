@@ -25,7 +25,7 @@ namespace Messenger_Client.Models
             // Add some informal text to the content of the viewmodel.
             aboutDialog.Content += "Application: Messenger Vision\n";
             aboutDialog.Content += "Version: 1.0\n";
-            aboutDialog.Content += "Developers: Jochem Brans, Johannes Kauffmann, Sietze Koonstra, Tim Gels, Rik van Rijn, Ruben Kuilder\n";
+            aboutDialog.Content += "Developers: Jochem Brans, Tim Gels, Johannes Kauffmann, Sietze Koonstra, Ruben Kuilder, Rik van Rijn\n";
 
             return aboutDialog;
         }
