@@ -14,9 +14,11 @@ namespace Messenger_Client.ViewModels
 {
     public class LoginPageViewModel : ObservableRecipient
     {
+        //values die ingevuld moeten worden
         public string Email { get; set; }
         public string Password { get; set; }
 
+        //de errormessage die gedisplayed kan worden
         private string loginErrorMessage = "";
 
         public string LoginErrorMessage
@@ -32,14 +34,20 @@ namespace Messenger_Client.ViewModels
             }
         }
 
+        /// <summary>
+        /// check voor welke knop ingedrukt word in de view
+        /// </summary>
         public ICommand LoginButtonCommand { get; set; }
         public ICommand RegisterButtonCommand { get; set; }
         public ICommand SettingsButtonCommand { get; set; }
+        /// <summary>
+        /// checken of de enter knop word ingedrukt
+        /// </summary>
         public ICommand CheckEnterCommand { get; set; }
 
         public LoginPageViewModel()
         {
-            this.LoginButtonCommand = new RelayCommand(() => LoginButtonClicked());
+            this.LoginButtonCommand = new RelayCommand(() => HandleLoginAction());
             this.RegisterButtonCommand = new RelayCommand(() => RegisterButtonClicked());
             this.SettingsButtonCommand = new RelayCommand(() =>
             {
@@ -52,6 +60,11 @@ namespace Messenger_Client.ViewModels
             Client client = Client.Instance;
         }
 
+        /// <summary>
+        /// word aangeroepen wanneer er op enter word gedrukt.
+        /// roept de HandleLoginAction aan
+        /// </summary>
+        /// <param name="args"></param>
         public void CheckEnterPressed(object args)
         {
             KeyRoutedEventArgs keyargs = (KeyRoutedEventArgs)args;
@@ -61,11 +74,9 @@ namespace Messenger_Client.ViewModels
             }
         }
 
-        private void LoginButtonClicked()
-        {
-            HandleLoginAction();
-        }
-
+        /// <summary>
+        /// word aangeroepen wanneer er op ingelogd
+        /// </summary>
         private async void HandleLoginAction()
         {
             if (Email.Equals("") || Password.Equals(""))
@@ -83,7 +94,11 @@ namespace Messenger_Client.ViewModels
             CommunicationHandler.LogInResponse += OnLoginInResponseReceived;
             CommunicationHandler.SendLoginMessage(Email, Password);
         }
-
+        /// <summary>
+        /// Executes when recieving a loginresponse from the server
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnLoginInResponseReceived(object sender, CommunicationHandler.ResponseStateEventArgs e)
         {
             CommunicationHandler.LogInResponse -= OnLoginInResponseReceived;
@@ -102,6 +117,9 @@ namespace Messenger_Client.ViewModels
             }
         }
 
+        /// <summary>
+        /// zorgt er voor dat je word doorgestuurd naar de signUpPage na het indrukken van de knop
+        /// </summary>
         private void RegisterButtonClicked()
         {
             (Window.Current.Content as Frame).Navigate(typeof(SignUpPage));
