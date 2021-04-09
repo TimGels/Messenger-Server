@@ -6,7 +6,14 @@ namespace Messenger_Client.Services.Utilities
 {
     class MessageDataTemplateSelector : DataTemplateSelector
     {
+        /// <summary>
+        /// Template containing styling if your own messages.
+        /// </summary>
         public DataTemplate OwnMessageDataTemplate { get; set; }
+
+        /// <summary>
+        /// Template containing styling of other people's messages.
+        /// </summary>
         public DataTemplate SomeoneElseMessageDataTemplate { get; set; }
 
         /// <summary>
@@ -32,10 +39,15 @@ namespace Messenger_Client.Services.Utilities
             }
         }
 
+        /// <summary>
+        /// Gets called by XAML style selector.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="container"></param>
+        /// <returns>Datatemplate style of message</returns>
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
         {
             return SelectTemplateCore(item);
         }
-
     }
 }

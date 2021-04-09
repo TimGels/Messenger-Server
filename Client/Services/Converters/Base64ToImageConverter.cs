@@ -40,11 +40,27 @@ namespace Messenger_Client.Services.Converters
             return image;
         }
 
+        /// <summary>
+        /// Needed for interface implementation. Does not do anything.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="language"></param>
+        /// <returns></returns>
         public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
             return null;
         }
 
+        /// <summary>
+        /// Returns the Bitmap image converted from a base64 to the XAML.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="language"></param>
+        /// <returns></returns>
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             var task = Task.Run(() => Convert((string)value));
