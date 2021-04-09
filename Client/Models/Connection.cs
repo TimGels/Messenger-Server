@@ -161,8 +161,6 @@ namespace Messenger_Client.Models
                             string json = Encoding.ASCII.GetString(buffer);
                             CommunicationHandler.HandleMessage(new Message(json));
                         });
-
-                        Thread.Sleep(50);
                     }
                     else
                     {
@@ -176,12 +174,13 @@ namespace Messenger_Client.Models
                 Debug.WriteLine(String.Format("{0} failed with {1}",
                     MethodBase.GetCurrentMethod().Name,
                     e.GetType().FullName));
-
-                CloseInternal(true);
             }
             finally
             {
-                CloseInternal(false);
+                // If this thread is the first to call CloseInternal (so no user logout),
+                // the server closed the connection and the event should be invoked. If
+                // the user already logged out, CloseInternal won't do anything here.
+                CloseInternal(true);
             }
         }
 

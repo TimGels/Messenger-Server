@@ -17,6 +17,11 @@ namespace Shared
         /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Base group constructor.
+        /// </summary>
+        /// <param name="id">The unique Id of the group.</param>
+        /// <param name="name">The name of the group.</param>
         public Group(int id, string name)
         {
             Id = id;
