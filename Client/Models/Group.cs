@@ -37,7 +37,6 @@ namespace Messenger_Client.Models
         }
 
         /// <summary>
-        /// TODO: is this method neccesary if the Messages property is public? 
         /// This method should be used by the communcation handler. 
         /// </summary>
         /// <param name="message"></param>
