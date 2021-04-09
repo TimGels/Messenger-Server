@@ -14,6 +14,12 @@ namespace Messenger_Server
     /// </summary>
     public class Connection : Shared.Connection
     {
+        /// <summary>
+        /// Create a new connection with the received TcpClient from TcpListener.Accept
+        /// and a cancellationtoken to cancel the read operation.
+        /// </summary>
+        /// <param name="client">The received TcpClient.</param>
+        /// <param name="cts">The cancellationtoken to cancel the read operation.</param>
         public Connection(TcpClient client, CancellationTokenSource cts)
             : base(client)
         {
@@ -96,16 +102,14 @@ namespace Messenger_Server
                     }
                     else
                     {
-                        Console.WriteLine("Received FIN!");
+                        // Received FIN.
                         break;
                     }
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(String.Format("{0} failed with {1}",
-                    MethodBase.GetCurrentMethod().Name,
-                    e.GetType().FullName));
+                // Received RST.
             }
             finally
             {
