@@ -147,9 +147,9 @@ namespace Messenger_Client.ViewModels
         {
             CommunicationHandler.ObtainedRequestedGroups -= OnObtainedRequestedGroups;
 
-            await Helper.RunOnUIAsync(() => e.Groups.ForEach(group => GroupList.Add(group)));
-            Helper.RunOnUI(() =>
+            await Helper.RunOnUIAsync(() =>
             {
+                e.Groups.ForEach(group => GroupList.Add(group));
                 OnPropertyChanged("NoGroupsMessageVisibility");
                 OnPropertyChanged("ListViewVisibility");
             });
