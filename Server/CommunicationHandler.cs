@@ -193,7 +193,7 @@ namespace Messenger_Server
             }
             else
             {
-                // TODO: Unsuccesful response.
+                //Can't go wrong. Do nothing.
             }
 
             connection.SendData(new Message(MessageType.JoinGroupResponse)

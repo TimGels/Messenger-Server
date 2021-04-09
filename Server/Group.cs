@@ -111,9 +111,6 @@ namespace Messenger_Server
         /// <param name="message"></param>
         public void SendMessageToClients(Message message)
         {
-            // TODO: Add send timeout for each task, as to prevent the connection of an
-            // individual client being locked for too long.
-
             clientsLock.EnterReadLock();
 
             try

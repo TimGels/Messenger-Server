@@ -3,11 +3,8 @@ using Messenger_Client.Views;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using System;
-using System.Diagnostics;
 using System.Windows.Input;
-using Windows.ApplicationModel.Core;
 using Windows.System;
-using Windows.UI.Core;
 using Windows.UI.Xaml.Input;
 
 namespace Messenger_Client.ViewModels
