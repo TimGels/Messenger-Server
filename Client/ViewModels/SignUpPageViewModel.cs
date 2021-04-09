@@ -55,6 +55,7 @@ namespace Messenger_Client.ViewModels
 
         public SignUpPageViewModel()
         {
+            // Page buttons
             RegisterButtonCommand = new RelayCommand(RegisterButtonClicked);
             GoToLoginButtonCommand = new RelayCommand(GoToLoginButtonClicked);
             SettingsButtonCommand = new RelayCommand(SettingsButtonClicked);
