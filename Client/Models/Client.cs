@@ -6,8 +6,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage.Pickers;
-using Windows.ApplicationModel.Core;
-using Windows.UI.Core;
 using Windows.Storage;
 using Messenger_Client.Views;
 
