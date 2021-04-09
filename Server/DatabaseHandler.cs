@@ -240,7 +240,7 @@ namespace Messenger_Server
             }
             //catch only SQLLITE_CONSTRAINT exception 
             //uniqueness error when registering with an email that already exists.
-            catch (SqliteException e) when (e.ErrorCode == 19)
+            catch (SqliteException e) when (e.SqliteErrorCode == 19)
             {
                 return -1;
             }
