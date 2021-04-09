@@ -126,7 +126,7 @@ namespace Messenger_Client.ViewModels
         public MainPageViewModel()
         {
             // Buttons in menubar
-            LogoutCommand = new RelayCommand(() => Client.Instance.Logout());
+            LogoutCommand = new RelayCommand(Client.Instance.Logout);
             ShowSettingsCommand = new RelayCommand(ShowSettings);
             ShowGroupsToJoinCommand = new RelayCommand(ShowGroupsToJoin);
             ShowAddGroupViewCommand = new RelayCommand(ShowAddGroupView);
